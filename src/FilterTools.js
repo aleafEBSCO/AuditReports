@@ -207,11 +207,19 @@ function lackingBehaviors(fs) {
 }
 
 function noTechnicalFit(fs) {
-  // TODO
+  if (fs["technicalSuitability"] == null) {
+    return true;
+  }else{
+    return false;
+  }
 }
 
 function noTechnicalFitDesc(fs) {
-  // TODO
+  if (fs["technicalSuitabilityDescription"] == null || fs["technicalSuitabilityDescription"] === ""){
+    return true;
+  }else{
+    return false;
+  }
 }
 
 function lackingSoftwareITComponent(fs) {
@@ -257,7 +265,14 @@ function EISProvider(fs) {
   return false;
 }
 
-
+//=====
+function noLifecycle(fs) {
+  if (fs["lifecycle"] == null || fs["lifecycle"]["phases"].length === 0){
+    return true;
+  }else{
+    return false;
+  }
+}
 
 //======
 function toHTML(total, addition){
@@ -358,6 +373,8 @@ export default {
 
   lackingProviderApplication: lackingProviderApplication,
   lackingITComponents: lackingITComponents,
+
+  noLifecycle: noLifecycle,
 
   prepareForOutput: prepareForOutput,
   getOutput, getOutput

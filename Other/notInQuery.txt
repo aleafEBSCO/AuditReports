@@ -1,5 +1,13 @@
-Missing:
 
-Technical Fit/ technicalsuitability
 
-lifecycle
+Extra Data Needed
+
+Epic lifecycle
+
+Use Cases lifecycle
+
+Bounded Context lifecycle
+Bounded Context Technicalfit
+
+IT Component lifecycle
+IT Component technicalsuitability
