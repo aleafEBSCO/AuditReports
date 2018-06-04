@@ -144,7 +144,7 @@ function noFunctionFitDesc(fs) {
 
 function noOwnerPersona(fs) {
   for (let i = 0; i < fs["rel" + fs["type"] + "ToUserGroup"]["edges"].length; i++){
-    if (fs["rel" + fs["type"] + "ToUserGroup"]["edges"][i] === "owner") {
+    if (fs["rel" + fs["type"] + "ToUserGroup"]["edges"][i]["node"]["usageType"] === "owner") {
       return false;
     }
   }
@@ -154,7 +154,7 @@ function noOwnerPersona(fs) {
 function multipleOwnerPersona(fs) {
   var count = 0;
   for (let i = 0; i < fs["rel" + fs["type"] + "ToUserGroup"]["edges"].length; i++){
-    if (fs["rel" + fs["type"] + "ToUserGroup"]["edges"][i] === "owner") {
+    if (fs["rel" + fs["type"] + "ToUserGroup"]["edges"][i]["node"]["usageType"] === "owner") {
       count++;
     }
   }
@@ -227,7 +227,7 @@ function lackingSoftwareITComponent(fs) {
 //=========
 
 
-function lackingProvider(fs) {
+function lackingProviderApplication(fs) {
   //EBSCOs Provider == LeanIXs Provider
   var searchKey = "rel" + fs["type"] + "ToProviderApplication";
   if (fs[searchKey]["totalCount"] === 0){
@@ -237,7 +237,7 @@ function lackingProvider(fs) {
   }
 }
 
-function lackingITComponent(fs) {
+function lackingITComponents(fs) {
   //EBSCOs IT Component == LeanIXs ITComponent
   var searchKey = "rel" + fs["type"] + "ToITComponent";
   if (fs[searchKey]["totalCount"] === 0){
@@ -345,8 +345,8 @@ export default {
   noTechnicalFitDesc: noTechnicalFitDesc,
   lackingSoftwareITComponent: lackingSoftwareITComponent,
 
-  lackingProvider: lackingProvider,
-  lackingITComponent: lackingITComponent,
+  lackingProviderApplication: lackingProviderApplication,
+  lackingITComponents: lackingITComponents,
 
   prepareForOutput: prepareForOutput,
   getOutput, getOutput

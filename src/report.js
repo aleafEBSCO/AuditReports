@@ -368,6 +368,30 @@ export class Report {
                               boundedContextsLackingDataObjects, boundedContextsLackingProvidedBehaviors, boundedContextsNoSoftwareITComponent,
                               boundedContextsNoDocumentLinks, boundedContextsScore]);
 
+
+    
+
+    //Behavior == Interface
+    var behaviors = leafNodes.filter(fs => {return (fs["type"] === "Interface")});
+    //console.log(behaviors);
+    var behaviorsLackingProvider = behaviors.filter(fs => (FilterTools.lackingProviderApplication(fs)));
+    var behaviorsLackingITComponent = behaviors.filter(fs => (FilterTools.lackingITComponents(fs)));
+    var behaviorsScore = behaviors.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
+
+    out += FilterTools.getOutput("Behaviors", ["No Provider", "No IT Components", "Overall Score < 60%"], [behaviorsLackingProvider,
+                                  behaviorsLackingITComponent, behaviorsScore]);
+                
+
+    //Data Object == DataObject
+    var dataObjects = leafNodes.filter(fs => {return (fs["type"] === "DataObject")});
+    console.log(dataObjects);
+    var dataObjectsNoBoundedContextOrBehavor = dataObjects.filter(fs => (FilterTools.lackingBehaviors(fs) || FilterTools.lackingBoundedContext(fs)));
+    var dataObjectsScore = dataObjects.filter(fs => (FilterTools.getScoreLessThan(fs, .50)));
+
+    out += FilterTools.getOutput("Data Objects", ["No Bounded Context or Bahavior", "Overall Score < 50%"], [dataObjectsNoBoundedContextOrBehavor,
+                                  dataObjectsScore]);
+
+
     // IT Component
     var itComponents = leafNodes.filter(fs => {return (fs["type"] === "ITComponent")});
 
@@ -385,19 +409,6 @@ export class Report {
                         "Multiple Persona of Type Owner", "Overall Score < 70%"], [itComponentsMissingProvider, itComponentsNoDocumentLinks,
                         itComponentsMissingTechnicalFit, itComponentsMissingBehaviors, itComponentsNoOwnerPersona, itComponentsMultipleOwnerPersona,
                         itComponentsScore]);
-    
-
-    //Behavior == Interface
-    var behaviors = leafNodes.filter(fs => {return (fs["type"] === "Interface")});
-    console.log(behaviors);
-    var behaviorsLackingProvider = behaviors.filter(fs => (FilterTools.lackingProvider(fs)));
-    var behaviorsLackingITComponent = behaviors.filter(fs => (FilterTools.lackingITComponent(fs)));
-    var behaviorsScore = behaviors.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
-
-    out += FilterTools.getOutput("Behaviors", ["No Provider", "No IT Components", "Overall Score < 60%"], [behaviorsLackingProvider,
-                                  behaviorsLackingITComponent, behaviorsScore]);
-                
-
     
 
 
