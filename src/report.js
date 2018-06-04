@@ -1,25 +1,14 @@
-import $ from 'jquery';
-import factSheetMapper from './fact-sheet-mapper';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import FilterTools from './FilterTools';
+import AccordianReport from './AccordianReport';
 
-const ID_SORTING_DROPDOWN = 'SORTING_DROPDOWN';
-const ID_SORTING_BY_NAME = 'SORTING_BY_NAME';
-const ID_SORTING_BY_COUNT = 'SORTING_BY_COUNT';
-
-/**
- * The logic for our report is contained in this class.
- * We have create several functions to split up the logic, which increases maintainability.
- */
 export class Report {
 
   constructor(setup) {
     this.setup = setup;
-    this.sorting = ID_SORTING_BY_NAME;
   }
 
-  /**
-   * Creates a configuration object according to the reporting frameworks specification (see: TODO).
-   */
   createConfig() {
     return {
       facets: [{
@@ -245,21 +234,17 @@ export class Report {
             totalCount
           }
         }
-`],
-        callback: function (data) {
-          this.data = data;
-          this.groups = _.groupBy(data, 'type');
-          this.render();
-        }.bind(this)
+        `],
+        callback: this.render.bind(this)
       }]
     };
   }
 
-  render() {
-    //console.log(this.data);
+  render(data) {
+    // console.log(data);
 
     //get only leaf nodes ie, no parents or children
-    var leafNodes = this.data.filter(fs => FilterTools.leafNodes(fs));
+    var leafNodes = data.filter(fs => FilterTools.leafNodes(fs));
 
     // console.log(leafNodes);
 
@@ -283,11 +268,17 @@ export class Report {
     var out = FilterTools.getOutput("All Fact Sheets", ["Lacking Accountable and Responsible", "Quality Seal is Broken",
             'Model Completion Status is not "Ready"'], [noAccountableAndResponsible, brokenSeal, notReady]);
 
+    var allFactSheets = {
+      "Lacking Accountable and Responsible": noAccountableAndResponsible,
+      "Quality Seal is Broken": brokenSeal,
+      "Model Completion Status is not 'Ready'": notReady
+    }
+    // <AccordianReport title="All Fact Sheets" data=allFactSheets>
+    ReactDOM.render(<AccordianReport title="All Fact Sheets" data={allFactSheets} />, document.getElementById("report"));
 
-    
 
-
-
+    // =====================================================================================================================================
+    /*
     //Domain == BusinessCapability
 
     var domains = leafNodes.filter(fs => {return (fs["type"] === "BusinessCapability")});
