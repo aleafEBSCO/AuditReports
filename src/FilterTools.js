@@ -143,8 +143,8 @@ function noFunctionFitDesc(fs) {
 }
 
 function noOwnerPersona(fs) {
-  for (let i = 0; i < fs["relApplicationToUserGroup"]["edges"].length; i++){
-    if (fs["relApplicationToUserGroup"]["edges"][i]["node"]["usageType"] === "owner") {
+  for (let i = 0; i < fs["rel" + fs["type"] + "ToUserGroup"]["edges"].length; i++){
+    if (fs["rel" + fs["type"] + "ToUserGroup"]["edges"][i] === "owner") {
       return false;
     }
   }
@@ -153,8 +153,8 @@ function noOwnerPersona(fs) {
 
 function multipleOwnerPersona(fs) {
   var count = 0;
-  for (let i = 0; i < fs["relApplicationToUserGroup"]["edges"].length; i++){
-    if (fs["relApplicationToUserGroup"]["edges"][i]["node"]["usageType"] === "owner") {
+  for (let i = 0; i < fs["rel" + fs["type"] + "ToUserGroup"]["edges"].length; i++){
+    if (fs["rel" + fs["type"] + "ToUserGroup"]["edges"][i] === "owner") {
       count++;
     }
   }
@@ -186,8 +186,32 @@ function lackingProvidedBehaviors(fs) {
   }
 }
 
-function noTechnicalFit(fs) {
+function lackingProviders(fs) {
+  // EBSCO Provider == LeanIX Provider
+  var searchKey = "rel" + fs["type"] + "ToProvider";
+  if (fs[searchKey]["totalCount"] === 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
+function lackingBehaviors(fs) {
+  // EBSCO Behavior == LeanIX Interface
+  var searchKey = "rel" + fs["type"] + "ToInterface";
+  if (fs[searchKey]["totalCount"] === 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function noTechnicalFit(fs) {
+  // TODO
+}
+
+function noTechnicalFitDesc(fs) {
+  // TODO
 }
 
 function lackingSoftwareITComponent(fs) {
@@ -315,7 +339,10 @@ export default {
   multipleOwnerPersona: multipleOwnerPersona,
   lackingDataObjects: lackingDataObjects,
   lackingProvidedBehaviors: lackingProvidedBehaviors,
+  lackingProviders: lackingProviders,
+  lackingBehaviors: lackingBehaviors,
   noTechnicalFit: noTechnicalFit,
+  noTechnicalFitDesc: noTechnicalFitDesc,
   lackingSoftwareITComponent: lackingSoftwareITComponent,
 
   lackingProvider: lackingProvider,
