@@ -127,7 +127,7 @@ function noBusinessCriticDesc(fs) {
 }
 
 function noFunctionFit(fs) {
-  if (fs["functionalSuitablity"] == null){
+  if (fs["functionalSuitability"] == null){
     return true;
   }else{
     return false;
@@ -135,7 +135,7 @@ function noFunctionFit(fs) {
 }
 
 function noFunctionFitDesc(fs) {
-  if (fs["functionalFitDescription"] == null || fs["functionalFitDescription"] === ""){
+  if (fs["functionalSuitabilityDescription"] == null || fs["functionalSuitabilityDescription"] === ""){
     return true;
   }else{
     return false;
@@ -144,7 +144,7 @@ function noFunctionFitDesc(fs) {
 
 function noOwnerPersona(fs) {
   for (let i = 0; i < fs["relApplicationToUserGroup"]["edges"].length; i++){
-    if (fs["relApplicationToUserGroup"]["edges"][i] === "owner") {
+    if (fs["relApplicationToUserGroup"]["edges"][i]["node"]["usageType"] === "owner") {
       return false;
     }
   }
@@ -154,7 +154,7 @@ function noOwnerPersona(fs) {
 function multipleOwnerPersona(fs) {
   var count = 0;
   for (let i = 0; i < fs["relApplicationToUserGroup"]["edges"].length; i++){
-    if (fs["relApplicationToUserGroup"]["edges"][i] === "owner") {
+    if (fs["relApplicationToUserGroup"]["edges"][i]["node"]["usageType"] === "owner") {
       count++;
     }
   }
@@ -191,9 +191,32 @@ function noTechnicalFit(fs) {
 }
 
 function lackingSoftwareITComponent(fs) {
-
+  //EBSCOs IT Component == LeanIXs ITComponent
+  var searchKey = "rel" + fs["type"] + "ToITComponent";
+  for (let i = 0; i < fs[searchKey]["edges"].length; i++){
+    if (fs[searchKey]["edges"][i]["node"]["factSheet"]["category"] === "software") {
+      return false;
+    }
+  }
+  return true;
 }
 //=========
+
+/*
+function lackingProvider(fs) {
+  //EBSCOs Provider == LeanIXs Provider
+  var searchKey = "rel" + fs["type"] + "ToBusinessCapability";
+  if (fs[searchKey]["totalCount"] === 0){
+    return true;
+  }else{
+    return false;
+  }
+}
+*/
+
+
+
+//======
 function toHTML(total, addition){
   //https://us.leanix.net/EISEA/factsheet/ITComponent/c3fe9503-c9fc-415e-98ed-cc871e66c9c1
   return total + "<a href=https://us.leanix.net/EISEA/factsheet/" + addition["type"] + "/" + addition["id"] + ">" + addition["displayName"] + ": " + addition["id"] + "</a><br />";
@@ -284,6 +307,9 @@ export default {
   lackingProvidedBehaviors: lackingProvidedBehaviors,
   noTechnicalFit: noTechnicalFit,
   lackingSoftwareITComponent: lackingSoftwareITComponent,
+
+  //lackingProvider: lackingProvider,
+  //lackingITComponent: lackingITComponent,
 
   prepareForOutput: prepareForOutput,
   getOutput, getOutput
