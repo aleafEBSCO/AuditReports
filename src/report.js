@@ -371,13 +371,15 @@ export class Report {
     //Behavior == Interface
     var behaviors = leafNodes.filter(fs => {return (fs["type"] === "Interface")});
     console.log(behaviors);
-    //var behaviorsLackingProvider = behaviors.filter(fs => (FilterTools.lackingProvider(fs)));
-    //var behaviorsLackingITComponent = behaviors.filter(fs => (FilterTools.lackingITComponent(fs)));
-    //var behaviorsScore = behaviors.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
+    var behaviorsLackingProvider = behaviors.filter(fs => (FilterTools.lackingProvider(fs)));
+    var behaviorsLackingITComponent = behaviors.filter(fs => (FilterTools.lackingITComponent(fs)));
+    var behaviorsScore = behaviors.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
 
-
+    out += FilterTools.getOutput("Behaviors", ["No Provider", "No IT Components", "Overall Score < 60%"], [behaviorsLackingProvider,
+                                  behaviorsLackingITComponent, behaviorsScore]);
                 
 
+    
 
 
     document.getElementById('accordianReport').innerHTML = out;

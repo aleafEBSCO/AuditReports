@@ -202,17 +202,27 @@ function lackingSoftwareITComponent(fs) {
 }
 //=========
 
-/*
+
 function lackingProvider(fs) {
   //EBSCOs Provider == LeanIXs Provider
-  var searchKey = "rel" + fs["type"] + "ToBusinessCapability";
+  var searchKey = "rel" + fs["type"] + "ToProviderApplication";
   if (fs[searchKey]["totalCount"] === 0){
     return true;
   }else{
     return false;
   }
 }
-*/
+
+function lackingITComponent(fs) {
+  //EBSCOs IT Component == LeanIXs ITComponent
+  var searchKey = "rel" + fs["type"] + "ToITComponent";
+  if (fs[searchKey]["totalCount"] === 0){
+    return true;
+  }else{
+    return false;
+  }
+}
+
 
 
 
@@ -308,8 +318,8 @@ export default {
   noTechnicalFit: noTechnicalFit,
   lackingSoftwareITComponent: lackingSoftwareITComponent,
 
-  //lackingProvider: lackingProvider,
-  //lackingITComponent: lackingITComponent,
+  lackingProvider: lackingProvider,
+  lackingITComponent: lackingITComponent,
 
   prepareForOutput: prepareForOutput,
   getOutput, getOutput
