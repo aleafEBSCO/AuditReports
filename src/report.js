@@ -354,10 +354,19 @@ export class Report {
     var boundedContextsMultipleOwnerPersona = boundedContexts.filter(fs => (FilterTools.multipleOwnerPersona(fs)));
     var boundedContextsLackingDataObjects = boundedContexts.filter(fs => (FilterTools.lackingDataObjects(fs)));
     var boundedContextsLackingProvidedBehaviors = boundedContexts.filter(fs => (FilterTools.lackingProvidedBehaviors(fs)));
-    var boundedContextsNoTechnicalFit = boundedContexts.filter(fs => (FilterTools.noTechnicalFit(fs)));
+    //var boundedContextsNoTechnicalFit = boundedContexts.filter(fs => (FilterTools.noTechnicalFit(fs)));
     var boundedContextsNoSoftwareITComponent = boundedContexts.filter(fs => (FilterTools.lackingSoftwareITComponent(fs)));
     var boundedContextsNoDocumentLinks = boundedContexts.filter(fs => (FilterTools.noDocumentLinks(fs)));
     var boundedContextsScore = boundedContexts.filter(fs => (FilterTools.getScoreLessThan(fs, .70)))
+
+    out += FilterTools.getOutput("Bounded Context", ["Missing Business Criticality or Business Criticality without Description",
+                                  "Missing Functional Fit or Functional Fit without a Description", "No Domain", "No Use Cases",
+                                `No Persona with Usage Type "owner"`, `Multiple Persona with Usage Type "owner"`, "No Data Objects",
+                              "No Provided Behaviors", `No IT Component of type "software"`, "No Document Links", "Overall Score < 70%"],
+                            [boundedContextsNoBusinessCritic, boundedContextsNoFunctionFit, boundedContextsLackingDomain,
+                              boundedContextsLackingUseCases, boundedContextsNoOwnerPersona, boundedContextsMultipleOwnerPersona,
+                              boundedContextsLackingDataObjects, boundedContextsLackingProvidedBehaviors, boundedContextsNoSoftwareITComponent,
+                              boundedContextsNoDocumentLinks, boundedContextsScore]);
 
     // IT Component
     var itComponents = leafNodes.filter(fs => {return (fs["type"] === "ITComponent")});
@@ -378,7 +387,24 @@ export class Report {
                         itComponentsScore]);
     
 
+    //Behavior == Interface
+    var behaviors = leafNodes.filter(fs => {return (fs["type"] === "Interface")});
+    console.log(behaviors);
+    //var behaviorsLackingProvider = behaviors.filter(fs => (FilterTools.lackingProvider(fs)));
+    //var behaviorsLackingITComponent = behaviors.filter(fs => (FilterTools.lackingITComponent(fs)));
+    //var behaviorsScore = behaviors.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
+
+
+                
+
+
+
     document.getElementById('accordianReport').innerHTML = out;
+
+
+
+
+
     //console.log(document.getElementsByTagName("html"));
 
     //console.log(noAccountableAndResponsible);
