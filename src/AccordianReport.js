@@ -13,20 +13,27 @@ class AccordianReport extends Component {
     var overallID = uuid.v1();
     var subID = uuid.v1();
 
+    // var innerData = Object.keys(this.props.data).reduce((arr, subtitle) => arr.push(this._renderCategory(subtitle, this.props.data[subtitle], subID), []));
+    var innerData = Object.keys(this.props.data).reduce((inner, subtitle) => {
+      inner.push(this._renderCategory(subtitle, this.props.data[subtitle], subID));
+      return inner;
+    }, []);
+    console.log(innerData);
+
     return (
-      <div class="panel-group" id="accordianReport">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4 class="panel-title">
+      <div className="panel-group" id="accordianReport">
+        <div className="panel panel-default">
+          <div className="panel-heading">
+            <h4 className="panel-title">
               <a data-toggle="collapse" data-parent="#accordianReport" href={"#" + overallID}>{this.props.title}</a>
             </h4>
           </div>
 
-          <div id={overallID} class="panel-collapse collapse">
-            <div class="panel-body">
+          <div id={overallID} className="panel-collapse collapse">
+            <div className="panel-body">
 
-              <div class="panel-group" id={subID}>
-                {this._renderCategoryList(this.props.data, subID)}
+              <div className="panel-group" id={subID}>
+                {innerData}
               </div>
 
             </div>
@@ -37,39 +44,28 @@ class AccordianReport extends Component {
     );
   }
 
-  _renderCategoryList(data, subID) {
-    for (const subtitle of Object.keys(data)) {
-      this._renderCategory(subtitle, data[subtitle], subID);
-    }
-  }
-
   _renderCategory(subtitle, categoryData, subID) {
+    console.log(subtitle);
     var innerID = uuid.v1();
 
     return (
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
+      <div className="panel panel-default">
+        <div className="panel-heading">
+          <h4 className="panel-title">
             <a data-toggle="collapse" data-parent={"#" + subID} href={"#" + innerID}>{subtitle + " (" + categoryData.length + ")"}</a>
           </h4>
         </div>
-        <div id={innerID} class="panel-collapse collapse">
-          <div class="panel-body">
-            {this._renderLinkList(categoryData)}
+        <div id={innerID} className="panel-collapse collapse">
+          <div className="panel-body">
+            {categoryData.map(fs => this._renderLink(fs))}
           </div>
         </div>
       </div>
     );
   }
 
-  _renderLinkList(data) {
-    return data.map(fs => {
-      return this._renderLink(fs);
-    });
-  }
-
   _renderLink(fs) {
-    return (<Link link={"https://us.leanix.net/EISEA/factsheet/" + fs["type"] + "/" + fs["id"]} target="_blank" text={fs["displayName"]} />);
+    return <Link link={"https://us.leanix.net/EISEA/factsheet/" + fs.type + "/" + fs.id} target="_blank" text={fs.displayName} />;
   }
 }
 
