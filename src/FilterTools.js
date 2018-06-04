@@ -247,6 +247,15 @@ function lackingITComponents(fs) {
   }
 }
 
+function EISProvider(fs) {
+  var searchKey = "rel" + fs["type"] + "ToProvider";
+  for (let i = 0; i < fs[searchKey]["edges"].length; i++) {
+    if (fs[searchKey]["edges"][i]["node"]["factSheet"]["displayName"] === "EIS"){
+      return true;
+    }
+  }
+  return false;
+}
 
 
 
@@ -344,6 +353,8 @@ export default {
   noTechnicalFit: noTechnicalFit,
   noTechnicalFitDesc: noTechnicalFitDesc,
   lackingSoftwareITComponent: lackingSoftwareITComponent,
+
+  EISProvider: EISProvider,
 
   lackingProviderApplication: lackingProviderApplication,
   lackingITComponents: lackingITComponents,

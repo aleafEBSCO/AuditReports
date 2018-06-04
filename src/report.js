@@ -394,13 +394,13 @@ export class Report {
 
     // IT Component
     var itComponents = leafNodes.filter(fs => {return (fs["type"] === "ITComponent")});
-
+    console.log(itComponents);
     var itComponentsMissingProvider = itComponents.filter(fs => (FilterTools.lackingProviders(fs)));
     var itComponentsNoDocumentLinks = itComponents.filter(fs => (FilterTools.noDocumentLinks(fs)));
     // var itComponentsMissingLifecycle = itComponents.filter(fs => (FilterTools.))
     var itComponentsMissingTechnicalFit = itComponents.filter(fs => (FilterTools.noTechnicalFit(fs) || FilterTools.noTechnicalFitDesc(fs)));
     var itComponentsMissingBehaviors = itComponents.filter(fs => (FilterTools.lackingBehaviors(fs)));
-    var itComponentsNoOwnerPersona = itComponents.filter(fs => (FilterTools.noOwnerPersona(fs)));
+    var itComponentsNoOwnerPersona = itComponents.filter(fs => (FilterTools.noOwnerPersona(fs) && FilterTools.EISProvider(fs)));
     var itComponentsMultipleOwnerPersona = itComponents.filter(fs => (FilterTools.multipleOwnerPersona(fs)));
     var itComponentsScore = itComponents.filter(fs => (FilterTools.getScoreLessThan(fs, .70)));
 
