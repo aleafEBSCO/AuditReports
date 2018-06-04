@@ -196,6 +196,7 @@ export class Report {
         }
         ... on ITComponent {
           relITComponentToProvider {
+            totalCount
             edges {
               node {
                 factSheet {
@@ -260,7 +261,7 @@ export class Report {
     //get only leaf nodes ie, no parents or children
     var leafNodes = this.data.filter(fs => FilterTools.leafNodes(fs));
 
-    console.log(leafNodes);
+    // console.log(leafNodes);
 
     //console.log(lx);
 
@@ -343,7 +344,7 @@ export class Report {
 
     //Bounded Context == Application
     var boundedContexts = leafNodes.filter(fs => {return (fs["type"] === "Application")});
-    console.log(boundedContexts);
+    // console.log(boundedContexts);
     //var lifecycle
     var boundedContextsNoBusinessCritic = boundedContexts.filter(fs => (FilterTools.noBusinessCritic(fs) || FilterTools.noBusinessCriticDesc(fs)));
     var boundedContextsNoFunctionFit = boundedContexts.filter(fs => (FilterTools.noFunctionFit(fs) || FilterTools.noFunctionFitDesc(fs)));
@@ -357,6 +358,25 @@ export class Report {
     var boundedContextsNoSoftwareITComponent = boundedContexts.filter(fs => (FilterTools.lackingSoftwareITComponent(fs)));
     var boundedContextsNoDocumentLinks = boundedContexts.filter(fs => (FilterTools.noDocumentLinks(fs)));
     var boundedContextsScore = boundedContexts.filter(fs => (FilterTools.getScoreLessThan(fs, .70)))
+
+    // IT Component
+    var itComponents = leafNodes.filter(fs => {return (fs["type"] === "ITComponent")});
+
+    var itComponentsMissingProvider = itComponents.filter(fs => (FilterTools.lackingProviders(fs)));
+    var itComponentsNoDocumentLinks = itComponents.filter(fs => (FilterTools.noDocumentLinks(fs)));
+    // var itComponentsMissingLifecycle = itComponents.filter(fs => (FilterTools.))
+    var itComponentsMissingTechnicalFit = itComponents.filter(fs => (FilterTools.noTechnicalFit(fs) || FilterTools.noTechnicalFitDesc(fs)));
+    var itComponentsMissingBehaviors = itComponents.filter(fs => (FilterTools.lackingBehaviors(fs)));
+    var itComponentsNoOwnerPersona = itComponents.filter(fs => (FilterTools.noOwnerPersona(fs)));
+    var itComponentsMultipleOwnerPersona = itComponents.filter(fs => (FilterTools.multipleOwnerPersona(fs)));
+    var itComponentsScore = itComponents.filter(fs => (FilterTools.getScoreLessThan(fs, .70)));
+
+    out += FilterTools.getOutput("IT Components", ["Missing Provider", "No Document Links", // "Missing Lifecycle",
+                        "Missing Technical Fit or Technical Fit Description", "Missing Behaviors", "Missing Persona of Type Owner (when provider is EIS)",
+                        "Multiple Persona of Type Owner", "Overall Score < 70%"], [itComponentsMissingProvider, itComponentsNoDocumentLinks,
+                        itComponentsMissingTechnicalFit, itComponentsMissingBehaviors, itComponentsNoOwnerPersona, itComponentsMultipleOwnerPersona,
+                        itComponentsScore]);
+    
 
     document.getElementById('accordianReport').innerHTML = out;
     //console.log(document.getElementsByTagName("html"));
