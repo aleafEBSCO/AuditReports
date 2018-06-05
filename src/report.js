@@ -60,8 +60,8 @@ export class Report {
     // Domain == BusinessCapability
     var domains = leafNodes.filter(fs => {return (fs.type === "BusinessCapability")});
 
-    var domainLackingBoundedContext = domains.filter(fs => (FilterTools.lackingBoundedContext(fs)));
-    var domainLackingUseCases = domains.filter(fs => (FilterTools.lackingUseCases(fs)));
+    var domainLackingBoundedContext = domains.filter(fs => (FilterTools.lackingRelation(fs, "Application")));
+    var domainLackingUseCases = domains.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
     var domainScore = domains.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
 
     var domainData = {
@@ -79,7 +79,7 @@ export class Report {
     var useCaseLackingDomain = useCases.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
     var useCaseNoDocumentLinks = useCases.filter(fs => (FilterTools.noDocumentLinks(fs)));
     var useCaseNoLifecycle = this.extraData["useCaseExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => FilterTools.noLifecycle(fs));
-    var useCaseLackingBoundedContext = useCases.filter(fs => (FilterTools.lackingBoundedContext(fs)));
+    var useCaseLackingBoundedContext = useCases.filter(fs => (FilterTools.lackingRelation(fs, "Application")));
     var useCaseScore = useCases.filter(fs => (FilterTools.getScoreLessThan(fs, .65)));
 
     var useCaseData = {
@@ -166,8 +166,8 @@ export class Report {
     // Behavior == Interface
     var behaviors = leafNodes.filter(fs => {return (fs["type"] === "Interface")});
 
-    var behaviorsLackingProvider = behaviors.filter(fs => (FilterTools.lackingProviderApplication(fs)));
-    var behaviorsLackingITComponent = behaviors.filter(fs => (FilterTools.lackingITComponents(fs)));
+    var behaviorsLackingProvider = behaviors.filter(fs => (FilterTools.lackingRelation(fs, "ProviderApplication")));
+    var behaviorsLackingITComponent = behaviors.filter(fs => (FilterTools.lackingRelation(fs, "ITComponent")));
     var behaviorsScore = behaviors.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
 
     var behaviorData = {
@@ -182,7 +182,7 @@ export class Report {
     // Data Object == DataObject
     var dataObjects = leafNodes.filter(fs => {return (fs["type"] === "DataObject")});
 
-    var dataObjectsNoBoundedContextOrBehavor = dataObjects.filter(fs => (FilterTools.lackingBehaviors(fs) || FilterTools.lackingBoundedContext(fs)));
+    var dataObjectsNoBoundedContextOrBehavor = dataObjects.filter(fs => (FilterTools.lackingRelation(fs, "Interface") && FilterTools.lackingRelation(fs, "Application")));
     var dataObjectsScore = dataObjects.filter(fs => (FilterTools.getScoreLessThan(fs, .50)));
 
     var dataObjectData = {
@@ -196,11 +196,11 @@ export class Report {
     // IT Component
     var itComponents = leafNodes.filter(fs => {return (fs["type"] === "ITComponent")});
 
-    var itComponentsMissingProvider = itComponents.filter(fs => (FilterTools.lackingProviders(fs)));
+    var itComponentsMissingProvider = itComponents.filter(fs => (FilterTools.lackingRelation(fs, "Provider")));
     var itComponentsNoDocumentLinks = itComponents.filter(fs => (FilterTools.noDocumentLinks(fs)));
     var itComponentsNoLifecycle = this.extraData["ITComponentExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => FilterTools.noLifecycle(fs));
     var itComponentsNoTechnicalFit = this.extraData["ITComponentExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => (FilterTools.noTechnicalFit(fs) || FilterTools.noTechnicalFitDesc(fs)));
-    var itComponentsMissingBehaviors = itComponents.filter(fs => (FilterTools.lackingBehaviors(fs)));
+    var itComponentsMissingBehaviors = itComponents.filter(fs => (FilterTools.lackingRelation(fs, "Interface")));
     var itComponentsNoOwnerPersona = itComponents.filter(fs => (FilterTools.noOwnerPersona(fs) && FilterTools.EISProvider(fs)));
     var itComponentsMultipleOwnerPersona = itComponents.filter(fs => (FilterTools.multipleOwnerPersona(fs)));
     var itComponentsScore = itComponents.filter(fs => (FilterTools.getScoreLessThan(fs, .70)));

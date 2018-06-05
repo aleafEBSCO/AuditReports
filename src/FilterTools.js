@@ -59,8 +59,8 @@ function lackingRelation(fs, relation) {
    *"DataObject" to search for data objects
    *"Provider" to search for providers
    *"Interface" to seach for behaviors
-   * "ProviderApplication" to search for providers when the type is Behavior/Interface
-   * "ITComponent" to search for IT components
+   *"ProviderApplication" to search for providers when the type is Behavior/Interface
+   *"ITComponent" to search for IT components
    */
   var searchKey = "rel" + fs["type"] + "To" + relation;
   if (fs[searchKey]["totalCount"] === 0){
@@ -207,13 +207,6 @@ function noTechnicalFitDesc(fs) {
     return false;
   }
 }
-
-function lackingSoftwareITComponent(fs) {
-  // EBSCOs IT Component == LeanIXs ITComponent
-  var searchKey = "rel" + fs["type"] + "ToITComponent";
-  for (let i = 0; i < fs[searchKey]["edges"].length; i++){
-    if (fs[searchKey]["edges"][i]["node"]["factSheet"]["category"] === "software") {
-      return false;
 
 function EISProvider(fs) {
   var searchKey = "rel" + fs["type"] + "ToProvider";

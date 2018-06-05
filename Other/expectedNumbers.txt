@@ -1,6 +1,6 @@
 All Fact Sheets
-	Lacking Accountable and Responsible: 1114
-	Quality Seal is Broken: 1357
+	Lacking Accountable and Responsible: 1037
+	Quality Seal is Broken: 1280
 	Model Completion Status is not “Ready”: 384
 Domain 
 	Lacking Bounded Context: 4
@@ -40,14 +40,14 @@ Behavior
 	No IT Components: 230
 	Overall Score < 60%: 296
 Data Object
-    No Bounded Context or Behavior (orphan): 22
+    No Bounded Context and Behavior (orphan): 6
 	Overall Score < 50%: 21
 IT Component
 	Missing Provider: 461
-	No Document Links: 674
-	Missing Lifecycle: 675
-	Missing Technical Fit or Technical Fit Description: 666
-	Missing Behaviors: 665
-	Missing Persona of Type Owner (when provider is EIS): 157
+	No Document Links: 597
+	Missing Lifecycle: 598
+	Missing Technical Fit or Technical Fit Description: 589
+	Missing Behaviors: 589
+	Missing Persona of Type Owner (when provider is EIS): 80
 	Multiple Persona of Type Owner: 0
-	Overall Score < 70%: 688
+	Overall Score < 70%: 611
