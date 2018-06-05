@@ -13,6 +13,14 @@ function leafNodes(fs){
   }
 }
 
+function getScoreLessThan(fs, num) {
+  if (fs["completion"]["completion"] < num){
+    return true;
+  }else{
+    return false;
+  }
+}
+
 function noAccountable(fs){
   let temp = fs["subscriptions"]["edges"];
   for (let i = 0; i < temp.length; i++){
@@ -54,6 +62,8 @@ function notReady(fs) {
   return false;
 }
 
+// Lacking some relation type
+
 function lackingBoundedContext(fs) {
   // EBSCOs bounded context == LeanIXs Application
   var searchKey = "rel" + fs["type"] + "ToApplication";
@@ -62,22 +72,12 @@ function lackingBoundedContext(fs) {
   }else{
     return false;
   }
-
 }
 
 function lackingUseCases(fs) {
   // EBSCOs Uses Cases == LeanIXs Processes
   var searchKey = "rel" + fs["type"] + "ToProcess";
   if (fs[searchKey]["totalCount"] === 0){
-    return true;
-  }else{
-    return false;
-  }
-
-}
-  
-function getScoreLessThan(fs, num) {
-  if (fs["completion"]["completion"] < num){
     return true;
   }else{
     return false;
@@ -93,6 +93,70 @@ function lackingDomain(fs) {
     return false;
   }
 }
+
+function lackingDataObjects(fs) {
+  // EBSCOS Data Objects == LeanIXs DataObject
+  var searchKey = "rel" + fs["type"] + "ToDataObject";
+  if (fs[searchKey]["totalCount"] === 0){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+function lackingProviders(fs) {
+  // EBSCO Provider == LeanIX Provider
+  var searchKey = "rel" + fs["type"] + "ToProvider";
+  if (fs[searchKey]["totalCount"] === 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function lackingBehaviors(fs) {
+  // EBSCO Behavior == LeanIX Interface
+  var searchKey = "rel" + fs["type"] + "ToInterface";
+  if (fs[searchKey]["totalCount"] === 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function lackingITComponents(fs) {
+  //EBSCOs IT Component == LeanIXs ITComponent
+  var searchKey = "rel" + fs["type"] + "ToITComponent";
+  if (fs[searchKey]["totalCount"] === 0){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+// Special
+
+function lackingProviderApplication(fs) {
+  // EBSCOs Provider == LeanIXs Provider
+  var searchKey = "rel" + fs["type"] + "ToProviderApplication";
+  if (fs[searchKey]["totalCount"] === 0){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+function lackingProvidedBehaviors(fs) {
+  // EBSCOs Behaviors == LeanIXs Interface
+  var searchKey = "relProvider" + fs["type"] + "ToInterface";
+  if (fs[searchKey]["totalCount"] === 0){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+//=====================
 
 function noDocumentLinks(fs) {
   if (fs["documents"]["totalCount"] === 0) {
@@ -165,47 +229,6 @@ function multipleOwnerPersona(fs) {
   }
 }
 
-function lackingDataObjects(fs) {
-  // EBSCOS Data Objects == LeanIXs DataObject
-  var searchKey = "rel" + fs["type"] + "ToDataObject";
-  if (fs[searchKey]["totalCount"] === 0){
-    return true;
-  }else{
-    return false;
-  }
-
-}
-
-function lackingProvidedBehaviors(fs) {
-  // EBSCOs Behaviors == LeanIXs Interface
-  var searchKey = "relProvider" + fs["type"] + "ToInterface";
-  if (fs[searchKey]["totalCount"] === 0){
-    return true;
-  }else{
-    return false;
-  }
-}
-
-function lackingProviders(fs) {
-  // EBSCO Provider == LeanIX Provider
-  var searchKey = "rel" + fs["type"] + "ToProvider";
-  if (fs[searchKey]["totalCount"] === 0) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function lackingBehaviors(fs) {
-  // EBSCO Behavior == LeanIX Interface
-  var searchKey = "rel" + fs["type"] + "ToInterface";
-  if (fs[searchKey]["totalCount"] === 0) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 function noTechnicalFit(fs) {
   if (fs["technicalSuitability"] == null) {
     return true;
@@ -233,26 +256,6 @@ function lackingSoftwareITComponent(fs) {
   return true;
 }
 //=========
-
-function lackingProviderApplication(fs) {
-  // EBSCOs Provider == LeanIXs Provider
-  var searchKey = "rel" + fs["type"] + "ToProviderApplication";
-  if (fs[searchKey]["totalCount"] === 0){
-    return true;
-  }else{
-    return false;
-  }
-}
-
-function lackingITComponents(fs) {
-  //EBSCOs IT Component == LeanIXs ITComponent
-  var searchKey = "rel" + fs["type"] + "ToITComponent";
-  if (fs[searchKey]["totalCount"] === 0){
-    return true;
-  }else{
-    return false;
-  }
-}
 
 function EISProvider(fs) {
   var searchKey = "rel" + fs["type"] + "ToProvider";
