@@ -13,13 +13,6 @@ class AccordianReport extends Component {
     var overallID = uuid.v1();
     var subID = uuid.v1();
 
-    // var innerData = Object.keys(this.props.data).reduce((arr, subtitle) => arr.push(this._renderCategory(subtitle, this.props.data[subtitle], subID), []));
-    var innerData = Object.keys(this.props.data).reduce((inner, subtitle) => {
-      inner.push(this._renderCategory(subtitle, this.props.data[subtitle], subID));
-      return inner;
-    }, []);
-    console.log(innerData);
-
     return (
       <div className="panel-group" id="accordianReport">
         <div className="panel panel-default">
@@ -33,7 +26,10 @@ class AccordianReport extends Component {
             <div className="panel-body">
 
               <div className="panel-group" id={subID}>
-                {innerData}
+                {Object.keys(this.props.data).reduce((inner, subtitle) => {
+                  inner.push(this._renderCategory(subtitle, this.props.data[subtitle], subID));
+                  return inner;
+                }, [])}
               </div>
 
             </div>
@@ -45,11 +41,10 @@ class AccordianReport extends Component {
   }
 
   _renderCategory(subtitle, categoryData, subID) {
-    console.log(subtitle);
     var innerID = uuid.v1();
 
     return (
-      <div className="panel panel-default">
+      <div className="panel panel-default" key={innerID}>
         <div className="panel-heading">
           <h4 className="panel-title">
             <a data-toggle="collapse" data-parent={"#" + subID} href={"#" + innerID}>{subtitle + " (" + categoryData.length + ")"}</a>
@@ -57,15 +52,20 @@ class AccordianReport extends Component {
         </div>
         <div id={innerID} className="panel-collapse collapse">
           <div className="panel-body">
-            {categoryData.map(fs => this._renderLink(fs))}
+            {categoryData.map((fs, i) => this._renderLink(fs, i))}
           </div>
         </div>
       </div>
     );
   }
 
-  _renderLink(fs) {
-    return <Link link={"https://us.leanix.net/EISEA/factsheet/" + fs.type + "/" + fs.id} target="_blank" text={fs.displayName} />;
+  _renderLink(fs, key) {
+    return (
+      <div key={key}>
+        <Link link={"https://us.leanix.net/EISEA/factsheet/" + fs.type + "/" + fs.id} target="_blank" text={fs.displayName} />
+        <br />
+      </div>
+    );
   }
 }
 
