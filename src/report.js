@@ -73,11 +73,10 @@ export class Report {
       }
     };
 
-
     // Use Cases == Process
     var useCases = leafNodes.filter(fs => {return (fs["type"] === "Process")});
 
-    var useCaseLackingDomain = useCases.filter(fs => (FilterTools.lackingDomain(fs)));
+    var useCaseLackingDomain = useCases.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
     var useCaseNoDocumentLinks = useCases.filter(fs => (FilterTools.noDocumentLinks(fs)));
     var useCaseNoLifecycle = this.extraData["useCaseExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => FilterTools.noLifecycle(fs));
     var useCaseLackingBoundedContext = useCases.filter(fs => (FilterTools.lackingBoundedContext(fs)));
@@ -112,8 +111,8 @@ export class Report {
     var epicNoDocumentLinks = epics.filter(fs => (FilterTools.noDocumentLinks(fs)));
     var epicNoLifecycle = this.extraData["epicExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => FilterTools.noLifecycle(fs));
     var epicNoBusinessValueRisk = epics.filter(fs => (FilterTools.noBusinessValueRisk(fs)));
-    var epicNoAffectedDomains = epics.filter(fs => (FilterTools.lackingDomain(fs)));
-    var epicNoAffectedUseCases = epics.filter(fs => (FilterTools.lackingUseCases(fs)));
+    var epicNoAffectedDomains = epics.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
+    var epicNoAffectedUseCases = epics.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
     var epicScore = epics.filter(fs => (FilterTools.getScoreLessThan(fs, .50)));
 
     var epicData = {
@@ -130,14 +129,15 @@ export class Report {
 
     // Bounded Context == Application
     var boundedContexts = leafNodes.filter(fs => {return (fs["type"] === "Application")});
+
     var boundedContextsNoLifecycle = this.extraData["boundedContextExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => FilterTools.noLifecycle(fs));
     var boundedContextsNoBusinessCritic = boundedContexts.filter(fs => (FilterTools.noBusinessCritic(fs) || FilterTools.noBusinessCriticDesc(fs)));
     var boundedContextsNoFunctionFit = boundedContexts.filter(fs => (FilterTools.noFunctionFit(fs) || FilterTools.noFunctionFitDesc(fs)));
-    var boundedContextsLackingDomain = boundedContexts.filter(fs => (FilterTools.lackingDomain(fs)));
-    var boundedContextsLackingUseCases = boundedContexts.filter(fs => (FilterTools.lackingUseCases(fs)));
+    var boundedContextsLackingDomain = boundedContexts.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
+    var boundedContextsLackingUseCases = boundedContexts.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
     var boundedContextsNoOwnerPersona = boundedContexts.filter(fs => (FilterTools.noOwnerPersona(fs)));
     var boundedContextsMultipleOwnerPersona = boundedContexts.filter(fs => (FilterTools.multipleOwnerPersona(fs)));
-    var boundedContextsLackingDataObjects = boundedContexts.filter(fs => (FilterTools.lackingDataObjects(fs)));
+    var boundedContextsLackingDataObjects = boundedContexts.filter(fs => (FilterTools.lackingRelation(fs, "DataObject")));
     var boundedContextsLackingProvidedBehaviors = boundedContexts.filter(fs => (FilterTools.lackingProvidedBehaviors(fs)));
     var boundedContextsNoTechnicalFit = this.extraData["boundedContextExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => FilterTools.noTechnicalFit(fs));
     var boundedContextsNoSoftwareITComponent = boundedContexts.filter(fs => (FilterTools.lackingSoftwareITComponent(fs)));

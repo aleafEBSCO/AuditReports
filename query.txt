@@ -238,6 +238,7 @@
         ... on ITComponent {
           #missing provider          
           relITComponentToProvider {
+			totalCount
             edges {
               node {
                 factSheet {

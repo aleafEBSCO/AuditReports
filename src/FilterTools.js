@@ -4,11 +4,6 @@ function leafNodes(fs){
   if (fs["relToChild"]["totalCount"] === 0 && fs["relToParent"]["totalCount"] === 0){
     return true;
   }else{
-    /*
-    if (fs["type"] === "Project"){
-      console.log("Project not leaf");
-    }
-    */
     return false;
   }
 }
@@ -156,6 +151,24 @@ function noFunctionFitDesc(fs) {
   }
 }
 
+function noTechnicalFit(fs) {
+  if (fs["technicalSuitability"] == null) {
+    return true;
+  }else{
+    return false;
+  }
+}
+
+function noTechnicalFitDesc(fs) {
+  if (fs["technicalSuitabilityDescription"] == null || fs["technicalSuitabilityDescription"] === ""){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+//===============================================
+
 function noOwnerPersona(fs) {
   for (let i = 0; i < fs["rel" + fs["type"] + "ToUserGroup"]["edges"].length; i++){
     if (fs["rel" + fs["type"] + "ToUserGroup"]["edges"][i]["node"]["usageType"] === "owner") {
@@ -201,11 +214,6 @@ function lackingSoftwareITComponent(fs) {
   for (let i = 0; i < fs[searchKey]["edges"].length; i++){
     if (fs[searchKey]["edges"][i]["node"]["factSheet"]["category"] === "software") {
       return false;
-    }
-  }
-  return true;
-}
-//=========
 
 function EISProvider(fs) {
   var searchKey = "rel" + fs["type"] + "ToProvider";
