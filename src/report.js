@@ -1,33 +1,21 @@
-import $ from 'jquery';
-import factSheetMapper from './fact-sheet-mapper';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import FilterTools from './FilterTools';
-import Queries from './Queries'
+import Queries from './Queries';
+import AccordianReport from './AccordianReport';
 
-const ID_SORTING_DROPDOWN = 'SORTING_DROPDOWN';
-const ID_SORTING_BY_NAME = 'SORTING_BY_NAME';
-const ID_SORTING_BY_COUNT = 'SORTING_BY_COUNT';
-
-/**
- * The logic for our report is contained in this class.
- * We have create several functions to split up the logic, which increases maintainability.
- */
 export class Report {
 
   constructor(setup) {
     this.setup = setup;
-    this.sorting = ID_SORTING_BY_NAME;
   }
 
-  /**
-   * Creates a configuration object according to the reporting frameworks specification (see: TODO).
-   */
   createConfig() {
     return {
       facets: [{
         key: 'main',
         attributes: [Queries.main],
         callback: function (data) {
-         
           this.extraData = {};
           lx.executeGraphQL(Queries.useCaseExtraData).then((info) => {
             this.extraData["useCaseExtra"] = info["allFactSheets"]["edges"].map(fs => {return fs["node"];});
@@ -45,65 +33,79 @@ export class Report {
                 });
               });
             });
-          });          
-          
+          });
         }.bind(this)
       }]
     };
   }
 
   render() {
-
-    //get only leaf nodes ie, no parents or children
+    // Get only leaf nodes ie, no parents or children
     var leafNodes = this.data.filter(fs => FilterTools.leafNodes(fs));
 
-    //All FactSheets
+    // All Fact Sheets
     var noAccountableAndResponsible = leafNodes.filter(fs => (FilterTools.noResponsible(fs) && FilterTools.noAccountable(fs)));
     var brokenSeal = leafNodes.filter(fs => (FilterTools.brokenSeal(fs)));
     var notReady = leafNodes.filter(fs => (FilterTools.notReady(fs)));
 
-    var out = FilterTools.getOutput("All Fact Sheets", ["Lacking Accountable and Responsible", "Quality Seal is Broken",
-            'Model Completion Status is not "Ready"'], [noAccountableAndResponsible, brokenSeal, notReady]);
+    var allFactSheetsData = {
+      title: "All Fact Sheets",
+      data: {
+        "Lacking Accountable and Responsible": noAccountableAndResponsible,
+        "Quality Seal is Broken": brokenSeal,
+        "Model Completion Status is not 'Ready'": notReady
+      }
+    };
 
+    // Domain == BusinessCapability
+    var domains = leafNodes.filter(fs => {return (fs.type === "BusinessCapability")});
 
-    
-
-
-
-    //Domain == BusinessCapability
-    var domains = leafNodes.filter(fs => {return (fs["type"] === "BusinessCapability")});
-
-    var domainLackingBoundedContext = domains.filter(fs => (FilterTools.lackingRelation(fs, "Application")));
-    var domainLackingUseCases = domains.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
+    var domainLackingBoundedContext = domains.filter(fs => (FilterTools.lackingBoundedContext(fs)));
+    var domainLackingUseCases = domains.filter(fs => (FilterTools.lackingUseCases(fs)));
     var domainScore = domains.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
 
-    out += FilterTools.getOutput("Domains", ["Lacking Bounded Context", "Lacking Use Cases", "Overall Score < 60%"], [domainLackingBoundedContext,
-      domainLackingUseCases, domainScore]);
+    var domainData = {
+      title: "Domain",
+      data: {
+        "Lacking Bounded Context": domainLackingBoundedContext,
+        "Lacking Use Cases": domainLackingUseCases,
+        "Overall Score < 60%": domainScore
+      }
+    };
 
-
-
-    //Use Cases == Process
+    // Use Cases == Process
     var useCases = leafNodes.filter(fs => {return (fs["type"] === "Process")});
 
     var useCaseLackingDomain = useCases.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
     var useCaseNoDocumentLinks = useCases.filter(fs => (FilterTools.noDocumentLinks(fs)));
     var useCaseNoLifecycle = this.extraData["useCaseExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => FilterTools.noLifecycle(fs));
-    var useCaseLackingBoundedContext = useCases.filter(fs => (FilterTools.lackingRelation(fs, "Application")));
+    var useCaseLackingBoundedContext = useCases.filter(fs => (FilterTools.lackingBoundedContext(fs)));
     var useCaseScore = useCases.filter(fs => (FilterTools.getScoreLessThan(fs, .65)));
 
-    out += FilterTools.getOutput("Use Cases", ["Lacking Domain", "No Document Links", "No Lifecycle", "Lacking Bounded Context", "Overall Score < 65%"], 
-                    [useCaseLackingDomain, useCaseNoDocumentLinks, useCaseNoLifecycle, useCaseLackingBoundedContext, useCaseScore]);
-
-
-    //Persona == UserGroup
+    var useCaseData = {
+      title: "Use Case",
+      data: {
+        "Lacking Domain": useCaseLackingDomain,
+        "No Document Links": useCaseNoDocumentLinks,
+        "No Lifecycle": useCaseNoLifecycle,
+        "Lacking Bounded Context": useCaseLackingBoundedContext,
+        "Overall Score < 65%": useCaseScore
+      }
+    };
+    
+    // Persona == UserGroup
     var personas = leafNodes.filter(fs => {return (fs["type"] === "UserGroup")});
-
+    
     var personaScore = personas.filter(fs => (FilterTools.getScoreLessThan(fs, .50)));
 
-    out += FilterTools.getOutput("Personas", ["Overall Score < 50%"], [personaScore]);
+    var personaData = {
+      title: "Persona",
+      data: {
+        "Overall Score < 50%": personaScore
+      }
+    };
 
-
-    //Epic == Projects
+    // Epic == Projects
     var epics = leafNodes.filter(fs => {return (fs["type"] === "Project")});
 
     var epicNoDocumentLinks = epics.filter(fs => (FilterTools.noDocumentLinks(fs)));
@@ -113,12 +115,19 @@ export class Report {
     var epicNoAffectedUseCases = epics.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
     var epicScore = epics.filter(fs => (FilterTools.getScoreLessThan(fs, .50)));
 
-    out += FilterTools.getOutput("Epics", ["No Document Links", "No Lifecycle", "No Business Value & Risk", "No Affected Domains", 
-                        "No Affected Use Cases", "Overall Score < 50%"], [epicNoDocumentLinks, epicNoLifecycle, epicNoBusinessValueRisk,
-                          epicNoAffectedDomains, epicNoAffectedUseCases, epicScore]);
+    var epicData = {
+      title: "Epic",
+      data: {
+        "No Document Links": epicNoDocumentLinks,
+        "No Lifecycle": epicNoLifecycle,
+        "No Business Value & Risk": epicNoBusinessValueRisk,
+        "No Affected Domains": epicNoAffectedDomains,
+        "No Affected Use Cases": epicNoAffectedUseCases,
+        "Overall Score < 50%": epicScore
+      }
+    };
 
-
-    //Bounded Context == Application
+    // Bounded Context == Application
     var boundedContexts = leafNodes.filter(fs => {return (fs["type"] === "Application")});
 
     var boundedContextsNoLifecycle = this.extraData["boundedContextExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => FilterTools.noLifecycle(fs));
@@ -135,60 +144,83 @@ export class Report {
     var boundedContextsNoDocumentLinks = boundedContexts.filter(fs => (FilterTools.noDocumentLinks(fs)));
     var boundedContextsScore = boundedContexts.filter(fs => (FilterTools.getScoreLessThan(fs, .70)))
 
-    out += FilterTools.getOutput("Bounded Context", ["No Lifecycle", "Missing Business Criticality or Business Criticality without Description",
-                                  "Missing Functional Fit or Functional Fit without a Description", "No Domain", "No Use Cases",
-                                `No Persona with Usage Type "owner"`, `Multiple Persona with Usage Type "owner"`, "No Data Objects",
-                              "No Provided Behaviors", "No Technical Fit", `No IT Component of type "software"`, "No Document Links", "Overall Score < 70%"],
-                            [boundedContextsNoLifecycle, boundedContextsNoBusinessCritic, boundedContextsNoFunctionFit, boundedContextsLackingDomain,
-                              boundedContextsLackingUseCases, boundedContextsNoOwnerPersona, boundedContextsMultipleOwnerPersona,
-                              boundedContextsLackingDataObjects, boundedContextsLackingProvidedBehaviors, boundedContextsNoTechnicalFit,
-                              boundedContextsNoSoftwareITComponent,boundedContextsNoDocumentLinks, boundedContextsScore]);
+    var boundedContextData = {
+      title: "Bounded Context",
+      data: {
+        "No Lifecycle": boundedContextsNoLifecycle,
+        "Missing Business Criticality or Business Criticality without Description": boundedContextsNoBusinessCritic,
+        "Missing Functional Fit or Functional Fit without a Description": boundedContextsNoFunctionFit,
+        "No Domain": boundedContextsLackingDomain,
+        "No Use Cases": boundedContextsLackingUseCases,
+        "No Persona with Usage Type 'Owner'": boundedContextsNoOwnerPersona,
+        "Multiple Persona with Usage Type 'Owner'": boundedContextsMultipleOwnerPersona,
+        "No Data Objects": boundedContextsLackingDataObjects,
+        "No Provided Behaviors": boundedContextsLackingProvidedBehaviors,
+        "No Technical Fit": boundedContextsNoTechnicalFit,
+        "No IT Component of Type 'Software'": boundedContextsNoSoftwareITComponent,
+        "No Document Links": boundedContextsNoDocumentLinks,
+        "Overall Score < 70%": boundedContextsScore
+      }
+    };
 
-
-    //Behavior == Interface
+    // Behavior == Interface
     var behaviors = leafNodes.filter(fs => {return (fs["type"] === "Interface")});
 
-    var behaviorsLackingProvider = behaviors.filter(fs => (FilterTools.lackingRelation(fs, "ProviderApplication")));
-    var behaviorsLackingITComponent = behaviors.filter(fs => (FilterTools.lackingRelation(fs, "ITComponent")));
+    var behaviorsLackingProvider = behaviors.filter(fs => (FilterTools.lackingProviderApplication(fs)));
+    var behaviorsLackingITComponent = behaviors.filter(fs => (FilterTools.lackingITComponents(fs)));
     var behaviorsScore = behaviors.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
 
-    out += FilterTools.getOutput("Behaviors", ["No Provider", "No IT Components", "Overall Score < 60%"], [behaviorsLackingProvider,
-                                  behaviorsLackingITComponent, behaviorsScore]);
-                
+    var behaviorData = {
+      title: "Behavior",
+      data: {
+        "No Provider": behaviorsLackingProvider,
+        "No IT Components": behaviorsLackingITComponent,
+        "Overall Score < 60%": behaviorsScore
+      }
+    };
 
-    //Data Object == DataObject
+    // Data Object == DataObject
     var dataObjects = leafNodes.filter(fs => {return (fs["type"] === "DataObject")});
 
-    var dataObjectsNoBoundedContextOrBehavor = dataObjects.filter(fs => (FilterTools.lackingRelation(fs, "Interface") || FilterTools.lackingRelation(fs, "Application")));
+    var dataObjectsNoBoundedContextOrBehavor = dataObjects.filter(fs => (FilterTools.lackingBehaviors(fs) || FilterTools.lackingBoundedContext(fs)));
     var dataObjectsScore = dataObjects.filter(fs => (FilterTools.getScoreLessThan(fs, .50)));
 
-    out += FilterTools.getOutput("Data Objects", ["No Bounded Context or Bahavior", "Overall Score < 50%"], [dataObjectsNoBoundedContextOrBehavor,
-                                  dataObjectsScore]);
-
+    var dataObjectData = {
+      title: "Data Object",
+      data: {
+        "No Bounded Context or Behavior": dataObjectsNoBoundedContextOrBehavor,
+        "Overall Score < 50%": dataObjectsScore
+      }
+    }
 
     // IT Component
     var itComponents = leafNodes.filter(fs => {return (fs["type"] === "ITComponent")});
 
-    var itComponentsMissingProvider = itComponents.filter(fs => (FilterTools.lackingRelation(fs, "Provider")));
+    var itComponentsMissingProvider = itComponents.filter(fs => (FilterTools.lackingProviders(fs)));
     var itComponentsNoDocumentLinks = itComponents.filter(fs => (FilterTools.noDocumentLinks(fs)));
-    var itComponentNoLifecycle = this.extraData["ITComponentExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => FilterTools.noLifecycle(fs));
+    var itComponentsNoLifecycle = this.extraData["ITComponentExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => FilterTools.noLifecycle(fs));
     var itComponentsNoTechnicalFit = this.extraData["ITComponentExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => (FilterTools.noTechnicalFit(fs) || FilterTools.noTechnicalFitDesc(fs)));
-    var itComponentsMissingBehaviors = itComponents.filter(fs => (FilterTools.lackingRelation(fs, "Interface")));
+    var itComponentsMissingBehaviors = itComponents.filter(fs => (FilterTools.lackingBehaviors(fs)));
     var itComponentsNoOwnerPersona = itComponents.filter(fs => (FilterTools.noOwnerPersona(fs) && FilterTools.EISProvider(fs)));
     var itComponentsMultipleOwnerPersona = itComponents.filter(fs => (FilterTools.multipleOwnerPersona(fs)));
     var itComponentsScore = itComponents.filter(fs => (FilterTools.getScoreLessThan(fs, .70)));
 
-    out += FilterTools.getOutput("IT Components", ["Missing Provider", "No Document Links", "No Lifecycle",
-                        "Missing Technical Fit or Technical Fit Description", "Missing Behaviors", "Missing Persona of Type Owner (when provider is EIS)",
-                        "Multiple Persona of Type Owner", "Overall Score < 70%"], [itComponentsMissingProvider, itComponentsNoDocumentLinks,
-                        itComponentNoLifecycle, itComponentsNoTechnicalFit, itComponentsMissingBehaviors, itComponentsNoOwnerPersona, 
-                        itComponentsMultipleOwnerPersona, itComponentsScore]);
-    
-
-
-    document.getElementById('accordianReport').innerHTML = out;
-
-
+    var itComponentData = {
+      title: "IT Component",
+      data: {
+        "Missing Provider": itComponentsMissingProvider,
+        "No Document Links": itComponentsNoDocumentLinks,
+        "No Lifecycle": itComponentsNoLifecycle,
+        "Missing Technical Fit or Technical Fit Description": itComponentsNoTechnicalFit,
+        "Missing Behaviors": itComponentsMissingBehaviors,
+        "Missing Persona of Type Owner (when provider is EIS)": itComponentsNoOwnerPersona,
+        "Multiple Persona of Type Owner": itComponentsMultipleOwnerPersona,
+        "Overall Score < 70%": itComponentsScore
+      }
+    };
+                
+    ReactDOM.render(<AccordianReport data={[allFactSheetsData, domainData, useCaseData, personaData, epicData,
+      boundedContextData, behaviorData, dataObjectData, itComponentData]} />,
+      document.getElementById("report"));
   }
-
 }

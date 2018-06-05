@@ -192,7 +192,28 @@ function multipleOwnerPersona(fs) {
   }
 }
 
-//=================
+function noTechnicalFit(fs) {
+  if (fs["technicalSuitability"] == null) {
+    return true;
+  }else{
+    return false;
+  }
+}
+
+function noTechnicalFitDesc(fs) {
+  if (fs["technicalSuitabilityDescription"] == null || fs["technicalSuitabilityDescription"] === ""){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+function lackingSoftwareITComponent(fs) {
+  // EBSCOs IT Component == LeanIXs ITComponent
+  var searchKey = "rel" + fs["type"] + "ToITComponent";
+  for (let i = 0; i < fs[searchKey]["edges"].length; i++){
+    if (fs[searchKey]["edges"][i]["node"]["factSheet"]["category"] === "software") {
+      return false;
 
 function EISProvider(fs) {
   var searchKey = "rel" + fs["type"] + "ToProvider";
@@ -204,76 +225,12 @@ function EISProvider(fs) {
   return false;
 }
 
-//=====
 function noLifecycle(fs) {
   if (fs["lifecycle"] == null || fs["lifecycle"]["phases"].length === 0){
     return true;
   }else{
     return false;
   }
-}
-
-//======
-function toHTML(total, addition){
-  //https://us.leanix.net/EISEA/factsheet/ITComponent/c3fe9503-c9fc-415e-98ed-cc871e66c9c1
-  return total + "<a href=https://us.leanix.net/EISEA/factsheet/" + addition["type"] + "/" + addition["id"] + ">" + addition["displayName"] + ": " + addition["id"] + "</a><br />";
-}
-
-function prepareForOutput(data){
-  return data.reduce(toHTML, "");
-}
-
-function getOutput(title, subtitles, data){
-  //console.log(uuid.v1());
-
-  var html = "";
-  var overallID = uuid.v1();
-  var subID = uuid.v1();
-
-  html += `
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class = "panel-title">
-        <a data-toggle="collapse" data-parent="#accordianReport" href="#` + overallID + `">` + title + `</a>
-      </h4>
-    </div>
-
-    <div id="` + overallID + `" class="panel-collapse collapse">
-      <div class="panel-body">
-
-        <!--sub accordians go here-->
-        <div class="panel-group" id="` + subID + `">`;
-
-
-        for (let i = 0; i < subtitles.length; i++){
-          var innerID = uuid.v1();
-          var insertData = this.prepareForOutput(data[i]);//data[i].reduce(toHTML, "");
-
-          html += `<div class="panel panel-default">
-          <div class="panel-heading">
-              <h4 class="panel-title">
-                  <a data-toggle="collapse" data-parent="#` + subID + `" href="#` + innerID + `">` + subtitles[i] + ` (` + data[i].length + `)</a>
-              </h4>
-          </div>
-          <div id="` + innerID + `" class="panel-collapse collapse">
-              <div class="panel-body">` + insertData + `</div>
-          </div>
-        </div>`
-
-
-        }
-
-
-        html += `</div>
-              </div>
-            </div>
-          </div>`;
-
-          //console.log(html);
-
-          //console.log(html);
-
-  return html;
 }
 
 export default {
@@ -298,14 +255,11 @@ export default {
   noFunctionFitDesc: noFunctionFitDesc,
   noTechnicalFit: noTechnicalFit,
   noTechnicalFitDesc: noTechnicalFitDesc,
-
+  
   noOwnerPersona: noOwnerPersona,
   multipleOwnerPersona: multipleOwnerPersona,
 
   EISProvider: EISProvider,
 
-  noLifecycle: noLifecycle,
-
-  prepareForOutput: prepareForOutput,
-  getOutput, getOutput
+  noLifecycle: noLifecycle
 };
