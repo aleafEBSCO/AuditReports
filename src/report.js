@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import FilterTools from './FilterTools';
+import Queries from './Queries';
 import AccordianReport from './AccordianReport';
 
 export class Report {
@@ -13,330 +14,123 @@ export class Report {
     return {
       facets: [{
         key: 'main',
-        attributes: [`
-        type
-        id
-        displayName
-        subscriptions {
-          edges {
-            node {
-              type
-            }
-          }
-        }
-        qualitySeal
-        tags {
-          tagGroup {
-            name
-          }
-          name
-        }
-        ... on BusinessCapability {
-          relBusinessCapabilityToApplication {
-            totalCount
-          }
-          relBusinessCapabilityToProcess {
-            totalCount
-          }
-          completion {
-            completion
-          }
-          relToChild {
-            totalCount
-          }
-          relToParent {
-            totalCount
-          }
-        }
-        ... on Process {
-          relProcessToBusinessCapability {
-            totalCount
-          }
-          documents {
-            totalCount
-          }
-          relProcessToApplication {
-            totalCount
-          }
-          completion {
-            completion
-          }
-          relToChild {
-            totalCount
-          }
-          relToParent {
-            totalCount
-          }
-        }
-        ... on UserGroup {
-          completion {
-            completion
-          }
-          relToChild {
-            totalCount
-          }
-          relToParent {
-            totalCount
-          }
-        }
-        ... on Project {
-          documents {
-            totalCount
-          }
-          businessValue
-          projectRisk
-          relProjectToBusinessCapability {
-            totalCount
-          }
-          relProjectToProcess {
-            totalCount
-          }
-          completion {
-            completion
-          }
-          relToChild {
-            totalCount
-          }
-          relToParent {
-            totalCount
-          }
-        }
-        ... on Application {
-          businessCriticality
-          businessCriticalityDescription
-          functionalSuitability
-          functionalSuitabilityDescription
-          relApplicationToBusinessCapability {
-            totalCount
-          }
-          relApplicationToProcess {
-            totalCount
-          }
-          relApplicationToUserGroup {
-            edges {
-              node {
-                usageType
-              }
-            }
-          }
-          relApplicationToDataObject {
-            totalCount
-          }
-          relProviderApplicationToInterface {
-            totalCount
-          }
-          relApplicationToITComponent {
-            edges {
-              node {
-                factSheet {
-                  ... on ITComponent {
-                    category
-                  }
-                }
-              }
-            }
-          }
-          documents {
-            totalCount
-          }
-          completion {
-            completion
-          }
-          relToChild {
-            totalCount
-          }
-          relToParent {
-            totalCount
-          }
-        }
-        ... on Interface {
-          relInterfaceToProviderApplication {
-            totalCount
-          }
-          relInterfaceToITComponent {
-            totalCount
-          }
-          completion {
-            completion
-          }
-          relToChild {
-            totalCount
-          }
-          relToParent {
-            totalCount
-          }
-        }
-        ... on DataObject {
-          completion {
-            completion
-          }
-          relDataObjectToApplication {
-            totalCount
-          }
-          relDataObjectToInterface {
-            totalCount
-          }
-          relToChild {
-            totalCount
-          }
-          relToParent {
-            totalCount
-          }
-        }
-        ... on ITComponent {
-          relITComponentToProvider {
-            totalCount
-            edges {
-              node {
-                factSheet {
-                  displayName
-                }
-              }
-            }
-          }
-          documents {
-            totalCount
-          }
-          technicalSuitabilityDescription
-          relITComponentToInterface {
-            totalCount
-          }
-          relITComponentToUserGroup {
-            edges {
-              node {
-                usageType
-              }
-            }
-          }
-          completion {
-            completion
-          }
-          relToChild {
-            totalCount
-          }
-          relToParent {
-            totalCount
-          }
-        }
-        ... on Provider {
-          relToChild {
-            totalCount
-          }
-          relToParent {
-            totalCount
-          }
-        }
-        ... on TechnicalStack {
-          relToChild {
-            totalCount
-          }
-          relToParent {
-            totalCount
-          }
-        }
-        `],
-        callback: this.render.bind(this)
+        attributes: [Queries.main],
+        callback: function (data) {
+          this.extraData = {};
+          lx.executeGraphQL(Queries.useCaseExtraData).then((info) => {
+            this.extraData["useCaseExtra"] = info["allFactSheets"]["edges"].map(fs => {return fs["node"];});
+            lx.executeGraphQL(Queries.epicExtraData).then((info) => {
+              this.extraData["epicExtra"] = info["allFactSheets"]["edges"].map(fs => {return fs["node"];});
+              lx.executeGraphQL(Queries.boundedContextExtraData).then((info) => {
+                this.extraData["boundedContextExtra"] = info["allFactSheets"]["edges"].map(fs => {return fs["node"];});
+                lx.executeGraphQL(Queries.ITComponentExtraData).then((info) => {
+                  this.extraData["ITComponentExtra"] = info["allFactSheets"]["edges"].map(fs => {return fs["node"];});
+
+                  this.data = data;
+                  this.groups = _.groupBy(data, 'type');
+                  this.render();
+
+                });
+              });
+            });
+          });
+        }.bind(this)
       }]
     };
   }
 
-  render(data) {
-    // console.log(data);
+  render() {
+    // Get only leaf nodes ie, no parents or children
+    var leafNodes = this.data.filter(fs => FilterTools.leafNodes(fs));
 
-    //get only leaf nodes ie, no parents or children
-    var leafNodes = data.filter(fs => FilterTools.leafNodes(fs));
-
-    // console.log(leafNodes);
-
-    //console.log(lx);
-
-    //All FactSheets
+    // All Fact Sheets
     var noAccountableAndResponsible = leafNodes.filter(fs => (FilterTools.noResponsible(fs) && FilterTools.noAccountable(fs)));
-    //console.log(noAccountableAndResponsible);
-
-    //var out = FilterTools.prepareForOutput(noAccountableAndResponsible);
-    //document.getElementById('noAccountableAndResponsible').innerHTML = out;
-
     var brokenSeal = leafNodes.filter(fs => (FilterTools.brokenSeal(fs)));
-    //var out = FilterTools.prepareForOutput(brokenSeal);
-    //document.getElementById('brokenQualitySeal').innerHTML = out;
-
     var notReady = leafNodes.filter(fs => (FilterTools.notReady(fs)));
-    //var out = FilterTools.prepareForOutput(notReady);
-    //document.getElementById('notReady').innerHTML = out;
 
-    var out = FilterTools.getOutput("All Fact Sheets", ["Lacking Accountable and Responsible", "Quality Seal is Broken",
-            'Model Completion Status is not "Ready"'], [noAccountableAndResponsible, brokenSeal, notReady]);
+    var allFactSheetsData = {
+      title: "All Fact Sheets",
+      data: {
+        "Lacking Accountable and Responsible": noAccountableAndResponsible,
+        "Quality Seal is Broken": brokenSeal,
+        "Model Completion Status is not 'Ready'": notReady
+      }
+    };
 
-    var allFactSheets = {
-      "Lacking Accountable and Responsible": noAccountableAndResponsible,
-      "Quality Seal is Broken": brokenSeal,
-      "Model Completion Status is not 'Ready'": notReady
-    }
-    // <AccordianReport title="All Fact Sheets" data=allFactSheets>
-    ReactDOM.render(<AccordianReport title="All Fact Sheets" data={allFactSheets} />, document.getElementById("report"));
-
-
-    // =====================================================================================================================================
-    /*
-    //Domain == BusinessCapability
-
-    var domains = leafNodes.filter(fs => {return (fs["type"] === "BusinessCapability")});
-
-    //console.log(domains);
+    // Domain == BusinessCapability
+    var domains = leafNodes.filter(fs => {return (fs.type === "BusinessCapability")});
 
     var domainLackingBoundedContext = domains.filter(fs => (FilterTools.lackingBoundedContext(fs)));
     var domainLackingUseCases = domains.filter(fs => (FilterTools.lackingUseCases(fs)));
     var domainScore = domains.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
 
-    out += FilterTools.getOutput("Domains", ["Lacking Bounded Context", "Lacking Use Cases", "Overall Score < 60%"], [domainLackingBoundedContext,
-      domainLackingUseCases, domainScore]);
+    var domainData = {
+      title: "Domain",
+      data: {
+        "Lacking Bounded Context": domainLackingBoundedContext,
+        "Lacking Use Cases": domainLackingUseCases,
+        "Overall Score < 60%": domainScore
+      }
+    };
 
 
-
-    //Use Cases == Process
-
+    // Use Cases == Process
     var useCases = leafNodes.filter(fs => {return (fs["type"] === "Process")});
-    //console.log(useCases);
 
     var useCaseLackingDomain = useCases.filter(fs => (FilterTools.lackingDomain(fs)));
     var useCaseNoDocumentLinks = useCases.filter(fs => (FilterTools.noDocumentLinks(fs)));
-    //var lifecycle
+    var useCaseNoLifecycle = this.extraData["useCaseExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => FilterTools.noLifecycle(fs));
     var useCaseLackingBoundedContext = useCases.filter(fs => (FilterTools.lackingBoundedContext(fs)));
     var useCaseScore = useCases.filter(fs => (FilterTools.getScoreLessThan(fs, .65)));
 
-    out += FilterTools.getOutput("Use Cases", ["Lacking Domain", "No Document Links", "Lacking Bounded Context", "Overall Score < 65%"], 
-                    [useCaseLackingDomain, useCaseNoDocumentLinks, useCaseLackingBoundedContext, useCaseScore]);
-
-
-
-
-
-    //Persona == UserGroup
+    var useCaseData = {
+      title: "Use Case",
+      data: {
+        "Lacking Domain": useCaseLackingDomain,
+        "No Document Links": useCaseNoDocumentLinks,
+        "No Lifecycle": useCaseNoLifecycle,
+        "Lacking Bounded Context": useCaseLackingBoundedContext,
+        "Overall Score < 65%": useCaseScore
+      }
+    };
+    
+    // Persona == UserGroup
     var personas = leafNodes.filter(fs => {return (fs["type"] === "UserGroup")});
-    //console.log(personas);
+    
     var personaScore = personas.filter(fs => (FilterTools.getScoreLessThan(fs, .50)));
-    out += FilterTools.getOutput("Personas", ["Overall Score < 50%"], [personaScore]);
 
+    var personaData = {
+      title: "Persona",
+      data: {
+        "Overall Score < 50%": personaScore
+      }
+    };
 
-    //Epic == Projects
+    // Epic == Projects
     var epics = leafNodes.filter(fs => {return (fs["type"] === "Project")});
-    //console.log(epics);
+
     var epicNoDocumentLinks = epics.filter(fs => (FilterTools.noDocumentLinks(fs)));
-    //var lifecycle
+    var epicNoLifecycle = this.extraData["epicExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => FilterTools.noLifecycle(fs));
     var epicNoBusinessValueRisk = epics.filter(fs => (FilterTools.noBusinessValueRisk(fs)));
     var epicNoAffectedDomains = epics.filter(fs => (FilterTools.lackingDomain(fs)));
     var epicNoAffectedUseCases = epics.filter(fs => (FilterTools.lackingUseCases(fs)));
     var epicScore = epics.filter(fs => (FilterTools.getScoreLessThan(fs, .50)));
-    out += FilterTools.getOutput("Epics", ["No Document Links", "No Business Value & Risk", "No Affected Domains", 
-                        "No Affected Use Cases", "Overall Score < 50%"], [epicNoDocumentLinks, epicNoBusinessValueRisk,
-                          epicNoAffectedDomains, epicNoAffectedUseCases, epicScore]);
 
+    var epicData = {
+      title: "Epic",
+      data: {
+        "No Document Links": epicNoDocumentLinks,
+        "No Lifecycle": epicNoLifecycle,
+        "No Business Value & Risk": epicNoBusinessValueRisk,
+        "No Affected Domains": epicNoAffectedDomains,
+        "No Affected Use Cases": epicNoAffectedUseCases,
+        "Overall Score < 50%": epicScore
+      }
+    };
 
-    //Bounded Context == Application
+    // Bounded Context == Application
     var boundedContexts = leafNodes.filter(fs => {return (fs["type"] === "Application")});
-    // console.log(boundedContexts);
-    //var lifecycle
+    var boundedContextsNoLifecycle = this.extraData["boundedContextExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => FilterTools.noLifecycle(fs));
     var boundedContextsNoBusinessCritic = boundedContexts.filter(fs => (FilterTools.noBusinessCritic(fs) || FilterTools.noBusinessCriticDesc(fs)));
     var boundedContextsNoFunctionFit = boundedContexts.filter(fs => (FilterTools.noFunctionFit(fs) || FilterTools.noFunctionFitDesc(fs)));
     var boundedContextsLackingDomain = boundedContexts.filter(fs => (FilterTools.lackingDomain(fs)));
@@ -345,97 +139,88 @@ export class Report {
     var boundedContextsMultipleOwnerPersona = boundedContexts.filter(fs => (FilterTools.multipleOwnerPersona(fs)));
     var boundedContextsLackingDataObjects = boundedContexts.filter(fs => (FilterTools.lackingDataObjects(fs)));
     var boundedContextsLackingProvidedBehaviors = boundedContexts.filter(fs => (FilterTools.lackingProvidedBehaviors(fs)));
-    //var boundedContextsNoTechnicalFit = boundedContexts.filter(fs => (FilterTools.noTechnicalFit(fs)));
+    var boundedContextsNoTechnicalFit = this.extraData["boundedContextExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => FilterTools.noTechnicalFit(fs));
     var boundedContextsNoSoftwareITComponent = boundedContexts.filter(fs => (FilterTools.lackingSoftwareITComponent(fs)));
     var boundedContextsNoDocumentLinks = boundedContexts.filter(fs => (FilterTools.noDocumentLinks(fs)));
     var boundedContextsScore = boundedContexts.filter(fs => (FilterTools.getScoreLessThan(fs, .70)))
 
-    out += FilterTools.getOutput("Bounded Context", ["Missing Business Criticality or Business Criticality without Description",
-                                  "Missing Functional Fit or Functional Fit without a Description", "No Domain", "No Use Cases",
-                                `No Persona with Usage Type "owner"`, `Multiple Persona with Usage Type "owner"`, "No Data Objects",
-                              "No Provided Behaviors", `No IT Component of type "software"`, "No Document Links", "Overall Score < 70%"],
-                            [boundedContextsNoBusinessCritic, boundedContextsNoFunctionFit, boundedContextsLackingDomain,
-                              boundedContextsLackingUseCases, boundedContextsNoOwnerPersona, boundedContextsMultipleOwnerPersona,
-                              boundedContextsLackingDataObjects, boundedContextsLackingProvidedBehaviors, boundedContextsNoSoftwareITComponent,
-                              boundedContextsNoDocumentLinks, boundedContextsScore]);
+    var boundedContextData = {
+      title: "Bounded Context",
+      data: {
+        "No Lifecycle": boundedContextsNoLifecycle,
+        "Missing Business Criticality or Business Criticality without Description": boundedContextsNoBusinessCritic,
+        "Missing Functional Fit or Functional Fit without a Description": boundedContextsNoFunctionFit,
+        "No Domain": boundedContextsLackingDomain,
+        "No Use Cases": boundedContextsLackingUseCases,
+        "No Persona with Usage Type 'Owner'": boundedContextsNoOwnerPersona,
+        "Multiple Persona with Usage Type 'Owner'": boundedContextsMultipleOwnerPersona,
+        "No Data Objects": boundedContextsLackingDataObjects,
+        "No Provided Behaviors": boundedContextsLackingProvidedBehaviors,
+        "No Technical Fit": boundedContextsNoTechnicalFit,
+        "No IT Component of Type 'Software'": boundedContextsNoSoftwareITComponent,
+        "No Document Links": boundedContextsNoDocumentLinks,
+        "Overall Score < 70%": boundedContextsScore
+      }
+    };
+
+    // Behavior == Interface
+    var behaviors = leafNodes.filter(fs => {return (fs["type"] === "Interface")});
+
+    var behaviorsLackingProvider = behaviors.filter(fs => (FilterTools.lackingProviderApplication(fs)));
+    var behaviorsLackingITComponent = behaviors.filter(fs => (FilterTools.lackingITComponents(fs)));
+    var behaviorsScore = behaviors.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
+
+    var behaviorData = {
+      title: "Behavior",
+      data: {
+        "No Provider": behaviorsLackingProvider,
+        "No IT Components": behaviorsLackingITComponent,
+        "Overall Score < 60%": behaviorsScore
+      }
+    };
+
+    // Data Object == DataObject
+    var dataObjects = leafNodes.filter(fs => {return (fs["type"] === "DataObject")});
+
+    var dataObjectsNoBoundedContextOrBehavor = dataObjects.filter(fs => (FilterTools.lackingBehaviors(fs) || FilterTools.lackingBoundedContext(fs)));
+    var dataObjectsScore = dataObjects.filter(fs => (FilterTools.getScoreLessThan(fs, .50)));
+
+    var dataObjectData = {
+      title: "Data Object",
+      data: {
+        "No Bounded Context or Behavior": dataObjectsNoBoundedContextOrBehavor,
+        "Overall Score < 50%": dataObjectsScore
+      }
+    }
 
     // IT Component
     var itComponents = leafNodes.filter(fs => {return (fs["type"] === "ITComponent")});
 
     var itComponentsMissingProvider = itComponents.filter(fs => (FilterTools.lackingProviders(fs)));
     var itComponentsNoDocumentLinks = itComponents.filter(fs => (FilterTools.noDocumentLinks(fs)));
-    // var itComponentsMissingLifecycle = itComponents.filter(fs => (FilterTools.))
-    var itComponentsMissingTechnicalFit = itComponents.filter(fs => (FilterTools.noTechnicalFit(fs) || FilterTools.noTechnicalFitDesc(fs)));
+    var itComponentsNoLifecycle = this.extraData["ITComponentExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => FilterTools.noLifecycle(fs));
+    var itComponentsNoTechnicalFit = this.extraData["ITComponentExtra"].filter(fs => (FilterTools.leafNodes(fs))).filter(fs => (FilterTools.noTechnicalFit(fs) || FilterTools.noTechnicalFitDesc(fs)));
     var itComponentsMissingBehaviors = itComponents.filter(fs => (FilterTools.lackingBehaviors(fs)));
-    var itComponentsNoOwnerPersona = itComponents.filter(fs => (FilterTools.noOwnerPersona(fs)));
+    var itComponentsNoOwnerPersona = itComponents.filter(fs => (FilterTools.noOwnerPersona(fs) && FilterTools.EISProvider(fs)));
     var itComponentsMultipleOwnerPersona = itComponents.filter(fs => (FilterTools.multipleOwnerPersona(fs)));
     var itComponentsScore = itComponents.filter(fs => (FilterTools.getScoreLessThan(fs, .70)));
 
-    out += FilterTools.getOutput("IT Components", ["Missing Provider", "No Document Links", // "Missing Lifecycle",
-                        "Missing Technical Fit or Technical Fit Description", "Missing Behaviors", "Missing Persona of Type Owner (when provider is EIS)",
-                        "Multiple Persona of Type Owner", "Overall Score < 70%"], [itComponentsMissingProvider, itComponentsNoDocumentLinks,
-                        itComponentsMissingTechnicalFit, itComponentsMissingBehaviors, itComponentsNoOwnerPersona, itComponentsMultipleOwnerPersona,
-                        itComponentsScore]);
-    
-
-    //Behavior == Interface
-    var behaviors = leafNodes.filter(fs => {return (fs["type"] === "Interface")});
-    console.log(behaviors);
-    //var behaviorsLackingProvider = behaviors.filter(fs => (FilterTools.lackingProvider(fs)));
-    //var behaviorsLackingITComponent = behaviors.filter(fs => (FilterTools.lackingITComponent(fs)));
-    //var behaviorsScore = behaviors.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
-
-
+    var itComponentData = {
+      title: "IT Component",
+      data: {
+        "Missing Provider": itComponentsMissingProvider,
+        "No Document Links": itComponentsNoDocumentLinks,
+        "No Lifecycle": itComponentsNoLifecycle,
+        "Missing Technical Fit or Technical Fit Description": itComponentsNoTechnicalFit,
+        "Missing Behaviors": itComponentsMissingBehaviors,
+        "Missing Persona of Type Owner (when provider is EIS)": itComponentsNoOwnerPersona,
+        "Multiple Persona of Type Owner": itComponentsMultipleOwnerPersona,
+        "Overall Score < 70%": itComponentsScore
+      }
+    };
                 
-
-
-
-    document.getElementById('accordianReport').innerHTML = out;
-
-
-
-
-
-    //console.log(document.getElementsByTagName("html"));
-
-    //console.log(noAccountableAndResponsible);
-    //console.log(brokenSeal);
-    //console.log(notReady);
-
-    //total = 1650
-    //leafnodes = 1412
-    //noAccountable/Responsible = 1115
-    //brokenseal = 1357
-    //notReady = 1402
-
-    //FilterTools.getOutput("", "", "");
-
-    //document.getElementById('report').innerHTML = out;
-    /*
-    var fsTypes = _.keys(this.groups).sort(this.getSortComparer());
-    var html = '<table>';
-    for (var i = 0; i < fsTypes.length; i++) {
-      html += this.getHtmlForFsTypeBar(fsTypes[i])
-    }
-    html += '</table>';
-    html += '<div id="clickOutput"></div>';
-
-    document.getElementById('report').innerHTML = html;
-    */
+    ReactDOM.render(<AccordianReport data={[allFactSheetsData, domainData, useCaseData, personaData, epicData,
+      boundedContextData, behaviorData, dataObjectData, itComponentData]} />,
+      document.getElementById("report"));
   }
-
-
 }
-
-
-/*
-, `
-... on Application {
-  technicalSuitability
-}
-`, `
-... on ITComponent {
-  technicalSuitability
-}
-`
-*/
