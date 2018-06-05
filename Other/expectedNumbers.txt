@@ -1,0 +1,53 @@
+All Fact Sheets
+	Lacking Accountable and Responsible: 1114
+	Quality Seal is Broken: 1357
+	Model Completion Status is not “Ready”: 384
+Domain 
+	Lacking Bounded Context: 4
+	Lacking Use Cases: 6
+	Whose Overall Score is < 60%: 6
+Use Cases 
+	Lacking Domain: 77
+	No Document Links: 154
+	Lacking Lifecycle: 126
+	Lacking Bounded Context: 85
+	Overall Score < 65%: 134
+Persona
+	Overall Score < 50%: 0
+Epic
+	No Document Links: 4
+	No Lifecycle: 2
+	No Business Value & Risk: 5
+	No Affected Domains: 6
+	No Affected Use Cases: 3
+	Overall Score < 50%: 6
+Bounded Context
+	No Lifecycle: 111
+	Missing Business Criticality or Business Criticality without a description: 104
+	Missing Functional Fit or Functional Fit without a description: 104
+	No Domain: 21
+	No Use Cases: 79
+	No Persona with Usage Type “Owner”: 126
+	Multiple Persona with Usage Type “Owner”: 5
+	No Data Objects: 105
+	No Provided Behaviors: 67
+	No Technical Fit: 95
+	No IT Components of type Software: 110
+	No document links: 113
+	Overall Score < 70%: 123
+Behavior
+	No Provider: 8
+	No IT Components: 230
+	Overall Score < 60%: 296
+Data Object
+    No Bounded Context or Behavior (orphan): 22
+	Overall Score < 50%: 21
+IT Component
+	Missing Provider: 461
+	No Document Links: 674
+	Missing Lifecycle: 675
+	Missing Technical Fit or Technical Fit Description: 666
+	Missing Behaviors: 665
+	Missing Persona of Type Owner (when provider is EIS): 157
+	Multiple Persona of Type Owner: 0
+	Overall Score < 70%: 688

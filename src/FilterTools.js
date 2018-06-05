@@ -4,11 +4,6 @@ function leafNodes(fs){
   if (fs["relToChild"]["totalCount"] === 0 && fs["relToParent"]["totalCount"] === 0){
     return true;
   }else{
-    /*
-    if (fs["type"] === "Project"){
-      console.log("Project not leaf");
-    }
-    */
     return false;
   }
 }
@@ -54,9 +49,20 @@ function notReady(fs) {
   return false;
 }
 
-function lackingBoundedContext(fs) {
-  //EBSCOs bounded context == LeanIXs Application
-  var searchKey = "rel" + fs["type"] + "ToApplication";
+//=================================================
+
+function lackingRelation(fs, relation) {
+  //relation is expected to be one of the following
+  /*"Application" to search for bounded contexts
+   *"Process" to search for use cases
+   *"BusinessCapability" to search for domains
+   *"DataObject" to search for data objects
+   *"Provider" to search for providers
+   *"Interface" to seach for behaviors
+   * "ProviderApplication" to search for providers when the type is Behavior/Interface
+   * "ITComponent" to search for IT components
+   */
+  var searchKey = "rel" + fs["type"] + "To" + relation;
   if (fs[searchKey]["totalCount"] === 0){
     return true;
   }else{
@@ -65,29 +71,32 @@ function lackingBoundedContext(fs) {
 
 }
 
-function lackingUseCases(fs) {
-  //EBSCOs Uses Cases == LeanIXs Processes
-  var searchKey = "rel" + fs["type"] + "ToProcess";
+function lackingSoftwareITComponent(fs) {
+  //EBSCOs IT Component == LeanIXs ITComponent
+  var searchKey = "rel" + fs["type"] + "ToITComponent";
+  for (let i = 0; i < fs[searchKey]["edges"].length; i++){
+    if (fs[searchKey]["edges"][i]["node"]["factSheet"]["category"] === "software") {
+      return false;
+    }
+  }
+  return true;
+}
+
+function lackingProvidedBehaviors(fs) {
+  //EBSCOs Behaviors == LeanIXs Interface
+  //use this function when type is BoundedContext/Application
+  var searchKey = "relProvider" + fs["type"] + "ToInterface";
   if (fs[searchKey]["totalCount"] === 0){
     return true;
   }else{
     return false;
   }
-
 }
-  
+ 
+//=========================================
+
 function getScoreLessThan(fs, num) {
   if (fs["completion"]["completion"] < num){
-    return true;
-  }else{
-    return false;
-  }
-}
-
-function lackingDomain(fs) {
-  //EBSCOs domain == LeanIXs business capability
-  var searchKey = "rel" + fs["type"] + "ToBusinessCapability";
-  if (fs[searchKey]["totalCount"] === 0){
     return true;
   }else{
     return false;
@@ -142,6 +151,24 @@ function noFunctionFitDesc(fs) {
   }
 }
 
+function noTechnicalFit(fs) {
+  if (fs["technicalSuitability"] == null) {
+    return true;
+  }else{
+    return false;
+  }
+}
+
+function noTechnicalFitDesc(fs) {
+  if (fs["technicalSuitabilityDescription"] == null || fs["technicalSuitabilityDescription"] === ""){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+//===============================================
+
 function noOwnerPersona(fs) {
   for (let i = 0; i < fs["rel" + fs["type"] + "ToUserGroup"]["edges"].length; i++){
     if (fs["rel" + fs["type"] + "ToUserGroup"]["edges"][i]["node"]["usageType"] === "owner") {
@@ -165,95 +192,7 @@ function multipleOwnerPersona(fs) {
   }
 }
 
-function lackingDataObjects(fs) {
-  //EBSCOS Data Objects == LeanIXs DataObject
-  var searchKey = "rel" + fs["type"] + "ToDataObject";
-  if (fs[searchKey]["totalCount"] === 0){
-    return true;
-  }else{
-    return false;
-  }
-
-}
-
-function lackingProvidedBehaviors(fs) {
-  //EBSCOs Behaviors == LeanIXs Interface
-  var searchKey = "relProvider" + fs["type"] + "ToInterface";
-  if (fs[searchKey]["totalCount"] === 0){
-    return true;
-  }else{
-    return false;
-  }
-}
-
-function lackingProviders(fs) {
-  // EBSCO Provider == LeanIX Provider
-  var searchKey = "rel" + fs["type"] + "ToProvider";
-  if (fs[searchKey]["totalCount"] === 0) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function lackingBehaviors(fs) {
-  // EBSCO Behavior == LeanIX Interface
-  var searchKey = "rel" + fs["type"] + "ToInterface";
-  if (fs[searchKey]["totalCount"] === 0) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function noTechnicalFit(fs) {
-  if (fs["technicalSuitability"] == null) {
-    return true;
-  }else{
-    return false;
-  }
-}
-
-function noTechnicalFitDesc(fs) {
-  if (fs["technicalSuitabilityDescription"] == null || fs["technicalSuitabilityDescription"] === ""){
-    return true;
-  }else{
-    return false;
-  }
-}
-
-function lackingSoftwareITComponent(fs) {
-  //EBSCOs IT Component == LeanIXs ITComponent
-  var searchKey = "rel" + fs["type"] + "ToITComponent";
-  for (let i = 0; i < fs[searchKey]["edges"].length; i++){
-    if (fs[searchKey]["edges"][i]["node"]["factSheet"]["category"] === "software") {
-      return false;
-    }
-  }
-  return true;
-}
-//=========
-
-
-function lackingProviderApplication(fs) {
-  //EBSCOs Provider == LeanIXs Provider
-  var searchKey = "rel" + fs["type"] + "ToProviderApplication";
-  if (fs[searchKey]["totalCount"] === 0){
-    return true;
-  }else{
-    return false;
-  }
-}
-
-function lackingITComponents(fs) {
-  //EBSCOs IT Component == LeanIXs ITComponent
-  var searchKey = "rel" + fs["type"] + "ToITComponent";
-  if (fs[searchKey]["totalCount"] === 0){
-    return true;
-  }else{
-    return false;
-  }
-}
+//=================
 
 function EISProvider(fs) {
   var searchKey = "rel" + fs["type"] + "ToProvider";
@@ -345,34 +284,25 @@ export default {
   brokenSeal: brokenSeal,
   notReady: notReady,
 
-  lackingBoundedContext: lackingBoundedContext,
-  lackingUseCases: lackingUseCases,
-  getScoreLessThan: getScoreLessThan,
+  lackingRelation: lackingRelation,
+  lackingProvidedBehaviors: lackingProvidedBehaviors,
+  lackingSoftwareITComponent: lackingSoftwareITComponent,
 
-  lackingDomain: lackingDomain,
+  getScoreLessThan: getScoreLessThan,
   noDocumentLinks: noDocumentLinks,
 
   noBusinessValueRisk: noBusinessValueRisk,
-
-
   noBusinessCritic: noBusinessCritic,
   noBusinessCriticDesc: noBusinessCriticDesc,
   noFunctionFit: noFunctionFit,
   noFunctionFitDesc: noFunctionFitDesc,
-  noOwnerPersona: noOwnerPersona,
-  multipleOwnerPersona: multipleOwnerPersona,
-  lackingDataObjects: lackingDataObjects,
-  lackingProvidedBehaviors: lackingProvidedBehaviors,
-  lackingProviders: lackingProviders,
-  lackingBehaviors: lackingBehaviors,
   noTechnicalFit: noTechnicalFit,
   noTechnicalFitDesc: noTechnicalFitDesc,
-  lackingSoftwareITComponent: lackingSoftwareITComponent,
+
+  noOwnerPersona: noOwnerPersona,
+  multipleOwnerPersona: multipleOwnerPersona,
 
   EISProvider: EISProvider,
-
-  lackingProviderApplication: lackingProviderApplication,
-  lackingITComponents: lackingITComponents,
 
   noLifecycle: noLifecycle,
 
