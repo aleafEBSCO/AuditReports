@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import FilterTools from './FilterTools';
 import Queries from './Queries';
 import AccordianReport from './AccordianReport';
+import GraphTools from './GraphTools';
 
 export class Report {
 
@@ -228,9 +229,14 @@ export class Report {
         "Overall Score < 70%": itComponentsScore
       }
     };
-                
+    
+    
+
     ReactDOM.render(<AccordianReport data={[allFactSheetsData, domainData, useCaseData, personaData, epicData,
-      boundedContextData, behaviorData, dataObjectData, itComponentData]} />,
+      boundedContextData, behaviorData, dataObjectData, itComponentData]} all={leafNodes} />,
       document.getElementById("report"));
+
+    //GraphTools.createGraph(domains);
+    //GraphTools.createGraph(boundedContexts);
   }
 }
