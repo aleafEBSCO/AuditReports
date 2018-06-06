@@ -3,14 +3,60 @@ import React, { Component } from 'react';
 import Highcharts from 'highcharts';
 import ReactHighCharts from 'react-highcharts';
 
+import Utilities from './Utilities';
+import AllFactSheetCharts from './AllFactSheetCharts';
+
+import uuid from 'uuid';
+
+
 function getGraph(subtitle, data){
     //use this function to determine what kind of graph to return
     if (subtitle.indexOf("Overall Score") !== -1){
         return createHistogram(data);
+    }else if (subtitle.indexOf("Lacking Accountable and Responsible") !== -1){
+        return accountResponseGraphs(data);
     }
 }
 
+//=====================================================================================================================================
 
+function accountResponseGraphs(data) {
+    let fsTypes = {'BusinessCapability': 'Domain', 'Process': 'Use Case', 'UserGroup': 'Persona',
+    'Project': 'Epic', 'Application': 'Bounded Context', 'Interface': 'Behavior', 'DataObject': 'Data Object',
+    'ITComponent': 'IT Component', 'Provider': 'Provider', 'TechnicalStack': 'Technical Stack'};
+    let fsKeys = _.keys(fsTypes);
+
+    let subTypes = data.map(fs => {
+      return {
+        fs: fs,
+        subType: Utilities.computeSubType(fs)
+      }
+    });
+    let subCounts = Utilities.countSubTypes(subTypes);
+    //return <h1>hi</h1>
+
+    let allGraphs = [];
+    let missingStyle = {textAlign: "center"};
+    //let n = 0;
+    for (let i = 0; i < fsKeys.length; i++) {
+
+      // Erase each div's contents
+      //$(`#chart${i}`).html('');
+
+      // Only rewrite new data into the div if it exists
+      if (subCounts[fsKeys[i]]) {
+        let subPercents = Utilities.computeSubPercents(subCounts[fsKeys[i]]);
+        allGraphs.push(AllFactSheetCharts.createHighchart(fsKeys[i], subPercents, fsTypes, data, i));
+        //n += 1;
+      }else{
+        allGraphs.push(<div key={uuid.v1()} style={missingStyle}><h4>{fsTypes[fsKeys[i]]}</h4><p>No Factsheets</p></div>);
+      }
+    }
+    return allGraphs;
+}
+
+
+//================================================================================================================================
 function createHistogram(data) {
 
     //console.log(data);
@@ -122,5 +168,6 @@ function createHistogram(data) {
 
 export default {
     getGraph: getGraph,
+    accountResponseGraphs: accountResponseGraphs,
     createHistogram: createHistogram
 }

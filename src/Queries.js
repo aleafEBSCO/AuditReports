@@ -5,7 +5,10 @@ var main = `
     subscriptions {
     edges {
         node {
-        type
+            type
+            user {
+                displayName
+            }
         }
     }
     }

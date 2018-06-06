@@ -1,5 +1,6 @@
 // Import css declarations for the report
 import './assets/main.css';
+import './assets/popover.css';
 
 // Importing '@leanix/reporting' makes the `lx` object globally available
 // IMPORTANT: Make sure lodash (window._) and jQuery (window.$) are globally available,
@@ -8,6 +9,16 @@ import '@leanix/reporting';
 
 // We have declared our report class in a seperate file and import it here
 import { Report } from './report';
+
+// Start with info hidden
+$('#info').hide();
+
+// When backdrop is clicked, hide backdrop and info, unlock document scroll
+$('#backdrop').on('click', function() {
+  $('#backdrop').toggleClass('modal-backdrop in');
+  $('#info').hide();
+  document.body.style.overflowY = 'scroll';
+});
 
 // We have to call init() in order to tell the reporting framework
 // that we want to start initializing our report.

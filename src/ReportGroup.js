@@ -50,6 +50,8 @@ class ReportGroup extends Component {
     //add more if statements here to decide when graphs should replace text
     if (subtitle.indexOf("Overall Score") !== -1){
       shouldBeGraphed = true;
+    }else if (subtitle.indexOf("Lacking Accountable and Responsible") !== -1){
+      shouldBeGraphed = true;
     }
 
     let shownData = null;
