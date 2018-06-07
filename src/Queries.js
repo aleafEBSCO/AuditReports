@@ -3,21 +3,21 @@ var main = `
     id
     displayName
     subscriptions {
-    edges {
-        node {
-            type
-            user {
-                displayName
+        edges {
+            node {
+                type
+                user {
+                    displayName
+                }
             }
         }
     }
-    }
     qualitySeal
     tags {
-    tagGroup {
+        tagGroup {
+            name
+        }
         name
-    }
-    name
     }
     ... on BusinessCapability {
         relBusinessCapabilityToApplication {

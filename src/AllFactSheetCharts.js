@@ -26,7 +26,8 @@ function buildHighchartsOptions(fsType, subCount, typeNames, data) {
       type: 'pie'
     },
     title: {
-        text: typeNames[fsType]
+      useHTML: true,
+      text: '<h2>' + typeNames[fsType] + '</h2>'
     },
     tooltip: {
       pointFormatter: function() {

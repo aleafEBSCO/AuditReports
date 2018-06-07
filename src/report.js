@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import FilterTools from './FilterTools';
 import Queries from './Queries';
 import AccordianReport from './AccordianReport';
-import GraphTools from './GraphTools';
 
 export class Report {
 
