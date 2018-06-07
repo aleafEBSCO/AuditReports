@@ -12,7 +12,8 @@ import uuid from 'uuid';
 function getGraph(subtitle, data){
     //use this function to determine what kind of graph to return
     if (subtitle.indexOf("Overall Score") !== -1) {
-        return createHistogram(data);
+        let percentIndex = subtitle.indexOf("%");
+        return createHistogram(data, parseInt(subtitle.substring(percentIndex - 2, percentIndex)));
     } else if (subtitle.indexOf("Lacking Accountable and Responsible") !== -1) {
         return accountResponseGraphs(data);
     }
@@ -57,10 +58,7 @@ function accountResponseGraphs(data) {
 
 
 //================================================================================================================================
-function createHistogram(data) {
-
-    //console.log(data);
-
+function createHistogram(data, threshold) {
     var x = ["< 10%", "10% - 20%", "20% - 30%", "30% - 40%", "40% - 50%", "50% - 60%", "60% - 70%", "70% - 80%", "80% - 90%", "90% - 100%", "Complete"];
     var y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     var filteredData = [[], [], [], [], [], [], [], [], [], [], []];
@@ -100,11 +98,9 @@ function createHistogram(data) {
             filteredData[10].push(data[i]);
             y[10] = y[10] + 1;
         }
-
     }
 
-    var colorsChoice = ['red', 'red', 'red', 'yellow', 'yellow', 'yellow', 'yellow', 'green', 'green', 'green', 'blue'];
-
+    var colorsChoice = genColorChoices(threshold);
     //console.log(y);
 
     var options = {
@@ -164,6 +160,20 @@ function createHistogram(data) {
         series: [{name: "Count", data: y}]
     });
     */
+}
+
+function genColorChoices(threshold) {
+    var colors = ['red', 'red', 'red', 'yellow', 'yellow', 'yellow', 'yellow', 'green', 'green', 'green', 'blue'];
+
+    if (threshold < 70) {
+        var minGreen = Math.ceil(threshold / 10);
+
+        // Turn intervals above the threshold green
+        for (let i = minGreen; i < 7; i++) {
+            colors[i] = 'green';
+        }
+    }
+    return colors;
 }
 
 export default {
