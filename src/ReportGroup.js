@@ -48,18 +48,16 @@ class ReportGroup extends Component {
     let shouldBeGraphed = false;
 
     //add more if statements here to decide when graphs should replace text
-    if (subtitle.indexOf("Overall Score") !== -1){
-      shouldBeGraphed = true;
-    }else if (subtitle.indexOf("Lacking Accountable and Responsible") !== -1){
+    if (subtitle.indexOf("Overall Score") !== -1 || subtitle.indexOf("Lacking Accountable and Responsible") !== -1) {
       shouldBeGraphed = true;
     }
 
-    let shownData = null;
+    let shownData;
 
     if (shouldBeGraphed){
       //get the graph
       shownData = GraphTools.getGraph(subtitle, this.props.typeData);
-    }else{
+    } else {
       shownData = categoryData.map((fs, i) => this._renderLink(fs, i));
     }
 
