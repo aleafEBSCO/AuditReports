@@ -50,14 +50,14 @@ export class Report {
     var brokenSeal = leafNodes.filter(fs => (FilterTools.brokenSeal(fs)));
     var notReady = leafNodes.filter(fs => (FilterTools.notReady(fs)));
 
-    var allFactSheetsData = {
+    reportData.push({
       title: "All Fact Sheets",
       data: {
         "Lacking Accountable and Responsible": noAccountableAndResponsible,
         "Quality Seal is Broken": brokenSeal,
         "Model Completion Status is not 'Ready'": notReady
       }
-    };
+    });
 
     // Domain == BusinessCapability
     var domains = leafNodes.filter(fs => {return (fs.type === "BusinessCapability")});
