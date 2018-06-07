@@ -121,6 +121,28 @@ function countSubTypes(subTypes) {
   return subCounts;
 }
 
+// Filter for fact sheets with a certain range of completion (decimal for precision)
+function completionWithinRange(data, min, max) {
+  return data.filter(fs => fs.completion.completion >= min).filter(fs => fs.completion.completion < max);
+}
+
+// Convert EBSCO fact sheet type to LeanIX fact sheet type
+function ebscoToLeanIXTypes(ebscoType) {
+  var lookup = {
+    "Domain": "BusinessCapability",
+    "Use Case": "Process",
+    "Persona": "UserGroup",
+    "Epic": "Project",
+    "Bounded Context": "Application",
+    "Behavior": "Interface",
+    "Data Object": "DataObject",
+    "IT Component": "ITComponent",
+    "Provider": "Provider",
+    "Technical Stack": "TechnicalStack"
+  }
+  return lookup[ebscoType];
+}
+
 export default {
   countSubTypes: countSubTypes,
   getSubscriptionsOfType: getSubscriptionsOfType,
@@ -133,5 +155,7 @@ export default {
   getNoResponsibleAccountable: getNoResponsibleAccountable,
   getResponsibleAccountable: getResponsibleAccountable,
   getRelevantFactSheets: getRelevantFactSheets,
-  subscriptionStringToSubType: subscriptionStringToSubType
+  subscriptionStringToSubType: subscriptionStringToSubType,
+  completionWithinRange: completionWithinRange,
+  ebscoToLeanIXTypes: ebscoToLeanIXTypes
 };

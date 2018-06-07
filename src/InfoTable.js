@@ -15,6 +15,7 @@ class InfoTable extends Component {
         <thead>
           <tr>
             <th>Fact Sheet</th>
+            <th>Completion</th>
             <th>Responsible</th>
             <th>Accountable</th>
           </tr>
@@ -32,11 +33,15 @@ class InfoTable extends Component {
     // TODO: Don't hard code base URL
 
     //console.log(fs);
+    console.log(fs);
 
     return (
       <tr key={rowIndex}>
-        <td key={fs.id} width='50%' align='center'>
+        <td key={fs.id} width='40%' align='center'>
           <Link link={'https://us.leanix.net/SBEIS/factsheet/' + fs.type + '/' + fs.id} target='_blank' text={fs.displayName} />
+        </td>
+        <td key={fs.id + '-C'} width='10%' align='center'>
+          {Math.round(fs.completion.completion * 1000) / 10 + '%'}
         </td>
         <td key={fs.id + '-R'} width='25%' align='center'>
           {Utilities.getSubscriptionNamesOfType(fs, 'RESPONSIBLE')}

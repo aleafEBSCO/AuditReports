@@ -29,7 +29,7 @@ class ReportGroup extends Component {
 
               <div className="panel-group" id={subID}>
                 {Object.keys(this.props.data).reduce((inner, subtitle) => {
-                  inner.push(this._renderCategory(subtitle, this.props.data[subtitle], subID));
+                  inner.push(this._renderCategory(this.props.title, subtitle, this.props.data[subtitle], subID));
                   return inner;
                 }, [])}
               </div>
@@ -42,7 +42,7 @@ class ReportGroup extends Component {
     );
   }
 
-  _renderCategory(subtitle, categoryData, subID) {
+  _renderCategory(title, subtitle, categoryData, subID) {
     var innerID = uuid.v1();
 
     let shouldBeGraphed = false;
@@ -56,7 +56,7 @@ class ReportGroup extends Component {
 
     if (shouldBeGraphed){
       //get the graph
-      shownData = GraphTools.getGraph(subtitle, this.props.typeData);
+      shownData = GraphTools.getGraph(title, subtitle, this.props.typeData);
     } else {
       shownData = categoryData.map((fs, i) => this._renderLink(fs, i));
     }

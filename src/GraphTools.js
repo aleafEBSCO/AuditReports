@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
-
+import ReactDOM from 'react-dom';
 import Highcharts from 'highcharts';
 import ReactHighCharts from 'react-highcharts';
+import uuid from 'uuid';
 
 import Utilities from './Utilities';
 import AllFactSheetCharts from './AllFactSheetCharts';
 
-import uuid from 'uuid';
+import InfoTable from './InfoTable';
 
-
-function getGraph(subtitle, data){
+function getGraph(title, subtitle, data){
     //use this function to determine what kind of graph to return
     if (subtitle.indexOf("Overall Score") !== -1) {
         let percentIndex = subtitle.indexOf("%");
-        return createHistogram(data, parseInt(subtitle.substring(percentIndex - 2, percentIndex)));
+        return createHistogram(data, title, parseInt(subtitle.substring(percentIndex - 2, percentIndex)));
     } else if (subtitle.indexOf("Lacking Accountable and Responsible") !== -1) {
         return accountResponseGraphs(data);
     }
@@ -58,7 +58,7 @@ function accountResponseGraphs(data) {
 
 
 //================================================================================================================================
-function createHistogram(data, threshold) {
+function createHistogram(data, fsType, threshold) {
     var x = ["< 10%", "10% - 20%", "20% - 30%", "30% - 40%", "40% - 50%", "50% - 60%", "60% - 70%", "70% - 80%", "80% - 90%", "90% - 100%", "Complete"];
     var y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     var filteredData = [[], [], [], [], [], [], [], [], [], [], []];
@@ -101,65 +101,9 @@ function createHistogram(data, threshold) {
     }
 
     var colorsChoice = genColorChoices(threshold);
-    //console.log(y);
-
-    var options = {
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: 'Overall Score'
-        },
-        xAxis: {
-            categories: x
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'Number of Factsheets'
-            }
-        },
-        plotOptions: {
-            column: {
-                colors: colorsChoice
-            },
-            series: {
-                colorByPoint: true
-            }
-        },
-        series: [{name: "Count", data: y}]
-    }
+    var options = buildHistogramOptions(fsType, colorsChoice, x, y, data);
 
     return <ReactHighCharts config={options} />
-
-    /*
-    var myChart = Highcharts.chart('chart', {
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: 'Overall Score'
-        },
-        xAxis: {
-            categories: x
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'Number of Factsheets'
-            }
-        },
-        plotOptions: {
-            column: {
-                colors: colorsChoice
-            },
-            series: {
-                colorByPoint: true
-            }
-        },
-        series: [{name: "Count", data: y}]
-    });
-    */
 }
 
 function genColorChoices(threshold) {
@@ -174,6 +118,59 @@ function genColorChoices(threshold) {
         }
     }
     return colors;
+}
+
+function buildHistogramOptions(fsType, colorsChoice, x, y, data) {
+    return {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: fsType
+        },
+        xAxis: {
+            categories: x
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Number of Factsheets'
+            }
+        },
+        plotOptions: {
+            column: {
+                colors: colorsChoice
+            },
+            series: {
+                colorByPoint: true,
+                point: {
+                    events: {
+                        click: function(event) {
+                            let type = Utilities.ebscoToLeanIXTypes(fsType);
+                            let range = this.category.match(/\d+/g).map(Number);
+            
+                            let clickedFsSet = Utilities.completionWithinRange(Utilities.getFactSheetsOfType(data, type),
+                            range[0] / 100, range[1] / 100);
+
+                            // TODO: Make InfoTable dynamic so completion percentage can be shown here
+                            ReactDOM.render(<InfoTable data={clickedFsSet} />, document.getElementById('info'));
+            
+                            let top = event.pageY;
+                            $('#info').css('top', `${top + 25}px`);
+                            
+                            // Scroll lock
+                            document.body.style.overflow = 'hidden';
+                            // Toggle backdrop
+                            $('#backdrop').toggleClass('modal-backdrop in');
+                            // Show info
+                            $('#info').show();
+                        }
+                    }
+                }
+            }
+        },
+        series: [{name: "Count", data: y}]
+    }
 }
 
 export default {
