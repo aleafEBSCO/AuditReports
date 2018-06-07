@@ -17,7 +17,6 @@ export class Report {
         key: 'main',
         attributes: [Queries.main],
         callback: function (data) {
-          console.log(data);
           this.extraData = {};
           lx.executeGraphQL(Queries.useCaseExtraData).then((info) => {
             this.extraData["useCaseExtra"] = info["allFactSheets"]["edges"].map(fs => fs["node"]);
@@ -27,7 +26,6 @@ export class Report {
                 this.extraData["boundedContextExtra"] = info["allFactSheets"]["edges"].map(fs => fs["node"]);
                 lx.executeGraphQL(Queries.ITComponentExtraData).then((info) => {
                   this.extraData["ITComponentExtra"] = info["allFactSheets"]["edges"].map(fs => fs["node"]);
-
                   this.data = data;
                   this._handleData();
                 });

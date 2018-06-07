@@ -45,17 +45,19 @@ function buildHighchartsOptions(fsType, subCount, typeNames, data) {
               let subscriptionString = clickInfo.clickedSubType;
 
               let clickedFsSet = Utilities.getRelevantFactSheets(data, fsType, Utilities.subscriptionStringToSubType(subscriptionString));
-              ReactDOM.render(<InfoTable data={clickedFsSet} />, document.getElementById('info'));
+              if (clickedFsSet.length !== 0) {
+                ReactDOM.render(<InfoTable data={clickedFsSet} />, document.getElementById('info'));
 
-              let top = event.pageY;
-              $('#info').css('top', `${top + 25}px`);
-              
-              // Scroll lock
-              document.body.style.overflow = 'hidden';
-              // Toggle backdrop
-              $('#backdrop').toggleClass('modal-backdrop in');
-              // Show info
-              $('#info').show();
+                let top = event.pageY;
+                $('#info').css('top', `${top + 25}px`);
+                
+                // Scroll lock
+                document.body.style.overflow = 'hidden';
+                // Toggle backdrop
+                $('#backdrop').toggleClass('modal-backdrop in');
+                // Show info
+                $('#info').show();
+              }
             }
           }
         },
