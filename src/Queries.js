@@ -20,207 +20,207 @@ var main = `
     name
     }
     ... on BusinessCapability {
-    relBusinessCapabilityToApplication {
-        totalCount
-    }
-    relBusinessCapabilityToProcess {
-        totalCount
-    }
-    completion {
-        completion
-    }
-    relToChild {
-        totalCount
-    }
-    relToParent {
-        totalCount
-    }
+        relBusinessCapabilityToApplication {
+            totalCount
+        }
+        relBusinessCapabilityToProcess {
+            totalCount
+        }
+        completion {
+            completion
+        }
+        relToChild {
+            totalCount
+        }
+        relToParent {
+            totalCount
+        }
     }
     ... on Process {
-    relProcessToBusinessCapability {
-        totalCount
-    }
-    documents {
-        totalCount
-    }
-    relProcessToApplication {
-        totalCount
-    }
-    completion {
-        completion
-    }
-    relToChild {
-        totalCount
-    }
-    relToParent {
-        totalCount
-    }
+        relProcessToBusinessCapability {
+            totalCount
+        }
+        documents {
+            totalCount
+        }
+        relProcessToApplication {
+            totalCount
+        }
+        completion {
+            completion
+        }
+        relToChild {
+            totalCount
+        }
+        relToParent {
+            totalCount
+        }
     }
     ... on UserGroup {
-    completion {
-        completion
-    }
-    relToChild {
-        totalCount
-    }
-    relToParent {
-        totalCount
-    }
+        completion {
+            completion
+        }
+        relToChild {
+            totalCount
+        }
+        relToParent {
+            totalCount
+        }
     }
     ... on Project {
-    documents {
-        totalCount
-    }
-    businessValue
-    projectRisk
-    relProjectToBusinessCapability {
-        totalCount
-    }
-    relProjectToProcess {
-        totalCount
-    }
-    completion {
-        completion
-    }
-    relToChild {
-        totalCount
-    }
-    relToParent {
-        totalCount
-    }
+        documents {
+            totalCount
+        }
+        businessValue
+        projectRisk
+        relProjectToBusinessCapability {
+            totalCount
+        }
+        relProjectToProcess {
+            totalCount
+        }
+        completion {
+            completion
+        }
+        relToChild {
+            totalCount
+        }
+        relToParent {
+            totalCount
+        }
     }
     ... on Application {
-    businessCriticality
-    businessCriticalityDescription
-    functionalSuitability
-    functionalSuitabilityDescription
-    relApplicationToBusinessCapability {
-        totalCount
-    }
-    relApplicationToProcess {
-        totalCount
-    }
-    relApplicationToUserGroup {
-        edges {
-        node {
-            usageType
+        businessCriticality
+        businessCriticalityDescription
+        functionalSuitability
+        functionalSuitabilityDescription
+        relApplicationToBusinessCapability {
+            totalCount
         }
+        relApplicationToProcess {
+            totalCount
         }
-    }
-    relApplicationToDataObject {
-        totalCount
-    }
-    relProviderApplicationToInterface {
-        totalCount
-    }
-    relApplicationToITComponent {
-        edges {
-        node {
-            factSheet {
-            ... on ITComponent {
-                category
-            }
+        relApplicationToUserGroup {
+            edges {
+                node {
+                    usageType
+                }
             }
         }
+        relApplicationToDataObject {
+            totalCount
         }
-    }
-    documents {
-        totalCount
-    }
-    completion {
-        completion
-    }
-    relToChild {
-        totalCount
-    }
-    relToParent {
-        totalCount
-    }
+        relProviderApplicationToInterface {
+            totalCount
+        }
+        relApplicationToITComponent {
+            edges {
+                node {
+                    factSheet {
+                        ... on ITComponent {
+                            category
+                        }
+                    }
+                }
+            }
+        }
+        documents {
+            totalCount
+        }
+        completion {
+            completion
+        }
+        relToChild {
+            totalCount
+        }
+        relToParent {
+            totalCount
+        }
     }
     ... on Interface {
-    relInterfaceToProviderApplication {
-        totalCount
-    }
-    relInterfaceToITComponent {
-        totalCount
-    }
-    completion {
-        completion
-    }
-    relToChild {
-        totalCount
-    }
-    relToParent {
-        totalCount
-    }
+        relInterfaceToProviderApplication {
+            totalCount
+        }
+        relInterfaceToITComponent {
+            totalCount
+        }
+        completion {
+            completion
+        }
+        relToChild {
+            totalCount
+        }
+        relToParent {
+            totalCount
+        }
     }
     ... on DataObject {
-    completion {
-        completion
-    }
-    relDataObjectToApplication {
-        totalCount
-    }
-    relDataObjectToInterface {
-        totalCount
-    }
-    relToChild {
-        totalCount
-    }
-    relToParent {
-        totalCount
-    }
+        completion {
+            completion
+        }
+        relDataObjectToApplication {
+            totalCount
+        }
+        relDataObjectToInterface {
+            totalCount
+        }
+        relToChild {
+            totalCount
+        }
+        relToParent {
+            totalCount
+        }
     }
     ... on ITComponent {
-    relITComponentToProvider {
-        totalCount
-        edges {
-        node {
-            factSheet {
-            displayName
+        relITComponentToProvider {
+            totalCount
+            edges {
+                node {
+                    factSheet {
+                    displayName
+                    }
+                }
             }
         }
+        documents {
+            totalCount
         }
-    }
-    documents {
-        totalCount
-    }
-    technicalSuitabilityDescription
-    relITComponentToInterface {
-        totalCount
-    }
-    relITComponentToUserGroup {
-        edges {
-        node {
-            usageType
+        technicalSuitabilityDescription
+        relITComponentToInterface {
+            totalCount
         }
+        relITComponentToUserGroup {
+            edges {
+                node {
+                    usageType
+                }
+            }
         }
-    }
-    completion {
-        completion
-    }
-    relToChild {
-        totalCount
-    }
-    relToParent {
-        totalCount
-    }
+        completion {
+            completion
+        }
+        relToChild {
+            totalCount
+        }
+        relToParent {
+            totalCount
+        }
     }
     ... on Provider {
-    relToChild {
-        totalCount
-    }
-    relToParent {
-        totalCount
-    }
+        relToChild {
+            totalCount
+        }
+        relToParent {
+            totalCount
+        }
     }
     ... on TechnicalStack {
-    relToChild {
-        totalCount
-    }
-    relToParent {
-        totalCount
-    }
+        relToChild {
+            totalCount
+        }
+        relToParent {
+            totalCount
+        }
     }`;
 
 var useCaseExtraData = `{

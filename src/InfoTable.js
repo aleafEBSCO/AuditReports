@@ -31,10 +31,6 @@ class InfoTable extends Component {
 
   _renderRow(fs, rowIndex) {
     // TODO: Don't hard code base URL
-
-    //console.log(fs);
-    console.log(fs);
-
     return (
       <tr key={rowIndex}>
         <td key={fs.id} width='40%' align='center'>

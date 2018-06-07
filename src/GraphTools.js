@@ -149,8 +149,14 @@ function buildHistogramOptions(fsType, colorsChoice, x, y, data) {
                             let type = Utilities.ebscoToLeanIXTypes(fsType);
                             let range = this.category.match(/\d+/g).map(Number);
             
-                            let clickedFsSet = Utilities.completionWithinRange(Utilities.getFactSheetsOfType(data, type),
-                            range[0] / 100, range[1] / 100);
+                            let clickedFsSet;
+                            if (range.length === 1) {
+                                clickedFsSet = Utilities.completionWithinRange(Utilities.getFactSheetsOfType(data, type),
+                                0, range[0] / 100);
+                            } else {
+                                let clickedFsSet = Utilities.completionWithinRange(Utilities.getFactSheetsOfType(data, type),
+                                range[0] / 100, range[1] / 100);
+                            }
 
                             // TODO: Make InfoTable dynamic so completion percentage can be shown here
                             ReactDOM.render(<InfoTable data={clickedFsSet} />, document.getElementById('info'));
