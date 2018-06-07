@@ -29,7 +29,6 @@ export class Report {
 
                   this.data = data;
                   this.render();
-
                 });
               });
             });

@@ -147,10 +147,18 @@ function buildHistogramOptions(fsType, colorsChoice, x, y, data) {
                     events: {
                         click: function(event) {
                             let type = Utilities.ebscoToLeanIXTypes(fsType);
-                            let range = this.category.match(/\d+/g).map(Number);
+
+                            let m = this.category.match(/\d+/g);
+                            let range = [];
+                            if (m) {
+                                range = m.map(Number);
+                            }
             
                             let clickedFsSet = [];
-                            if (range.length === 1) {
+                            if (range.length === 0) {
+                                clickedFsSet = Utilities.completionWithinRange(Utilities.getFactSheetsOfType(data, type),
+                                1, 1.1);
+                            } else if (range.length === 1) {
                                 clickedFsSet = Utilities.completionWithinRange(Utilities.getFactSheetsOfType(data, type),
                                 0, range[0] / 100);
                             } else {
