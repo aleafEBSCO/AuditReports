@@ -12,7 +12,6 @@ export class Report {
 
   createConfig() {
     return {
-      // TODO: Implement multiple fact configs to deal with different data types
       // TODO: Use lx.executeGraphQL to get all data. This way the top bar with
       // default filters will be gone and relevant filters can be implemented
       // nicely the exact way we want using custom dropdowns.
