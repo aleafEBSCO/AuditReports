@@ -87,7 +87,7 @@ export class Report {
       var useCaseNoLifecycle = this.extraData["useCaseExtra"].filter(fs => (FilterTools.leafNodes(fs)))
       .filter(fs => FilterTools.noLifecycle(fs));
       var useCaseLackingBoundedContext = useCases.filter(fs => (FilterTools.lackingRelation(fs, "Application")));
-      var useCaseScore = useCases.filter(fs => (FilterTools.getScoreLessThan(fs, .65)));
+      var useCaseScore = useCases.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
 
       this.reportData.push({
         title: "Use Case",
@@ -96,7 +96,7 @@ export class Report {
           "No Document Links": useCaseNoDocumentLinks,
           "No Lifecycle": useCaseNoLifecycle,
           "Lacking Bounded Context": useCaseLackingBoundedContext,
-          "Overall Score < 65%": useCaseScore
+          "Overall Score < 60%": useCaseScore
         }
       });
     }

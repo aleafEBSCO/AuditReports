@@ -207,6 +207,9 @@ var main = `
         }
     }
     ... on Provider {
+        completion {
+            completion
+        }
         relToChild {
             totalCount
         }
@@ -215,6 +218,9 @@ var main = `
         }
     }
     ... on TechnicalStack {
+        completion {
+            completion
+        }
         relToChild {
             totalCount
         }
