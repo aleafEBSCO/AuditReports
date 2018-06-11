@@ -43,9 +43,12 @@
   },
   "dependencies": {
     "@leanix/reporting": "^0.2.0",
+    "highcharts": "^6.1.0",
+    "npm": "^6.1.0",
     "prop-types": "^15.6.1",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
+    "react-highcharts": "^16.0.2",
     "uuid": "^3.2.1"
   }
 }

@@ -1,0 +1,20 @@
+.popover {
+  position: fixed !important;
+  display: none;
+  background:#fff;
+  border: 1px solid #999;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+  max-width: none !important;
+  width: 900px !important;
+  max-height: 400px;
+  overflow: scroll;
+  overflow-x: hidden;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%);
+}
+.modal-backdrop
+{
+  opacity: 0.5;
+}
