@@ -1,4 +1,12 @@
 function getQuery(factSheetType) {
+  let relToChildParent = `
+  relToChild {
+    totalCount
+  }
+  relToParent {
+    totalCount
+  }`;
+
   // TODO: Figure out a way to query relToChild and relToParent for all fact sheets
   let all = `
   type
@@ -23,14 +31,36 @@ function getQuery(factSheetType) {
       name
     }
     name
-  }`;
-
-  let relToChildParent = `
-  relToChild {
-    totalCount
   }
-  relToParent {
-    totalCount
+  ... on BusinessCapability {
+    ${relToChildParent}
+  }
+  ... on Process {
+    ${relToChildParent}
+  }
+  ... on UserGroup {
+    ${relToChildParent}
+  }
+  ... on Project {
+    ${relToChildParent}
+  }
+  ... on Application {
+    ${relToChildParent}
+  }
+  ... on Interface {
+    ${relToChildParent}
+  }
+  ... on DataObject {
+    ${relToChildParent}
+  }
+  ... on ITComponent {
+    ${relToChildParent}
+  }
+  ... on Provider {
+    ${relToChildParent}
+  }
+  ... on TechnicalStack {
+    ${relToChildParent}
   }`;
 
   let queries = {

@@ -95,7 +95,6 @@ export class Report {
 			return;
     }
 		lx.executeGraphQL(Queries.getQuery(factSheetType)).then(((data) => {
-      console.log(Queries.getQuery(factSheetType));
       // TODO what about errors?
       // update content
       this.currentFactSheetType = factSheetType;
@@ -105,7 +104,6 @@ export class Report {
   }
 
   _update() {
-    console.log(this.currentData);
     // Get only leaf nodes ie, no parents or children
     let leafNodes = this.currentData.filter(fs => FilterTools.leafNodes(fs));
 
@@ -124,7 +122,7 @@ export class Report {
       }
     };
 
-    ReactDOM.render(<ReportGroup title={this.currentFactSheetType} data={allData} overallID={uuid.v1()} />, document.getElementById('report'));
+    ReactDOM.render(<ReportGroup title={allData.title} data={allData.data} overallID={uuid.v1()} typeData={this.currentData} />, document.getElementById('report'));
   }
 
   _handleData() {
