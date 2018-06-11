@@ -28,7 +28,7 @@ class ReportGroup extends Component {
     let innerID = uuid.v1();
 
     let shouldBeGraphed = false;
-    //add more if statements here to decide when graphs should replace text
+    // add more if statements here to decide when graphs should replace text
     if (subtitle.indexOf("Overall Score") !== -1 || subtitle.indexOf("Lacking Accountable and Responsible") !== -1) {
       shouldBeGraphed = true;
     }
@@ -36,14 +36,11 @@ class ReportGroup extends Component {
     let shownData;
 
     if (shouldBeGraphed){
-      //get the graph
+      // get the graph
       shownData = GraphTools.getGraph(title, subtitle, this.props.typeData);
     } else {
       shownData = categoryData.map((fs, i) => this._renderLink(fs, i));
     }
-
-    //console.log(this.props.typeData);
-    //console.log(subtitle);
 
     return (
       <div className="panel panel-default" key={innerID}>

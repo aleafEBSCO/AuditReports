@@ -143,6 +143,23 @@ function ebscoToLeanIXTypes(ebscoType) {
   return lookup[ebscoType];
 }
 
+function leanIXToEbscoTypes(leanIXType) {
+  var lookup = {
+    "All": "All Fact Sheets", // For dropdown menu
+    "BusinessCapability": "Domain",
+    "Process": "Use Case",
+    "UserGroup": "Persona",
+    "Project": "Epic",
+    "Application": "Bounded Context",
+    "Interface": "Behavior",
+    "DataObject": "Data Object",
+    "ITComponent": "IT Component",
+    "Provider": "Provider",
+    "TechnicalStack": "Technical Stack"
+  }
+  return lookup[leanIXType];
+}
+
 // Get fact sheet type objects which have leaf nodes
 function getFactsheetTypesObjects(factSheets) {
   // TODO: Actual filter for leaf nodes, currently just for organizing dropdown categories
@@ -171,5 +188,6 @@ export default {
   subscriptionStringToSubType: subscriptionStringToSubType,
   completionWithinRange: completionWithinRange,
   ebscoToLeanIXTypes: ebscoToLeanIXTypes,
+  leanIXToEbscoTypes: leanIXToEbscoTypes,
   getFactsheetTypesObjects: getFactsheetTypesObjects
 };

@@ -56,7 +56,7 @@ export class Report {
       const key = value.type;
       dropdownEntries.push({
         id: key,
-        name: key,
+        name: Utilities.leanIXToEbscoTypes(key),
         callback: ((currentEntry) => {
           console.log('callback for ' + currentEntry.id);
           this._updateFactSheetType(currentEntry.id);

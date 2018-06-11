@@ -7,7 +7,7 @@ function getQuery(factSheetType) {
     totalCount
   }`;
 
-  // TODO: Figure out a way to query relToChild and relToParent for all fact sheets
+  // TODO: Get rid of horrendous relToChildParent hack
   let all = `
   type
   id
