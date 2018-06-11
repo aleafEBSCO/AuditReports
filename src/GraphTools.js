@@ -73,10 +73,6 @@ function qualityModelGraph(data, title){
         });
     }
 
-    //BROKEN
-    //DISABLED
-    //APPROVED
-
     let options = {
         chart: {
             plotBackgroundColor: null,
@@ -96,13 +92,8 @@ function qualityModelGraph(data, title){
                 point: {
                   events: {
                     click: function(event) {
-                      //clickInfo.clickedSubType = this.name;
         
-                      // series.events triggers before series.point.events, so both can be accessed here
-                      //let fsType = clickInfo.clickedFsType;
-                      //let subscriptionString = clickInfo.clickedSubType;
-        
-                      let clickedFsSet = sortedData[this.name];//Utilities.getRelevantFactSheets(data, fsType, Utilities.subscriptionStringToSubType(subscriptionString));
+                      let clickedFsSet = sortedData[this.name];
                       if (clickedFsSet.length !== 0) {
                         ReactDOM.render(<InfoTable data={clickedFsSet} />, document.getElementById('info'));
         
