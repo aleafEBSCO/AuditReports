@@ -1,4 +1,5 @@
 function getQuery(factSheetType) {
+  // TODO: Figure out a way to query relToChild and relToParent for all fact sheets
   let all = `
   type
   id

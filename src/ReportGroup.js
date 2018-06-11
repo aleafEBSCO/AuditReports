@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Link from './Link';
 import uuid from 'uuid';
-import Highcharts from 'highcharts';
-import ReactHighCharts from 'react-highcharts';
+
+import Link from './Link';
 import GraphTools from './GraphTools';
 
 class ReportGroup extends Component {
@@ -15,6 +14,7 @@ class ReportGroup extends Component {
   render() {
     var subID = uuid.v1();
 
+    /*
     return (
       <div className="panel-group" id="accordianReport">
         <div className="panel panel-default">
@@ -30,6 +30,32 @@ class ReportGroup extends Component {
               <div className="panel-group" id={subID}>
                 {Object.keys(this.props.data).reduce((inner, subtitle) => {
                   inner.push(this._renderCategory(this.props.title, subtitle, this.props.data[subtitle], subID));
+                  return inner;
+                }, [])}
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    );
+    */
+    return (
+      <div className="panel-group" id="accordianReport">
+        <div className="panel panel-default">
+          <div className="panel-heading">
+            <h4 className="panel-title">
+              <a data-toggle="collapse" data-parent="#accordianReport" href={"#" + this.props.overallID}>{this.props.title}</a>
+            </h4>
+          </div>
+
+          <div id={this.props.overallID} className="panel-collapse collapse">
+            <div className="panel-body">
+
+              <div className="panel-group" id={subID}>
+                {Object.keys(this.props.data).reduce((inner, subtitle) => {
+                  inner.push(this._renderCategory(this.props.title, subtitle, this.props.data, subID));
                   return inner;
                 }, [])}
               </div>

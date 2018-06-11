@@ -1,9 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import uuid from 'uuid';
+
 import FilterTools from './FilterTools';
 import Queries from './Queries';
-import AccordianReport from './AccordianReport';
 import Utilities from './Utilities';
+
+import AccordianReport from './AccordianReport';
+import ReportGroup from './ReportGroup';
 
 export class Report {
 
@@ -59,7 +63,6 @@ export class Report {
         }).bind(this)
       });
     }).bind(this));
-    console.log(dropdownEntries);
 
     this.config = {
       allowEditing: false
@@ -92,16 +95,36 @@ export class Report {
 			return;
     }
 		lx.executeGraphQL(Queries.getQuery(factSheetType)).then(((data) => {
+      console.log(Queries.getQuery(factSheetType));
       // TODO what about errors?
       // update content
       this.currentFactSheetType = factSheetType;
-      this.currentData = data;
+      this.currentData = data.allFactSheets.edges.map(fs => fs.node);
       this._update();
     }).bind(this));
   }
 
   _update() {
-    console.log('Updating ' + this.currentFactSheetType);
+    console.log(this.currentData);
+    // Get only leaf nodes ie, no parents or children
+    let leafNodes = this.currentData.filter(fs => FilterTools.leafNodes(fs));
+
+    // All Fact Sheets
+    let noAccountableAndResponsible = leafNodes.filter(fs => (FilterTools.noResponsible(fs)
+    && FilterTools.noAccountable(fs)));
+    let brokenSeal = leafNodes.filter(fs => (FilterTools.brokenSeal(fs)));
+    let notReady = leafNodes.filter(fs => (FilterTools.notReady(fs)));
+
+    let allData = {
+      title: "All Fact Sheets",
+      data: {
+        "Lacking Accountable and Responsible": noAccountableAndResponsible,
+        "Quality Seal is Broken": brokenSeal,
+        "Model Completion Status is not 'Ready'": notReady
+      }
+    };
+
+    ReactDOM.render(<ReportGroup title={this.currentFactSheetType} data={allData} overallID={uuid.v1()} />, document.getElementById('report'));
   }
 
   _handleData() {
