@@ -3,7 +3,7 @@ import './assets/popover.css';
 
 import '@leanix/reporting';
 
-import { Report } from './report';
+import { Report } from './Report';
 
 // Start with info hidden
 $('#info').hide();

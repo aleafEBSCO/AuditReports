@@ -58,7 +58,6 @@ export class Report {
         id: key,
         name: Utilities.leanIXToEbscoTypes(key),
         callback: ((currentEntry) => {
-          console.log('callback for ' + currentEntry.id);
           this._updateFactSheetType(currentEntry.id);
         }).bind(this)
       });
@@ -89,7 +88,6 @@ export class Report {
 	}
 
 	_updateFactSheetType(factSheetType) {
-    console.log('_updateFactSheetType ' + factSheetType);
 		if (this.currentFactSheetType === factSheetType) {
 			// nothing to do
 			return;

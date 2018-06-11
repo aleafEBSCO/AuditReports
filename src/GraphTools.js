@@ -22,8 +22,6 @@ function getGraph(title, subtitle, data){
 //=====================================================================================================================================
 
 function accountResponseGraphs(data) {
-    console.log('accountableResponsibleGraphs data');
-    console.log(data);
     let fsTypes = {'BusinessCapability': 'Domain', 'Process': 'Use Case', 'UserGroup': 'Persona',
     'Project': 'Epic', 'Application': 'Bounded Context', 'Interface': 'Behavior', 'DataObject': 'Data Object',
     'ITComponent': 'IT Component', 'Provider': 'Provider', 'TechnicalStack': 'Technical Stack'};
