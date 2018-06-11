@@ -3,6 +3,9 @@ function getQuery(factSheetType) {
   type
   id
   displayName
+  completion {
+    completion
+  }
   subscriptions {
     edges {
       node {
@@ -19,6 +22,14 @@ function getQuery(factSheetType) {
       name
     }
     name
+  }`;
+
+  let relToChildParent = `
+  relToChild {
+    totalCount
+  }
+  relToParent {
+    totalCount
   }`;
 
   let queries = {
@@ -40,20 +51,14 @@ function getQuery(factSheetType) {
         edges {
           node {
             ${all}
-            relBusinessCapabilityToApplication {
-              totalCount
-            }
-            relBusinessCapabilityToProcess {
-              totalCount
-            }
-            completion {
-              completion
-            }
-            relToChild {
-              totalCount
-            }
-            relToParent {
-              totalCount
+            ... on BusinessCapability {
+              relBusinessCapabilityToApplication {
+                totalCount
+              }
+              relBusinessCapabilityToProcess {
+                totalCount
+              }
+              ${relToChildParent}
             }
           }
         }
@@ -66,43 +71,31 @@ function getQuery(factSheetType) {
         edges {
           node {
             ${all}
-            relProcessToBusinessCapability {
-              totalCount
-            }
-            documents {
-              totalCount
-            }
-            relProcessToApplication {
-              totalCount
-            }
-            completion {
-              completion
-            }
-            relToChild {
-              totalCount
-            }
-            relToParent {
-              totalCount
+            ... on Process {
+              relProcessToBusinessCapability {
+                totalCount
+              }
+              documents {
+                totalCount
+              }
+              relProcessToApplication {
+                totalCount
+              }
+              ${relToChildParent}
             }
           }
         }
       }
     }`,
     // Persona
-    'Persona': `
+    'UserGroup': `
     {
       allFactSheets(factSheetType: UserGroup) {
         edges {
           node {
             ${all}
-            completion {
-              completion
-            }
-            relToChild {
-              totalCount
-            }
-            relToParent {
-              totalCount
+            ... on UserGroup {
+              ${relToChildParent}
             }
           }
         }
@@ -115,25 +108,19 @@ function getQuery(factSheetType) {
         edges {
           node {
             ${all}
-            documents {
-              totalCount
-            }
-            businessValue
-            projectRisk
-            relProjectToBusinessCapability {
-              totalCount
-            }
-            relProjectToProcess {
-              totalCount
-            }
-            completion {
-              completion
-            }
-            relToChild {
-              totalCount
-            }
-            relToParent {
-              totalCount
+            ... on Project {
+              documents {
+                totalCount
+              }
+              businessValue
+              projectRisk
+              relProjectToBusinessCapability {
+                totalCount
+              }
+              relProjectToProcess {
+                totalCount
+              }
+              ${relToChildParent}
             }
           }
         }
@@ -146,51 +133,45 @@ function getQuery(factSheetType) {
         edges {
           node {
             ${all}
-            businessCriticality
-            businessCriticalityDescription
-            functionalSuitability
-            functionalSuitabilityDescription
-            relApplicationToBusinessCapability {
-              totalCount
-            }
-            relApplicationToProcess {
-              totalCount
-            }
-            relApplicationToUserGroup {
-              edges {
-                node {
-                  usageType
+            ... on Application {
+              businessCriticality
+              businessCriticalityDescription
+              functionalSuitability
+              functionalSuitabilityDescription
+              relApplicationToBusinessCapability {
+                totalCount
+              }
+              relApplicationToProcess {
+                totalCount
+              }
+              relApplicationToUserGroup {
+                edges {
+                  node {
+                    usageType
+                  }
                 }
               }
-            }
-            relApplicationToDataObject {
-              totalCount
-            }
-            relProviderApplicationToInterface {
-              totalCount
-            }
-            relApplicationToITComponent {
-              edges {
-                node {
-                  factSheet {
-                    ... on ITComponent {
-                      category
+              relApplicationToDataObject {
+                totalCount
+              }
+              relProviderApplicationToInterface {
+                totalCount
+              }
+              relApplicationToITComponent {
+                edges {
+                  node {
+                    factSheet {
+                      ... on ITComponent {
+                        category
+                      }
                     }
                   }
                 }
               }
-            }
-            documents {
-              totalCount
-            }
-            completion {
-              completion
-            }
-            relToChild {
-              totalCount
-            }
-            relToParent {
-              totalCount
+              documents {
+                totalCount
+              }
+              ${relToChildParent}
             }
           }
         }
@@ -203,20 +184,14 @@ function getQuery(factSheetType) {
         edges {
           node {
             ${all}
-            relInterfaceToProviderApplication {
-              totalCount
-            }
-            relInterfaceToITComponent {
-              totalCount
-            }
-            completion {
-              completion
-            }
-            relToChild {
-              totalCount
-            }
-            relToParent {
-              totalCount
+            ... on Interface {
+              relInterfaceToProviderApplication {
+                totalCount
+              }
+              relInterfaceToITComponent {
+                totalCount
+              }
+              ${relToChildParent}
             }
           }
         }
@@ -229,20 +204,14 @@ function getQuery(factSheetType) {
         edges {
           node {
             ${all}
-            completion {
-              completion
-            }
-            relDataObjectToApplication {
-              totalCount
-            }
-            relDataObjectToInterface {
-              totalCount
-            }
-            relToChild {
-              totalCount
-            }
-            relToParent {
-              totalCount
+            ... on DataObject {
+              relDataObjectToApplication {
+                totalCount
+              }
+              relDataObjectToInterface {
+                totalCount
+              }
+              ${relToChildParent}
             }
           }
         }
@@ -251,42 +220,36 @@ function getQuery(factSheetType) {
     // IT Component
     'ITComponent': `
     {
-      allFactSheets(factSheetTypes: ITComponent) {
+      allFactSheets(factSheetType: ITComponent) {
         edges {
           node {
             ${all}
-            relITComponentToProvider {
-              totalCount
-              edges {
-                node {
-                  factSheet {
-                    displayName
+            ... on ITComponent {
+              relITComponentToProvider {
+                totalCount
+                edges {
+                  node {
+                    factSheet {
+                      displayName
+                    }
                   }
                 }
               }
-            }
-            documents {
-              totalCount
-            }
-            technicalSuitabilityDescription
-            relITComponentToInterface {
-              totalCount
-            }
-            relITComponentToUserGroup {
-              edges {
-                node {
-                  usageType
+              documents {
+                totalCount
+              }
+              technicalSuitabilityDescription
+              relITComponentToInterface {
+                totalCount
+              }
+              relITComponentToUserGroup {
+                edges {
+                  node {
+                    usageType
+                  }
                 }
               }
-            }
-            completion {
-              completion
-            }
-            relToChild {
-              totalCount
-            }
-            relToParent {
-              totalCount
+              ${relToChildParent}
             }
           }
         }
@@ -299,11 +262,8 @@ function getQuery(factSheetType) {
         edges {
           node {
             ${all}
-            relToChild {
-              totalCount
-            }
-            relToParent {
-              totalCount
+            ... on Provider {
+              ${relToChildParent}
             }
           }
         }
@@ -316,11 +276,8 @@ function getQuery(factSheetType) {
         edges {
           node {
             ${all}
-            relToChild {
-              totalCount
-            }
-            relToParent {
-              totalCount
+            ... on TechnicalStack {
+              ${relToChildParent}
             }
           }
         }

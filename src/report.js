@@ -45,23 +45,21 @@ export class Report {
     this.factSheetTypes = [{type: 'All'}];
     this.factSheetTypes = this.factSheetTypes.concat(Utilities.getFactsheetTypesObjects(this.setup.settings.dataModel.factSheets));
 
-    const dropdownEntries = [{
-      id: 'All',
-      name: 'All Fact Sheets',
-      callback: (currentEntry) => {
-        this._updateFactSheetType(currentEntry.id);
-      }
-    }];
+    const dropdownEntries = [];
+
+    // TODO: Show EBSCO names instead of LeanIX names
     this.factSheetTypes.forEach(((value) => {
       const key = value.type;
       dropdownEntries.push({
         id: key,
         name: key,
         callback: ((currentEntry) => {
+          console.log('callback for ' + currentEntry.id);
           this._updateFactSheetType(currentEntry.id);
         }).bind(this)
       });
     }).bind(this));
+    console.log(dropdownEntries);
 
     this.config = {
       allowEditing: false
@@ -88,6 +86,7 @@ export class Report {
 	}
 
 	_updateFactSheetType(factSheetType) {
+    console.log('_updateFactSheetType ' + factSheetType);
 		if (this.currentFactSheetType === factSheetType) {
 			// nothing to do
 			return;
@@ -102,10 +101,7 @@ export class Report {
   }
 
   _update() {
-    console.log('currentFactSheetType');
-    console.log(this.currentFactSheetType);
-    console.log('currentData');
-    console.log(this.currentData);
+    console.log('Updating ' + this.currentFactSheetType);
   }
 
   _handleData() {
