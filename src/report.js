@@ -3,15 +3,17 @@ import ReactDOM from 'react-dom';
 import FilterTools from './FilterTools';
 import Queries from './Queries';
 import AccordianReport from './AccordianReport';
+import Utilities from './Utilities';
 
 export class Report {
 
   constructor(setup) {
     this.setup = setup;
+    this._createConfig();
   }
 
-  createConfig() {
-    return {
+  _createConfigOld() {
+    this.config = {
       // TODO: Use lx.executeGraphQL to get all data. This way the top bar with
       // default filters will be gone and relevant filters can be implemented
       // nicely the exact way we want using custom dropdowns.
@@ -37,6 +39,73 @@ export class Report {
         }.bind(this)
       }]
     };
+  }
+
+  _createConfig() {
+    this.factSheetTypes = [{type: 'All'}];
+    this.factSheetTypes = this.factSheetTypes.concat(Utilities.getFactsheetTypesObjects(this.setup.settings.dataModel.factSheets));
+
+    const dropdownEntries = [{
+      id: 'All',
+      name: 'All Fact Sheets',
+      callback: (currentEntry) => {
+        this._updateFactSheetType(currentEntry.id);
+      }
+    }];
+    this.factSheetTypes.forEach(((value) => {
+      const key = value.type;
+      dropdownEntries.push({
+        id: key,
+        name: key,
+        callback: ((currentEntry) => {
+          this._updateFactSheetType(currentEntry.id);
+        }).bind(this)
+      });
+    }).bind(this));
+
+    this.config = {
+      allowEditing: false
+    };
+
+    if (dropdownEntries.length !== 0) {
+      this.config.menuActions = {
+        customDropdowns: [{
+          id: 'FACTSHEET_TYPE_DROPDOWN',
+          name: 'Fact Sheet Type',
+          entries: dropdownEntries
+        }]
+      };
+    }
+  }
+
+	init() {
+		if (_.size(this.factSheetTypes) > 0) {
+			// init the report with the first factsheet type
+			this._updateFactSheetType(this.factSheetTypes[0].type);
+		} else {
+			console.log('No fact sheet types');
+		}
+	}
+
+	_updateFactSheetType(factSheetType) {
+		if (this.currentFactSheetType === factSheetType) {
+			// nothing to do
+			return;
+    }
+		lx.executeGraphQL(Queries.getQuery(factSheetType)).then(((data) => {
+      // TODO what about errors?
+      // update content
+      this.currentFactSheetType = factSheetType;
+      this.currentData = data;
+      this._update();
+    }).bind(this));
+  }
+
+  _update() {
+    console.log('currentFactSheetType');
+    console.log(this.currentFactSheetType);
+    console.log('currentData');
+    console.log(this.currentData);
   }
 
   _handleData() {

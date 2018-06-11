@@ -143,6 +143,19 @@ function ebscoToLeanIXTypes(ebscoType) {
   return lookup[ebscoType];
 }
 
+// Get fact sheet type objects which have leaf nodes
+function getFactsheetTypesObjects(factSheets) {
+  // TODO: Actual filter for leaf nodes, currently just for organizing dropdown categories
+  let factSheetTypes = _.filter(factSheets, (value, key) => {
+    value.type = key;
+    return true;
+  });
+  factSheetTypes = _.sortBy(factSheetTypes, [(value) => {
+    return value.type;
+  }]);
+  return factSheetTypes;
+}
+
 export default {
   countSubTypes: countSubTypes,
   getSubscriptionsOfType: getSubscriptionsOfType,
@@ -157,5 +170,6 @@ export default {
   getRelevantFactSheets: getRelevantFactSheets,
   subscriptionStringToSubType: subscriptionStringToSubType,
   completionWithinRange: completionWithinRange,
-  ebscoToLeanIXTypes: ebscoToLeanIXTypes
+  ebscoToLeanIXTypes: ebscoToLeanIXTypes,
+  getFactsheetTypesObjects: getFactsheetTypesObjects
 };
