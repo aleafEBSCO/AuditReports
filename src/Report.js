@@ -123,8 +123,9 @@ export class Report {
           //let boundedContextsNoBusinessCritic = leafNodes.filter(fs => (FilterTools.noBusinessCritic(fs)
           //|| FilterTools.noBusinessCriticDesc(fs)));
           let boundedContextsNoBusinessCritic = GraphFilterTools.businessCriticalityGraph(leafNodes);
-          let boundedContextsNoFunctionFit = leafNodes.filter(fs => (FilterTools.noFunctionFit(fs)
-          || FilterTools.noFunctionFitDesc(fs)));
+          //let boundedContextsNoFunctionFit = leafNodes.filter(fs => (FilterTools.noFunctionFit(fs)
+          //|| FilterTools.noFunctionFitDesc(fs)));
+          let boundedContextsNoFunctionFit = GraphFilterTools.functionalFitGraph(leafNodes);
           let boundedContextsLackingDomain = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
           let boundedContextsLackingUseCases = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
           let boundedContextsNoOwnerPersona = leafNodes.filter(fs => (FilterTools.noOwnerPersona(fs)));
