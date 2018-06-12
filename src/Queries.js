@@ -318,118 +318,121 @@ function getQuery(factSheetType) {
   return queries[factSheetType];
 }
 
-var useCaseExtraData = `
-{
-  allFactSheets(factSheetType: Process) {
-    edges {
-      node {
-        type
-        id
-        displayName
-        ... on Process {
-          lifecycle {
-            phases {
-              phase
+function getExtraQuery(factSheetType) {
+  let extraQueries = {
+    // Use Case
+    'Process': `
+    {
+      allFactSheets(factSheetType: Process) {
+        edges {
+          node {
+            type
+            id
+            displayName
+            ... on Process {
+              lifecycle {
+                phases {
+                  phase
+                }
+              }
+              relToChild {
+                totalCount
+              }
+              relToParent {
+                totalCount
+              }
             }
-          }
-          relToChild {
-            totalCount
-          }
-          relToParent {
-            totalCount
           }
         }
       }
-    }
-  }
-}`;
-
-var epicExtraData = `
-{
-  allFactSheets(factSheetType: Project) {
-    edges {
-      node {
-        type
-        id
-        displayName
-        ... on Project {
-          lifecycle {
-            phases {
-              phase
+    }`,
+    // Domain
+    'Epic': `
+    {
+      allFactSheets(factSheetType: Project) {
+        edges {
+          node {
+            type
+            id
+            displayName
+            ... on Project {
+              lifecycle {
+                phases {
+                  phase
+                }
+              }
+              relToChild {
+                  totalCount
+                }
+                relToParent {
+                  totalCount
+                }
             }
           }
-          relToChild {
-              totalCount
-            }
-            relToParent {
-              totalCount
-            }
         }
       }
-    }
-  }
-}`;
-
-var boundedContextExtraData = `
-{
-  allFactSheets(factSheetType: Application) {
-    edges {
-      node {
-        type
-        id
-        displayName
-        ... on Application {
-          lifecycle {
-            phases {
-              phase
+    }`,
+    // Bounded Context
+    'Application': `
+    {
+      allFactSheets(factSheetType: Application) {
+        edges {
+          node {
+            type
+            id
+            displayName
+            ... on Application {
+              lifecycle {
+                phases {
+                  phase
+                }
+              }
+              technicalSuitability
+              technicalSuitabilityDescription
+              relToChild {
+                  totalCount
+                }
+                relToParent {
+                  totalCount
+                }
             }
           }
-          technicalSuitability
-          technicalSuitabilityDescription
-          relToChild {
-              totalCount
-            }
-            relToParent {
-              totalCount
-            }
         }
       }
-    }
-  }
-}`;
-
-var ITComponentExtraData = `
-{
-  allFactSheets(factSheetType: ITComponent) {
-    edges {
-      node {
-        type
-        id
-        displayName
-        ... on ITComponent {
-          lifecycle {
-            phases {
-              phase
+    }`,
+    // IT Component
+    'ITComponent': `
+    {
+      allFactSheets(factSheetType: ITComponent) {
+        edges {
+          node {
+            type
+            id
+            displayName
+            ... on ITComponent {
+              lifecycle {
+                phases {
+                  phase
+                }
+              }
+              technicalSuitability
+              technicalSuitabilityDescription
+              relToChild {
+                  totalCount
+                }
+                relToParent {
+                  totalCount
+                }
             }
           }
-          technicalSuitability
-          technicalSuitabilityDescription
-          relToChild {
-              totalCount
-            }
-            relToParent {
-              totalCount
-            }
         }
       }
-    }
+    }`
   }
-}`;
+  return extraQueries[factSheetType]
+}
 
 export default {
   getQuery: getQuery,
-  useCaseExtraData: useCaseExtraData,
-  epicExtraData: epicExtraData,
-  boundedContextExtraData: boundedContextExtraData,
-  ITComponentExtraData: ITComponentExtraData
+  getExtraQuery: getExtraQuery
 }
