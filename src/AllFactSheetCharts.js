@@ -11,7 +11,7 @@ import uuid from 'uuid';
 function createHighchart(fsType, subTypes, typeNames, data, n) {
   const options = this.buildHighchartsOptions(fsType, subTypes, typeNames, data);
   //Highcharts.chart(`chart${n}`, options);
-  return <ReactHighCharts key={uuid.v1()} config={options} />
+  return <ReactHighCharts config={options} />
 }
 
 // Generate the options for the desired pie chart
