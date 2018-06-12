@@ -23,37 +23,132 @@ function getGraph(title, subtitle, data){
     }
 }
 
-function qualityModelGraph(data, title) {
+function qualityModelGraph(data, title){
+
+    let filteredData = {
+        Domain: data.filter(fs => {return (fs.type === "BusinessCapability")}),
+        "Use Case": data.filter(fs => {return (fs.type === "Process")}),
+        Persona: data.filter(fs => {return (fs.type === "UserGroup")}),
+        Epic: data.filter(fs => {return (fs.type === "Project")}),
+        "Bounded Context": data.filter(fs => {return (fs.type === "Application")}),
+        Behavior: data.filter(fs => {return (fs.type === "Interface")}),
+        "Data Object": data.filter(fs => {return (fs.type === "DataObject")}),
+        "IT Component": data.filter(fs => {return (fs.type === "ITComponent")}),
+        Provider: data.filter(fs => {return (fs.type === "Provider")}),
+        "Technical Stack": data.filter(fs => {return (fs.type === "TechnicalStack")})
+    }
+
+    //console.log(filteredData);
+
+    let ret = [];
+
+    let types = Object.keys(filteredData);
+
+    let centered = {textAlign: "center"};
+    
+    let bothGraphsCSS = {width: "100%", overflow: "hidden"};
+    let leftGraphCSS = {width: "600px", float: "left"};
+    let rightGraphCSS = {marginLeft: "620px"};
+
+    for (let i = 0; i < types.length; i+=2) {
+        //ret.push(<div style={bothGraphsCSS}>)
+
+        let graphs = [];
+        //graphs[0] is the left graph, graphs[1] is the right graph
+        for (let j = 0; j < 2; j++) {
+            if (filteredData[types[i+j]].length === 0) {
+                graphs[j] = <div style={centered}><h2>{types[i+j]}</h2><p>No Factsheets</p></div>;
+            }else{
+                let options = buildPieChartOptions(title, types[i+j], filteredData[types[i+j]]);
+                graphs[j] = <ReactHighCharts config={options} />;
+            }
+        }
+
+        ret.push(
+            <div key={uuid.v1()} style={bothGraphsCSS}>
+                <div style={leftGraphCSS}>
+                    {graphs[0]}
+                </div>
+                <div style={rightGraphCSS}>
+                    {graphs[1]}
+                </div>
+            </div>
+        );
+
+    }
+
+    
+
+    //let options = buildPieChartOptions(title, sortedData, graphData);
+    //return <ReactHighCharts config={options} />
+    return ret;
+}
+
+function buildPieChartOptions(title, graphTitle, data) {
+
     let counts = {};
     let sortedData = {};
+    let anyData = false;
 
     if (title === "Quality Seal") {
+        counts = {
+            BROKEN: 0,
+            DISABLED: 0,
+            APPROVED: 0
+        }
+        sortedData = {
+            BROKEN: [],
+            DISABLED: [],
+            APPROVED: []
+        }
         for (let i = 0; i < data.length; i++) {
             if (data[i]["qualitySeal"] in counts){
                 counts[data[i]["qualitySeal"]]++;
                 sortedData[data[i]["qualitySeal"]].push(data[i]);
-            }else{
+                anyData = true;
+            }/*else{
                 counts[data[i]["qualitySeal"]] = 1;
                 sortedData[data[i]["qualitySeal"]] = [];
                 sortedData[data[i]["qualitySeal"]].push(data[i]);
-            }
+            }*/
             //console.log(data[i]["qualitySeal"]);
         }
     }else if (title === "Model Completion Status") {
+        counts = {
+            backlog: 0,
+            analysis: 0,
+            review: 0,
+            ready: 0,
+            "no status": 0
+        }
+        sortedData = {
+            backlog: [],
+            analysis: [],
+            review: [],
+            ready: [],
+            "no status": []
+        }
         for (let i = 0; i < data.length; i++) {
+            anyData = false;
             for (let j = 0; j < data[i]["tags"].length; j++){
                 if (data[i]["tags"][j]["tagGroup"]["name"] === "State of Model Completeness"){
                     let key = data[i]["tags"][j]["name"];
                     if (key in counts){
                         counts[key]++;
                         sortedData[key].push(data[i]);
-                    }else{
+                        anyData = true;
+                    }/*else{
                         counts[key] = 1;
                         sortedData[key] = [];
                         sortedData[key].push(data[i]);
-                    }
+                    }*/
 
                 }
+            }
+            //if model completion status hasn't been found
+            if (anyData === false){
+                counts["no status"]++;
+                sortedData["no status"].push(data[i]);
             }
         }
     }
@@ -72,7 +167,7 @@ function qualityModelGraph(data, title) {
         });
     }
 
-    let options = {
+    return {
         chart: {
             plotBackgroundColor: null,
             plotBorderWidth: null,
@@ -81,7 +176,7 @@ function qualityModelGraph(data, title) {
         },
         title: {
             useHTML: true,
-            text: '<h2>' + title + '</h2>'
+            text: '<h2>' + graphTitle + '</h2>'
         },
         tooltip: {
             pointFormat: 'Count: <b>{point.y}</b>'
@@ -93,6 +188,7 @@ function qualityModelGraph(data, title) {
                     click: function(event) {
         
                       let clickedFsSet = sortedData[this.name];
+                      //console.log(data);
                       if (clickedFsSet.length !== 0) {
                         ReactDOM.render(<InfoTable data={clickedFsSet} />, document.getElementById('info'));
         
@@ -127,8 +223,6 @@ function qualityModelGraph(data, title) {
             data: graphData
         }]
     };
-
-    return <ReactHighCharts config={options} />
 }
 
 //=====================================================================================================================================
@@ -162,10 +256,29 @@ function accountResponseGraphs(data) {
         allGraphs.push(AllFactSheetCharts.createHighchart(fsKeys[i], subPercents, fsTypes, data, i));
         //n += 1;
       } else {
-        allGraphs.push(<div key={uuid.v1()} style={missingStyle}><h4>{fsTypes[fsKeys[i]]}</h4><p>No Factsheets</p></div>);
+        allGraphs.push(<div style={missingStyle}><h2>{fsTypes[fsKeys[i]]}</h2><p>No Factsheets</p></div>);
       }
     }
-    return allGraphs;
+
+    let bothGraphsCSS = {width: "100%", overflow: "hidden"};
+    let leftGraphCSS = {width: "600px", float: "left"};
+    let rightGraphCSS = {marginLeft: "620px"};
+
+    let ret = [];
+    for (let i = 0; i < allGraphs.length; i+=2) {
+        ret.push(
+            <div key={uuid.v1()} style={bothGraphsCSS}>
+                <div style={leftGraphCSS}>
+                    {allGraphs[i]}
+                </div>
+                <div style={rightGraphCSS}>
+                    {allGraphs[i+1]}
+                </div>
+            </div>
+        );
+    }
+
+    return ret;
 }
 
 
