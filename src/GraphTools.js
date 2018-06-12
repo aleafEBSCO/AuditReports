@@ -16,7 +16,119 @@ function getGraph(title, subtitle, data){
         return createHistogram(data, title, parseInt(subtitle.substring(percentIndex - 2, percentIndex)));
     } else if (subtitle.indexOf("Lacking Accountable and Responsible") !== -1) {
         return accountResponseGraphs(data);
+    } else if (subtitle.indexOf("Quality Seal") !== -1) {
+        return qualityModelGraph(data, "Quality Seal");
+    } else if (subtitle.indexOf("Model Completion Status") !== -1) {
+        return qualityModelGraph(data, "Model Completion Status");
     }
+}
+
+function qualityModelGraph(data, title) {
+    let counts = {};
+    let sortedData = {};
+
+    if (title === "Quality Seal") {
+        for (let i = 0; i < data.length; i++) {
+            if (data[i]["qualitySeal"] in counts){
+                counts[data[i]["qualitySeal"]]++;
+                sortedData[data[i]["qualitySeal"]].push(data[i]);
+            }else{
+                counts[data[i]["qualitySeal"]] = 1;
+                sortedData[data[i]["qualitySeal"]] = [];
+                sortedData[data[i]["qualitySeal"]].push(data[i]);
+            }
+            //console.log(data[i]["qualitySeal"]);
+        }
+    }else if (title === "Model Completion Status") {
+        for (let i = 0; i < data.length; i++) {
+            for (let j = 0; j < data[i]["tags"].length; j++){
+                if (data[i]["tags"][j]["tagGroup"]["name"] === "State of Model Completeness"){
+                    let key = data[i]["tags"][j]["name"];
+                    if (key in counts){
+                        counts[key]++;
+                        sortedData[key].push(data[i]);
+                    }else{
+                        counts[key] = 1;
+                        sortedData[key] = [];
+                        sortedData[key].push(data[i]);
+                    }
+
+                }
+            }
+        }
+    }
+
+    //console.log(counts);
+    //console.log(sortedData);
+
+    let countKeys = Object.keys(counts);
+
+    //reformat data
+    let graphData = [];
+    for (let i = 0; i < countKeys.length; i++) {
+        graphData.push({
+            name: countKeys[i],
+            y: counts[countKeys[i]]
+        });
+    }
+
+    let options = {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            useHTML: true,
+            text: '<h2>' + title + '</h2>'
+        },
+        tooltip: {
+            pointFormat: 'Count: <b>{point.y}</b>'
+        },
+        plotOptions: {
+            series: {
+                point: {
+                  events: {
+                    click: function(event) {
+        
+                      let clickedFsSet = sortedData[this.name];
+                      if (clickedFsSet.length !== 0) {
+                        ReactDOM.render(<InfoTable data={clickedFsSet} />, document.getElementById('info'));
+        
+                        let top = event.pageY;
+                        $('#info').css('top', `${top + 25}px`);
+                        
+                        // Scroll lock
+                        document.body.style.overflow = 'hidden';
+                        // Toggle backdrop
+                        $('#backdrop').toggleClass('modal-backdrop in');
+                        // Show info
+                        $('#info').show();
+                      }
+                    }
+                  }
+                }
+            },
+            pie: {
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'Seals',
+            colorByPoint: true,
+            data: graphData
+        }]
+    };
+
+    return <ReactHighCharts config={options} />
 }
 
 //=====================================================================================================================================
@@ -64,34 +176,34 @@ function createHistogram(data, fsType, threshold) {
     var filteredData = [[], [], [], [], [], [], [], [], [], [], []];
 
     for (let i = 0; i < data.length; i++) {
-        if (data[i]["completion"]["completion"] < .10) {
+        if (data[i].completion.completion < .10) {
             filteredData[0].push(data[i]);
             y[0] = y[0] + 1;
-        } else if (data[i]["completion"]["completion"] < .20) {
+        } else if (data[i].completion.completion < .20) {
             filteredData[1].push(data[i]);
             y[1] = y[1] + 1;
-        } else if (data[i]["completion"]["completion"] < .30) {
+        } else if (data[i].completion.completion < .30) {
             filteredData[2].push(data[i]);
             y[2] = y[2] + 1;
-        } else if (data[i]["completion"]["completion"] < .40) {
+        } else if (data[i].completion.completion < .40) {
             filteredData[3].push(data[i]);
             y[3] = y[3] + 1;
-        } else if (data[i]["completion"]["completion"] < .50) {
+        } else if (data[i].completion.completion < .50) {
             filteredData[4].push(data[i]);
             y[4] = y[4] + 1;
-        } else if (data[i]["completion"]["completion"] < .60) {
+        } else if (data[i].completion.completion < .60) {
             filteredData[5].push(data[i]);
             y[5] = y[5] + 1;
-        } else if (data[i]["completion"]["completion"] < .70) {
+        } else if (data[i].completion.completion < .70) {
             filteredData[6].push(data[i]);
             y[6] = y[6] + 1;
-        } else if (data[i]["completion"]["completion"] < .80) {
+        } else if (data[i].completion.completion < .80) {
             filteredData[7].push(data[i]);
             y[7] = y[7] + 1;
-        } else if (data[i]["completion"]["completion"] < .90) {
+        } else if (data[i].completion.completion < .90) {
             filteredData[8].push(data[i]);
             y[8] = y[8] + 1;
-        } else if (data[i]["completion"]["completion"] < 1) {
+        } else if (data[i].completion.completion < 1) {
             filteredData[9].push(data[i]);
             y[9] = y[9] + 1;
         } else {

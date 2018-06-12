@@ -29,7 +29,8 @@ class ReportGroup extends Component {
 
     let shouldBeGraphed = false;
     // add more if statements here to decide when graphs should replace text
-    if (subtitle.indexOf("Overall Score") !== -1 || subtitle.indexOf("Lacking Accountable and Responsible") !== -1) {
+    if (subtitle.indexOf("Overall Score") !== -1 || subtitle.indexOf("Lacking Accountable and Responsible") !== -1 
+    || subtitle.indexOf("Quality Seal") !== -1 || subtitle.indexOf("Model Completion Status") !== -1) {
       shouldBeGraphed = true;
     }
 

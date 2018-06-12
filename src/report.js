@@ -259,7 +259,7 @@ export class Report {
           let useCaseNoDocumentLinks = leafNodes.filter(fs => (FilterTools.noDocumentLinks(fs)));
           let useCaseNoLifecycle = this.currentExtraData.filter(fs => FilterTools.noLifecycle(fs));
           let useCaseLackingBoundedContext = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Application")));
-          let useCaseScore = leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .65)));
+          let useCaseScore = leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
     
           reportData = {
             title: "Use Case",
@@ -268,7 +268,7 @@ export class Report {
               "No Document Links": useCaseNoDocumentLinks,
               "No Lifecycle": useCaseNoLifecycle,
               "Lacking Bounded Context": useCaseLackingBoundedContext,
-              "Overall Score < 65%": useCaseScore
+              "Overall Score < 60%": useCaseScore
             }
           };
           break;
