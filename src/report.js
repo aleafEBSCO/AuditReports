@@ -6,7 +6,6 @@ import FilterTools from './FilterTools';
 import Queries from './Queries';
 import Utilities from './Utilities';
 
-import AccordianReport from './AccordianReport';
 import ReportGroup from './ReportGroup';
 
 export class Report {
@@ -14,36 +13,6 @@ export class Report {
   constructor(setup) {
     this.setup = setup;
     this._createConfig();
-  }
-
-  _createConfigOld() {
-    this.config = {
-      // TODO: Use lx.executeGraphQL to get all data. This way the top bar with
-      // default filters will be gone and relevant filters can be implemented
-      // nicely the exact way we want using custom dropdowns.
-      allowTableView: false,
-      facets: [{
-        key: 'main',
-        attributes: [Queries.main],
-        callback: function (data) {
-          this.extraData = {};
-          lx.executeGraphQL(Queries.useCaseExtraData).then((info) => {
-            this.extraData["useCaseExtra"] = info["allFactSheets"]["edges"].map(fs => fs["node"]);
-            lx.executeGraphQL(Queries.epicExtraData).then((info) => {
-              this.extraData["epicExtra"] = info["allFactSheets"]["edges"].map(fs => fs["node"]);
-              lx.executeGraphQL(Queries.boundedContextExtraData).then((info) => {
-                this.extraData["boundedContextExtra"] = info["allFactSheets"]["edges"].map(fs => fs["node"]);
-                lx.executeGraphQL(Queries.ITComponentExtraData).then((info) => {
-                  this.extraData["ITComponentExtra"] = info["allFactSheets"]["edges"].map(fs => fs["node"]);
-                  this.data = data;
-                  this._handleData();
-                });
-              });
-            });
-          });
-        }.bind(this)
-      }]
-    };
   }
 
   _createConfig() {
