@@ -86,8 +86,6 @@ function qualityModelGraph(data, title){
 
 function buildPieChartOptions(title, graphTitle, data) {
 
-
-
     let counts = {};
     let sortedData = {};
     let anyData = false;
@@ -227,7 +225,6 @@ function buildPieChartOptions(title, graphTitle, data) {
     };
 }
 
-
 //=====================================================================================================================================
 
 function accountResponseGraphs(data) {
@@ -292,34 +289,34 @@ function createHistogram(data, fsType, threshold) {
     var filteredData = [[], [], [], [], [], [], [], [], [], [], []];
 
     for (let i = 0; i < data.length; i++) {
-        if (data[i]["completion"]["completion"] < .10) {
+        if (data[i].completion.completion < .10) {
             filteredData[0].push(data[i]);
             y[0] = y[0] + 1;
-        } else if (data[i]["completion"]["completion"] < .20) {
+        } else if (data[i].completion.completion < .20) {
             filteredData[1].push(data[i]);
             y[1] = y[1] + 1;
-        } else if (data[i]["completion"]["completion"] < .30) {
+        } else if (data[i].completion.completion < .30) {
             filteredData[2].push(data[i]);
             y[2] = y[2] + 1;
-        } else if (data[i]["completion"]["completion"] < .40) {
+        } else if (data[i].completion.completion < .40) {
             filteredData[3].push(data[i]);
             y[3] = y[3] + 1;
-        } else if (data[i]["completion"]["completion"] < .50) {
+        } else if (data[i].completion.completion < .50) {
             filteredData[4].push(data[i]);
             y[4] = y[4] + 1;
-        } else if (data[i]["completion"]["completion"] < .60) {
+        } else if (data[i].completion.completion < .60) {
             filteredData[5].push(data[i]);
             y[5] = y[5] + 1;
-        } else if (data[i]["completion"]["completion"] < .70) {
+        } else if (data[i].completion.completion < .70) {
             filteredData[6].push(data[i]);
             y[6] = y[6] + 1;
-        } else if (data[i]["completion"]["completion"] < .80) {
+        } else if (data[i].completion.completion < .80) {
             filteredData[7].push(data[i]);
             y[7] = y[7] + 1;
-        } else if (data[i]["completion"]["completion"] < .90) {
+        } else if (data[i].completion.completion < .90) {
             filteredData[8].push(data[i]);
             y[8] = y[8] + 1;
-        } else if (data[i]["completion"]["completion"] < 1) {
+        } else if (data[i].completion.completion < 1) {
             filteredData[9].push(data[i]);
             y[9] = y[9] + 1;
         } else {

@@ -3,10 +3,6 @@ import PropTypes from 'prop-types';
 import uuid from 'uuid';
 
 import ReportGroup from './ReportGroup';
-import Link from './Link';
-
-import Highcharts from 'highcharts';
-import ReactHighCharts from 'react-highcharts';
 
 class AccordianReport extends Component {
 
@@ -55,13 +51,15 @@ class AccordianReport extends Component {
           break;
       }
 
+      // TODO: Investigate what key and filteredAll do and see if they are actually necessary
       return <ReportGroup title={obj.title} data={obj.data} overallID={overallID} key={i} typeData={filteredAll}/>;
     });
   }
 }
 
 AccordianReport.propTypes = {
-  data: PropTypes.array.isRequired
+  data: PropTypes.array.isRequired,
+  all: PropTypes.array.isRequired
 }
 
 export default AccordianReport;
