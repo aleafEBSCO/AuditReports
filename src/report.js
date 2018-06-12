@@ -21,6 +21,7 @@ export class Report {
       // TODO: Use lx.executeGraphQL to get all data. This way the top bar with
       // default filters will be gone and relevant filters can be implemented
       // nicely the exact way we want using custom dropdowns.
+      allowTableView: false,
       facets: [{
         key: 'main',
         attributes: [Queries.main],
@@ -66,6 +67,7 @@ export class Report {
     }).bind(this));
 
     this.config = {
+      allowTableView: false,
       allowEditing: false
     };
 
