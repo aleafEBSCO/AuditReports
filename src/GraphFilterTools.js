@@ -26,10 +26,43 @@ function lifecycleGraph(data) {
     }
 
     let graphData = graphFormat(counts);
-
     let options = pieChartOptions("Lifecycle", graphData, sortedData);
     return [<ReactHighCharts config={options} />, sortedData["No lifecycle"].length];
     
+}
+
+function businessCriticalityGraph(data) {
+    let counts = {
+        "No Business Criticality": 0,
+        "No Business Criticality Description": 0,
+        "No Business Criticality and No Description": 0,
+        "Has Business Criticality and Description": 0
+    }
+    let sortedData = {
+        "No Business Criticality": [],
+        "No Business Criticality Description": [],
+        "No Business Criticality and No Description": [],
+        "Has Business Criticality and Description": []
+    }
+    for (let i = 0; i < data.length; i++){
+        if ((data[i]["businessCriticality"] === null) && (data[i]["businessCriticalityDescription"] === null || data[i]["businessCriticalityDescription"] === "")){
+            counts["No Business Criticality and No Description"]++;
+            sortedData["No Business Criticality and No Description"].push(data[i]);
+          }else if ((data[i]["businessCriticality"] === null) && !(data[i]["businessCriticalityDescription"] === null || data[i]["businessCriticalityDescription"] === "")){
+            counts["No Business Criticality"]++;
+            sortedData["No Business Criticality"].push(data[i]);
+          }else if (!(data[i]["businessCriticality"] === null) && (data[i]["businessCriticalityDescription"] === null || data[i]["businessCriticalityDescription"] === "")){
+            counts["No Business Criticality Description"]++;
+            sortedData["No Business Criticality Description"].push(data[i]);
+          }else{
+            counts["Has Business Criticality and Description"]++;
+            sortedData["Has Business Criticality and Description"].push(data[i]);
+          }
+    }
+
+    let graphData = graphFormat(counts);
+    let options = pieChartOptions("Business Criticality", graphData, sortedData);
+    return [<ReactHighCharts config={options} />, (counts["No Business Criticality and No Description"] + counts["No Business Criticality"] + counts["No Business Criticality Description"])];
 }
 
 function graphFormat(counts) {
@@ -105,6 +138,7 @@ function pieChartOptions(graphTitle, graphData, sortedData) {
 }
 
 export default {
-    lifecycleGraph: lifecycleGraph
+    lifecycleGraph: lifecycleGraph,
+    businessCriticalityGraph: businessCriticalityGraph
 
 }

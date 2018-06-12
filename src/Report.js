@@ -120,8 +120,9 @@ export class Report {
           // Bounded Context
           //let boundedContextsNoLifecycle = this.currentExtraData.filter(fs => FilterTools.noLifecycle(fs));
           let boundedContextsNoLifecycle = GraphFilterTools.lifecycleGraph(leafNodes);
-          let boundedContextsNoBusinessCritic = leafNodes.filter(fs => (FilterTools.noBusinessCritic(fs)
-          || FilterTools.noBusinessCriticDesc(fs)));
+          //let boundedContextsNoBusinessCritic = leafNodes.filter(fs => (FilterTools.noBusinessCritic(fs)
+          //|| FilterTools.noBusinessCriticDesc(fs)));
+          let boundedContextsNoBusinessCritic = GraphFilterTools.businessCriticalityGraph(leafNodes);
           let boundedContextsNoFunctionFit = leafNodes.filter(fs => (FilterTools.noFunctionFit(fs)
           || FilterTools.noFunctionFitDesc(fs)));
           let boundedContextsLackingDomain = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
@@ -192,7 +193,7 @@ export class Report {
           let itComponentsMissingProvider = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Provider")));
           let itComponentsNoDocumentLinks = leafNodes.filter(fs => (FilterTools.noDocumentLinks(fs)));
           //let itComponentsNoLifecycle = this.currentExtraData.filter(fs => FilterTools.noLifecycle(fs));
-          let itComponentsNoLifecycle = leafNodes.filter(fs => FilterTools.noLifecycle(fs));
+          let itComponentsNoLifecycle = GraphFilterTools.lifecycleGraph(leafNodes);
           //let itComponentsNoTechnicalFit = this.currentExtraData.filter(fs => (FilterTools.noTechnicalFit(fs) || FilterTools.noTechnicalFitDesc(fs)));
           let itComponentsNoTechnicalFit = leafNodes.filter(fs => (FilterTools.noTechnicalFit(fs) || FilterTools.noTechnicalFitDesc(fs)));
           let itComponentsMissingBehaviors = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Interface")));
@@ -236,7 +237,7 @@ export class Report {
           let useCaseLackingDomain = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
           let useCaseNoDocumentLinks = leafNodes.filter(fs => (FilterTools.noDocumentLinks(fs)));
           //let useCaseNoLifecycle = this.currentExtraData.filter(fs => FilterTools.noLifecycle(fs));
-          let useCaseNoLifecycle = leafNodes.filter(fs => FilterTools.noLifecycle(fs));
+          let useCaseNoLifecycle = GraphFilterTools.lifecycleGraph(leafNodes);
           let useCaseLackingBoundedContext = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Application")));
           let useCaseScore = leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
     
@@ -256,7 +257,7 @@ export class Report {
           // Epic
           let epicNoDocumentLinks = leafNodes.filter(fs => (FilterTools.noDocumentLinks(fs)));
           //let epicNoLifecycle = this.currentExtraData.filter(fs => FilterTools.noLifecycle(fs));
-          let epicNoLifecycle = leafNodes.filter(fs => FilterTools.noLifecycle(fs));
+          let epicNoLifecycle = GraphFilterTools.lifecycleGraph(leafNodes);
           let epicNoBusinessValueRisk = leafNodes.filter(fs => (FilterTools.noBusinessValueRisk(fs)));
           let epicNoAffectedDomains = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
           let epicNoAffectedUseCases = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
