@@ -10,12 +10,11 @@ class InfoTable extends Component {
   }
 
   render() {
-
     let sortedData = this.props.data;
     sortedData.sort(function(a, b){
-      if (a["completion"]["completion"] < b["completion"]["completion"]){
+      if (a.completion.completion < b.completion.completion){
         return -1;
-      }else if ((a["completion"]["completion"] > b["completion"]["completion"])){
+      } else if (a.completion.completion > b.completion.completion) {
         return 1
       }
 
@@ -25,19 +24,19 @@ class InfoTable extends Component {
       let aAccountable = [];
       let bAccountable = [];
 
-      for (let i = 0; i < a["subscriptions"]["edges"].length; i++){
-        if (a["subscriptions"]["edges"][i]["node"]["type"] === "RESPONSIBLE") {
-          aResponsible.push(a["subscriptions"]["edges"][i]["node"]["user"]["displayName"]);
-        }else if (a["subscriptions"]["edges"][i]["node"]["type"] === "ACCOUNTABLE") {
-          aAccountable.push(a["subscriptions"]["edges"][i]["node"]["user"]["displayName"]);
+      for (let i = 0; i < a.subscriptions.edges.length; i++){
+        if (a.subscriptions.edges[i].node.type === "RESPONSIBLE") {
+          aResponsible.push(a.subscriptions.edges[i].node.user.displayName);
+        } else if (a.subscriptions.edges[i].node.type === "ACCOUNTABLE") {
+          aAccountable.push(a.subscriptions.edges[i].node.user.displayName);
         }
       }
 
-      for (let i = 0; i < b["subscriptions"]["edges"].length; i++){
-        if (b["subscriptions"]["edges"][i]["node"]["type"] === "RESPONSIBLE") {
-          bResponsible.push(b["subscriptions"]["edges"][i]["node"]["user"]["displayName"]);
-        }else if (b["subscriptions"]["edges"][i]["node"]["type"] === "ACCOUNTABLE") {
-          bAccountable.push(b["subscriptions"]["edges"][i]["node"]["user"]["displayName"]);
+      for (let i = 0; i < b.subscriptions.edges.length; i++){
+        if (b.subscriptions.edges[i].node.type === "RESPONSIBLE") {
+          bResponsible.push(b.subscriptions.edges[i].node.type.displayName);
+        } else if (b.subscriptions.edges[i].node.type === "ACCOUNTABLE") {
+          bAccountable.push(b.subscriptions.edges[i].node.type.displayName);
         }
       }
 
@@ -47,7 +46,6 @@ class InfoTable extends Component {
       aAccountable.sort();
       bAccountable.sort();
 
-      
       if (aResponsible.length === 0 && bResponsible.length !== 0) {
         return 1
       } else if (aResponsible.length !== 0 && bResponsible.length === 0) {
@@ -72,9 +70,9 @@ class InfoTable extends Component {
         return 1;
       }
 
-      if (a["displayName"] < b["displayName"]) {
+      if (a.displayName < b.displayName) {
         return -1;
-      } else if (a["displayName"] > b["displayName"]) {
+      } else if (a.displayName > b.displayName) {
         return 1;
       }
 

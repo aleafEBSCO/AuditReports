@@ -219,7 +219,7 @@ function EISProvider(fs) {
 }
 
 function noLifecycle(fs) {
-  if (fs["lifecycle"] == null || fs["lifecycle"]["phases"].length === 0){
+  if (fs["lifecycle"] === null || fs["lifecycle"]["phases"].length === 0){
     return true;
   }else{
     return false;
