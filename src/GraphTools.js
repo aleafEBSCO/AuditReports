@@ -218,7 +218,7 @@ function buildPieChartOptions(title, graphTitle, data) {
             }
         },
         series: [{
-            name: 'Seals',
+            name: 'data',
             colorByPoint: true,
             data: graphData
         }]
