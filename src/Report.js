@@ -20,6 +20,8 @@ export class Report {
 
   constructor(setup) {
     this.setup = setup;
+    this._handleFactSheetTypeSelect = this._handleFactSheetTypeSelect.bind(this);
+
     this._createConfig();
   }
 
@@ -100,8 +102,7 @@ export class Report {
   }
 
   _handleFactSheetTypeSelect(selectedOption) {
-    console.log('Currently handling fact sheet');
-    console.log(selectedOption);
+    this._update(selectedOption.value);
   }
 
   _handleAuditTypeSelect(selectedOption) {
