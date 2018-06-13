@@ -7,7 +7,6 @@ import Queries from './Queries';
 import Utilities from './Utilities';
 
 import SelectField from './SelectField';
-import ReportGroup from './ReportGroup';
 import ReportData from './ReportData';
 
 const SELECT_FIELD_STYLE = {
@@ -405,6 +404,6 @@ export class Report {
     }
     // TODO: Investigate whether it would be better to have a specific render function
     ReactDOM.render(<ReportData title={this.reportState.selectedFactSheetType} subtitle={this.reportState.selectedAuditType}
-      subID={'whatever'} categoryData={reportData.data[this.reportState.selectedAuditType]} typeData={leafNodes} />, document.getElementById('report'));
+      categoryData={reportData.data[this.reportState.selectedAuditType]} typeData={leafNodes} />, document.getElementById('report'));
   }
 }

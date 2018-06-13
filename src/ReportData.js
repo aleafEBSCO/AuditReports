@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import uuid from 'uuid';
 
 import GraphTools from './GraphTools';
 import Link from './Link';
@@ -12,8 +11,6 @@ class ReportData extends Component {
   }
 
   render() {
-    let innerID = uuid.v1();
-
     let shouldBeGraphed = false;
     // add more if statements here to decide when graphs should replace text
     if (this.props.subtitle.indexOf("Overall Score") !== -1 || this.props.subtitle.indexOf("Lacking Accountable and Responsible") !== -1 
@@ -46,7 +43,6 @@ class ReportData extends Component {
 ReportData.propTypes = {
   title: PropTypes.string.isRequired,
   subtitle: PropTypes.string.isRequired,
-  subID: PropTypes.string.isRequired,
   categoryData: PropTypes.array.isRequired
 }
 

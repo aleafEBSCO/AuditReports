@@ -381,17 +381,13 @@ function buildHistogramOptions(fsType, colorsChoice, x, y, data) {
             
                             let clickedFsSet = [];
                             if (range.length === 0) {
-                                clickedFsSet = Utilities.completionWithinRange(Utilities.getFactSheetsOfType(data, type),
-                                1, 1.1);
+                                clickedFsSet = Utilities.completionWithinRange(data, 1, 1.1);
                             } else if (range.length === 1) {
-                                clickedFsSet = Utilities.completionWithinRange(Utilities.getFactSheetsOfType(data, type),
-                                0, range[0] / 100);
+                                clickedFsSet = Utilities.completionWithinRange(data, 0, range[0] / 100);
                             } else {
-                                clickedFsSet = Utilities.completionWithinRange(Utilities.getFactSheetsOfType(data, type),
-                                range[0] / 100, range[1] / 100);
+                                clickedFsSet = Utilities.completionWithinRange(data, range[0] / 100, range[1] / 100);
                             }
 
-                            // TODO: Make InfoTable dynamic so completion percentage can be shown here
                             ReactDOM.render(<InfoTable data={clickedFsSet} />, document.getElementById('info'));
             
                             let top = event.pageY;
