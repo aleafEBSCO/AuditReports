@@ -144,7 +144,7 @@ export class Report {
     return (
       <span style={SELECT_FIELD_STYLE}>
         <SelectField id='audittype' label='Audit Type' options={auditTypeOptions}
-        value={auditTypeOptions[0]} onChange={this._handleAuditTypeSelect} />
+        value={auditTypeOptions[0]} onChange={this._handleAuditTypeSelect} forceValueUpdate />
       </span>
     );
   }

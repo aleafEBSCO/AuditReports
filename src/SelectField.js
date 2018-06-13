@@ -9,7 +9,7 @@ class SelectField extends Component {
 		this._onChange = this._onChange.bind(this);
 		this.state = {
       selectedOption: this.props.value,
-    }
+		}
 	}
 
 	_onChange(selectedOption) {
@@ -18,6 +18,11 @@ class SelectField extends Component {
 	}
 
 	render() {
+		// This is kind of a weird hack but not sure how else to make it work if the constructor
+		// isn't called every time a <SelectField ... /> element is created (???)
+		if (this.props.forceValueUpdate) {
+			this.state.selectedOption = this.props.value;
+		}
 		const { selectedOption } = this.state;
 
 		return (
@@ -54,7 +59,8 @@ SelectField.propTypes = {
 		value: PropTypes.string.isRequired,
 		label: PropTypes.string.isRequired
 	}),
-	useSmallerFontSize: PropTypes.bool
+	useSmallerFontSize: PropTypes.bool,
+	forceValueUpdate: PropTypes.bool
 };
 
 export default SelectField;
