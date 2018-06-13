@@ -35,19 +35,32 @@ class ReportGroup extends Component {
     }
 
     let shownData;
+    let count = 0;
 
+    //special graphs
     if (shouldBeGraphed){
       // get the graph
       shownData = GraphTools.getGraph(title, subtitle, this.props.typeData);
-    } else {
-      shownData = categoryData.map((fs, i) => this._renderLink(fs, i));
+      count = categoryData.length;
+    }else {
+      //if the data will be displayed as a graph
+      if (categoryData.length === 2 && !(isNaN(categoryData[1]))) {
+        shownData = categoryData[0];
+        count = categoryData[1];
+      //else the data will be displayed as a list of factsheets
+      } else {
+        shownData = categoryData.map((fs, i) => this._renderLink(fs, i));
+        count = categoryData.length;
+      }
     }
+
+    
 
     return (
       <div className="panel panel-default" key={innerID}>
         <div className="panel-heading">
           <h4 className="panel-title">
-            <a data-toggle="collapse" data-parent={"#" + subID} href={"#" + innerID}>{subtitle + " (" + categoryData.length + ")"}</a>
+            <a data-toggle="collapse" data-parent={"#" + subID} href={"#" + innerID}>{subtitle + " (" + count+ ")"}</a>
           </h4>
         </div>
         <div id={innerID} className="panel-collapse collapse">
