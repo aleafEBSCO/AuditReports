@@ -23,27 +23,14 @@ class ReportData extends Component {
 
     let shownData;
 
-    if (shouldBeGraphed){
+    if (shouldBeGraphed) {
       // get the graph
       shownData = GraphTools.getGraph(this.props.title, this.props.subtitle, this.props.typeData);
     } else {
       shownData = this.props.categoryData.map((fs, i) => this._renderLink(fs, i));
     }
 
-    return (
-      <div className="panel panel-default" key={innerID}>
-        <div className="panel-heading">
-          <h4 className="panel-title">
-            <a data-toggle="collapse" data-parent={"#" + this.props.subID} href={"#" + innerID}>{this.props.subtitle + " (" + this.props.categoryData.length + ")"}</a>
-          </h4>
-        </div>
-        <div id={innerID} className="panel-collapse collapse">
-          <div className="panel-body">
-            {shownData}
-          </div>
-        </div>
-      </div>
-    );
+    return shownData;
   }
 
   _renderLink(fs, key) {

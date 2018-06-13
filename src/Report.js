@@ -8,6 +8,7 @@ import Utilities from './Utilities';
 
 import SelectField from './SelectField';
 import ReportGroup from './ReportGroup';
+import ReportData from './ReportData';
 
 const SELECT_FIELD_STYLE = {
 	width: '250px',
@@ -154,8 +155,8 @@ export class Report {
   }
 
   _handleAuditTypeSelect(selectedOption) {
-    console.log('Currently handling audit');
-    console.log(selectedOption);
+    this.reportState.selectedAuditType = selectedOption.value;
+    this._executeQueries();
   }
 
 	init() {
@@ -166,7 +167,7 @@ export class Report {
 			console.log('No fact sheet types');
     }
     ReactDOM.render(this._renderFactSheetSelect(), document.getElementById('factsheet-select'));
-	}
+  }
 
 	_update(factSheetType) {
     if (this.reportState.selectedFactSheetType === factSheetType) {
@@ -174,11 +175,22 @@ export class Report {
 			return;
     }
 
+    // Update to new fact sheet type
+    this.reportState.selectedFactSheetType = factSheetType;
+
     // Render audit select
     ReactDOM.render(this._renderAuditSelect(factSheetType), document.getElementById('audit-select'));
 
-    // TODO: Make the query happen after audit type select
-    // Make relevant queries
+    // Audit type will be the first option right after rendering
+    this.reportState.selectedAuditType = this._getAuditTypeOptions(factSheetType)[0].value;
+
+    this._executeQueries();
+  }
+
+  _executeQueries() {
+    // Shorter names
+    let factSheetType = this.reportState.selectedFactSheetType;
+
 		lx.executeGraphQL(Queries.getQuery(factSheetType)).then(((data) => {
       // Check if type has extra data to get
       if (Queries.getExtraQuery(factSheetType)) {
@@ -193,7 +205,6 @@ export class Report {
   }
 
   _updateData(factSheetType, data) {
-    this.reportState.selectedFactSheetType = factSheetType;
     this.currentData = data.allFactSheets.edges.map(fs => fs.node);
     this._updateReport();
   }
@@ -393,6 +404,7 @@ export class Report {
       }
     }
     // TODO: Investigate whether it would be better to have a specific render function
-    ReactDOM.render(<ReportGroup title={reportData.title} data={reportData.data} overallID={uuid.v1()} typeData={leafNodes} />, document.getElementById('report'));
+    ReactDOM.render(<ReportData title={this.reportState.selectedFactSheetType} subtitle={this.reportState.selectedAuditType}
+      subID={'whatever'} categoryData={reportData.data[this.reportState.selectedAuditType]} typeData={leafNodes} />, document.getElementById('report'));
   }
 }
