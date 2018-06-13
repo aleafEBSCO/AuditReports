@@ -168,8 +168,10 @@ export class Report {
         
         case 'BusinessCapability':
           // Domain
-          let domainLackingBoundedContext = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Application")));
-          let domainLackingUseCases = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
+          //let domainLackingBoundedContext = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Application")));
+          let domainLackingBoundedContext = GraphFilterTools.relationGraph(leafNodes, "Application");
+          //let domainLackingUseCases = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
+          let domainLackingUseCases = GraphFilterTools.relationGraph(leafNodes, "Process");
           let domainScore = leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
 
           reportData = {
