@@ -237,8 +237,10 @@ export class Report {
 
         case 'Interface':
           // Behavior
-          let behaviorsLackingProvider = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "ProviderApplication")));
-          let behaviorsLackingITComponent = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "ITComponent")));
+          //let behaviorsLackingProvider = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "ProviderApplication")));
+          let behaviorsLackingProvider = GraphFilterTools.relationGraph(leafNodes, "ProviderApplication");
+          //let behaviorsLackingITComponent = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "ITComponent")));
+          let behaviorsLackingITComponent = GraphFilterTools.relationGraph(leafNodes, "ITComponent");
           let behaviorsScore = leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
     
           reportData = {
@@ -253,11 +255,14 @@ export class Report {
 
         case 'Process':
           // Use Case
-          let useCaseLackingDomain = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
-          let useCaseNoDocumentLinks = leafNodes.filter(fs => (FilterTools.noDocumentLinks(fs)));
+          //let useCaseLackingDomain = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
+          let useCaseLackingDomain = GraphFilterTools.relationGraph(leafNodes, "BusinessCapability");
+          //let useCaseNoDocumentLinks = leafNodes.filter(fs => (FilterTools.noDocumentLinks(fs)));
+          let useCaseNoDocumentLinks = GraphFilterTools.documentsGraph(leafNodes)
           //let useCaseNoLifecycle = this.currentExtraData.filter(fs => FilterTools.noLifecycle(fs));
           let useCaseNoLifecycle = GraphFilterTools.lifecycleGraph(leafNodes);
-          let useCaseLackingBoundedContext = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Application")));
+          //let useCaseLackingBoundedContext = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Application")));
+          let useCaseLackingBoundedContext = GraphFilterTools.relationGraph(leafNodes, "Application");
           let useCaseScore = leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
     
           reportData = {

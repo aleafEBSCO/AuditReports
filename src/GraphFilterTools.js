@@ -161,7 +161,8 @@ function technicalFitGraph(data) {
 function relationGraph(data, relation) {
     let leanixToEbsco = {'BusinessCapability': 'Domain', 'Process': 'Use Case', 'UserGroup': 'Persona',
     'Project': 'Epic', 'Application': 'Bounded Context', 'Interface': 'Behavior', 'DataObject': 'Data Object',
-    'ITComponent': 'IT Component', 'Provider': 'Provider', 'TechnicalStack': 'Technical Stack'};
+    'ITComponent': 'IT Component', 'Provider': 'Provider', 'TechnicalStack': 'Technical Stack', 
+    'ProviderApplication': 'Provider Application'};
     //relation is expected to be one of the following
     /*"Application" to search for bounded contexts
     *"Process" to search for use cases
