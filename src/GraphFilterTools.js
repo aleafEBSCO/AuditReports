@@ -99,6 +99,54 @@ function functionalFitGraph(data) {
     return [<ReactHighCharts config={options} />, (counts["No Functional Fit and No Description"] + counts["No Functional Fit"] + counts["No Functional Fit Description"])];
 }
 
+function relationGraph(data, relation) {
+    let leanixToEbsco = {'BusinessCapability': 'Domain', 'Process': 'Use Case', 'UserGroup': 'Persona',
+    'Project': 'Epic', 'Application': 'Bounded Context', 'Interface': 'Behavior', 'DataObject': 'Data Object',
+    'ITComponent': 'IT Component', 'Provider': 'Provider', 'TechnicalStack': 'Technical Stack'};
+    //relation is expected to be one of the following
+    /*"Application" to search for bounded contexts
+    *"Process" to search for use cases
+    *"BusinessCapability" to search for domains
+    *"DataObject" to search for data objects
+    *"Provider" to search for providers
+    *"Interface" to seach for behaviors
+    *"ProviderApplication" to search for providers when the type is Behavior/Interface
+    *"ITComponent" to search for IT components
+    */
+    let searchKey = "";
+    if (data.length > 0){
+        searchKey = "rel" + data[0]["type"] + "To" + relation;
+    }else{
+        return <h2>No Results</h2>
+    }
+
+    let noConnection = "No " + leanixToEbsco[relation];
+    let hasConnection = "Has " + leanixToEbsco[relation];
+
+    let counts = {}
+    counts[noConnection] = 0;
+    counts[hasConnection] = 0;
+
+    let sortedData = {};
+    sortedData[noConnection] = [];
+    sortedData[hasConnection] = [];
+
+    for (let i = 0; i < data.length; i++){
+        if (data[i][searchKey]["totalCount"] === 0){
+            counts[noConnection]++;
+            sortedData[noConnection].push(data[i]);
+          }else{
+            counts[hasConnection]++;
+            sortedData[hasConnection].push(data[i]);
+          }
+    }
+
+    let graphData = graphFormat(counts);
+    let options = pieChartOptions(leanixToEbsco[relation], graphData, sortedData);
+    return [<ReactHighCharts config={options} />, counts[noConnection]];
+    
+}
+
 //=====================================================================
 function graphFormat(counts) {
     let countKeys = Object.keys(counts);
@@ -175,6 +223,7 @@ function pieChartOptions(graphTitle, graphData, sortedData) {
 export default {
     lifecycleGraph: lifecycleGraph,
     businessCriticalityGraph: businessCriticalityGraph,
-    functionalFitGraph: functionalFitGraph
+    functionalFitGraph: functionalFitGraph,
+    relationGraph: relationGraph
 
 }

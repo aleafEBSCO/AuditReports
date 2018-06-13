@@ -126,8 +126,10 @@ export class Report {
           //let boundedContextsNoFunctionFit = leafNodes.filter(fs => (FilterTools.noFunctionFit(fs)
           //|| FilterTools.noFunctionFitDesc(fs)));
           let boundedContextsNoFunctionFit = GraphFilterTools.functionalFitGraph(leafNodes);
-          let boundedContextsLackingDomain = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
-          let boundedContextsLackingUseCases = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
+          //let boundedContextsLackingDomain = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
+          let boundedContextsLackingDomain = GraphFilterTools.relationGraph(leafNodes, "BusinessCapability");
+          //let boundedContextsLackingUseCases = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
+          let boundedContextsLackingUseCases = GraphFilterTools.relationGraph(leafNodes, "Process");
           let boundedContextsNoOwnerPersona = leafNodes.filter(fs => (FilterTools.noOwnerPersona(fs)));
           let boundedContextsMultipleOwnerPersona = leafNodes.filter(fs => (FilterTools.multipleOwnerPersona(fs)));
           let boundedContextsLackingDataObjects = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "DataObject")));
