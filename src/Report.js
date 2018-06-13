@@ -130,14 +130,20 @@ export class Report {
           let boundedContextsLackingDomain = GraphFilterTools.relationGraph(leafNodes, "BusinessCapability");
           //let boundedContextsLackingUseCases = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
           let boundedContextsLackingUseCases = GraphFilterTools.relationGraph(leafNodes, "Process");
-          let boundedContextsNoOwnerPersona = leafNodes.filter(fs => (FilterTools.noOwnerPersona(fs)));
-          let boundedContextsMultipleOwnerPersona = leafNodes.filter(fs => (FilterTools.multipleOwnerPersona(fs)));
-          let boundedContextsLackingDataObjects = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "DataObject")));
-          let boundedContextsLackingProvidedBehaviors = leafNodes.filter(fs => (FilterTools.lackingProvidedBehaviors(fs)));
+          //let boundedContextsNoOwnerPersona = leafNodes.filter(fs => (FilterTools.noOwnerPersona(fs)));
+          //let boundedContextsMultipleOwnerPersona = leafNodes.filter(fs => (FilterTools.multipleOwnerPersona(fs)));
+          let boundedContextsNoOwnerPersona = GraphFilterTools.ownerPersonaGraph(leafNodes);
+          //let boundedContextsLackingDataObjects = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "DataObject")));
+          let boundedContextsLackingDataObjects = GraphFilterTools.relationGraph(leafNodes, "DataObject");
+          //let boundedContextsLackingProvidedBehaviors = leafNodes.filter(fs => (FilterTools.lackingProvidedBehaviors(fs)));
+          let boundedContextsLackingProvidedBehaviors = GraphFilterTools.providedBehaviorsGraph(leafNodes);
           //let boundedContextsNoTechnicalFit = this.currentExtraData.filter(fs => FilterTools.noTechnicalFit(fs));
-          let boundedContextsNoTechnicalFit = leafNodes.filter(fs => FilterTools.noTechnicalFit(fs));
-          let boundedContextsNoSoftwareITComponent = leafNodes.filter(fs => (FilterTools.lackingSoftwareITComponent(fs)));
-          let boundedContextsNoDocumentLinks = leafNodes.filter(fs => (FilterTools.noDocumentLinks(fs)));
+          //let boundedContextsNoTechnicalFit = leafNodes.filter(fs => FilterTools.noTechnicalFit(fs));
+          let boundedContextsNoTechnicalFit = GraphFilterTools.technicalFitGraph(leafNodes);
+          //let boundedContextsNoSoftwareITComponent = leafNodes.filter(fs => (FilterTools.lackingSoftwareITComponent(fs)));
+          let boundedContextsNoSoftwareITComponent = GraphFilterTools.softwareITComponentGraph(leafNodes);
+          //let boundedContextsNoDocumentLinks = leafNodes.filter(fs => (FilterTools.noDocumentLinks(fs)));
+          let boundedContextsNoDocumentLinks = GraphFilterTools.documentsGraph(leafNodes);
           let boundedContextsScore = leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .70)))
 
           reportData = {
@@ -149,7 +155,7 @@ export class Report {
               "No Domain": boundedContextsLackingDomain,
               "No Use Cases": boundedContextsLackingUseCases,
               "No Persona with Usage Type 'Owner'": boundedContextsNoOwnerPersona,
-              "Multiple Persona with Usage Type 'Owner'": boundedContextsMultipleOwnerPersona,
+              //"Multiple Persona with Usage Type 'Owner'": boundedContextsMultipleOwnerPersona,
               "No Data Objects": boundedContextsLackingDataObjects,
               "No Provided Behaviors": boundedContextsLackingProvidedBehaviors,
               "No Technical Fit": boundedContextsNoTechnicalFit,
