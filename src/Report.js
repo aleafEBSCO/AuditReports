@@ -86,7 +86,10 @@ export class Report {
   constructor(setup) {
     this.setup = setup;
     this.factSheetTypes = [{type: 'All'}].concat(Utilities.getFactsheetTypesObjects(this.setup.settings.dataModel.factSheets));
-
+    this.reportState = {
+      selectedFactSheetType: null,
+      selectedAuditType: null
+    }
 
     this._handleFactSheetTypeSelect = this._handleFactSheetTypeSelect.bind(this);
     this._handleAuditTypeSelect = this._handleAuditTypeSelect.bind(this);
@@ -118,26 +121,31 @@ export class Report {
     return factSheetTypeOptions;
   }
 
-  _getAuditTypeOptions() {
-    let auditTypeOptions = [];
-    // TODO
-    return auditTypeOptions;
+  _getAuditTypeOptions(factSheetType) {
+    return AUDIT_TYPES[factSheetType].map(type => {
+      return { value: type, label: type };
+    });
   }
 
-  _renderSelectFields() {
+  _renderFactSheetSelect() {
     let factSheetTypeOptions = this._getFactSheetTypeOptions();
-    let auditTypeOptions = this._getAuditTypeOptions();
 
     return (
-      <div>
-        <span style={SELECT_FIELD_STYLE}>
-          <SelectField id='factsheettype' label='Fact Sheet Type' options={factSheetTypeOptions}
-          value={factSheetTypeOptions[0]} onChange={this._handleFactSheetTypeSelect} />
-        </span>
-        <span style={SELECT_FIELD_STYLE}>
-          <SelectField id='audittype' label='Audit Type' options={auditTypeOptions} onChange={this._handleAuditTypeSelect} />
-        </span>
-      </div>
+      <span style={SELECT_FIELD_STYLE}>
+        <SelectField id='factsheettype' label='Fact Sheet Type' options={factSheetTypeOptions}
+        value={factSheetTypeOptions[0]} onChange={this._handleFactSheetTypeSelect} />
+      </span>
+    );
+  }
+
+  _renderAuditSelect(factSheetType) {
+    let auditTypeOptions = this._getAuditTypeOptions(factSheetType);
+
+    return (
+      <span style={SELECT_FIELD_STYLE}>
+        <SelectField id='audittype' label='Audit Type' options={auditTypeOptions}
+        value={auditTypeOptions[0]} onChange={this._handleAuditTypeSelect} />
+      </span>
     );
   }
 
@@ -157,14 +165,19 @@ export class Report {
 		} else {
 			console.log('No fact sheet types');
     }
-    ReactDOM.render(this._renderSelectFields(), document.getElementById('select'));
+    ReactDOM.render(this._renderFactSheetSelect(), document.getElementById('factsheet-select'));
 	}
 
 	_update(factSheetType) {
-    if (this.currentFactSheetType === factSheetType) {
+    if (this.reportState.selectedFactSheetType === factSheetType) {
 			// nothing to do
 			return;
     }
+
+    // Render audit select
+    ReactDOM.render(this._renderAuditSelect(factSheetType), document.getElementById('audit-select'));
+
+    // TODO: Make the query happen after audit type select
     // Make relevant queries
 		lx.executeGraphQL(Queries.getQuery(factSheetType)).then(((data) => {
       // Check if type has extra data to get
@@ -180,7 +193,7 @@ export class Report {
   }
 
   _updateData(factSheetType, data) {
-    this.currentFactSheetType = factSheetType;
+    this.reportState.selectedFactSheetType = factSheetType;
     this.currentData = data.allFactSheets.edges.map(fs => fs.node);
     this._updateReport();
   }
@@ -195,7 +208,7 @@ export class Report {
     };
 
     if (leafNodes) {
-      switch (this.currentFactSheetType) {
+      switch (this.reportState.selectedFactSheetType) {
         case 'All':
           // All Fact Sheets
           let noAccountableAndResponsible = leafNodes.filter(fs => (FilterTools.noResponsible(fs)
