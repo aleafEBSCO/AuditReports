@@ -334,6 +334,49 @@ function ownerPersonaGraph(data) {
     return [<ReactHighCharts config={options} />, sortedData['No "Owner" Persona'].length];
 }
 
+function boundedContextBehaviorGraph(data) {
+    let searchKey1 = "";
+    let searchKey2 = "";
+    if (data.length > 0){
+        searchKey1 = "rel" + data[0]["type"] + "ToApplication";
+        searchKey2 = "rel" + data[0]["type"] + "ToInterface";
+    }else{
+        return <h2>No Results</h2>
+    }
+
+    let counts = {
+        "No Bounded Context": 0,
+        "No Behavior": 0,
+        "No Bounded Context and No Behavior": 0,
+        "Has Bounded Context and Behavior": 0
+    }
+    let sortedData = {
+        "No Bounded Context": [],
+        "No Behavior": [],
+        "No Bounded Context and No Behavior": [],
+        "Has Bounded Context and Behavior": []
+    }
+    for (let i = 0; i < data.length; i++){
+        if ((data[i][searchKey1]["totalCount"] === 0) && (data[i][searchKey2]["totalCount"] === 0)){
+            counts["No Bounded Context and No Behavior"]++;
+            sortedData["No Bounded Context and No Behavior"].push(data[i]);
+          }else if ((data[i][searchKey1]["totalCount"] === 0) && !(data[i][searchKey2]["totalCount"] === 0)){
+            counts["No Bounded Context"]++;
+            sortedData["No Bounded Context"].push(data[i]);
+          }else if (!(data[i][searchKey1]["totalCount"] === 0) && (data[i][searchKey2]["totalCount"] === 0)){
+            counts["No Behavior"]++;
+            sortedData["No Behavior"].push(data[i]);
+          }else{
+            counts["Has Bounded Context and Behavior"]++;
+            sortedData["Has Bounded Context and Behavior"].push(data[i]);
+          }
+    }
+
+    let graphData = graphFormat(counts);
+    let options = pieChartOptions("Bounded Context and Behavior", graphData, sortedData);
+    return [<ReactHighCharts config={options} />, (counts["No Bounded Context and No Behavior"])];
+}
+
 //=====================================================================
 function graphFormat(counts) {
     let countKeys = Object.keys(counts);
@@ -416,6 +459,7 @@ export default {
     relationGraph: relationGraph,
     providedBehaviorsGraph: providedBehaviorsGraph,
     softwareITComponentGraph: softwareITComponentGraph,
-    ownerPersonaGraph: ownerPersonaGraph
+    ownerPersonaGraph: ownerPersonaGraph,
+    boundedContextBehaviorGraph: boundedContextBehaviorGraph
 
 }

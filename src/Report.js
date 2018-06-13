@@ -186,8 +186,9 @@ export class Report {
 
         case 'DataObject':
           // Data Object
-          let dataObjectsNoBoundedContextOrBehavor = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Interface")
-          && FilterTools.lackingRelation(fs, "Application")));
+          //let dataObjectsNoBoundedContextOrBehavor = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Interface")
+          //&& FilterTools.lackingRelation(fs, "Application")));
+          let dataObjectsNoBoundedContextOrBehavor = GraphFilterTools.boundedContextBehaviorGraph(leafNodes);
           let dataObjectsScore = leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .50)));
 
           reportData = {
