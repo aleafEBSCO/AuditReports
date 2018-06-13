@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import uuid from 'uuid';
 
+import ReportData from './ReportData';
 import Link from './Link';
 import GraphTools from './GraphTools';
 
@@ -12,12 +13,21 @@ class ReportGroup extends Component {
   }
 
   render() {
-    var subID = uuid.v1();
+    let subID = uuid.v1();
 
     return (
+      /*
       <div className="panel-group" id="accordianReport">
         {Object.keys(this.props.data).reduce((inner, subtitle) => {
           inner.push(this._renderCategory(this.props.title, subtitle, this.props.data[subtitle], subID));
+          return inner;
+        }, [])}
+      </div>
+      */
+      <div className="panel-group" id="accordianReport">
+        {Object.keys(this.props.data).reduce((inner, subtitle) => {
+          inner.push(<ReportData title={this.props.title} subtitle={subtitle} subID={subID}
+          categoryData={this.props.data[subtitle]} typeData={this.props.typeData} />);
           return inner;
         }, [])}
       </div>
@@ -71,8 +81,9 @@ class ReportGroup extends Component {
 
 ReportGroup.propTypes = {
   title: PropTypes.string.isRequired,
+  overallID: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired,
-  overallID: PropTypes.string.isRequired
+  typeData: PropTypes.array.isRequired
 }
 
 export default ReportGroup;

@@ -16,77 +16,11 @@ const SELECT_FIELD_STYLE = {
 	marginRight: '1em'
 };
 
-const AUDIT_TYPES = {
-  'All': [
-    'Lacking Accountable and Responsible',
-    'Quality Seal is Broken',
-    "Model Completion Status is not 'Ready'"
-  ],
-  'Application': [
-    'No Lifecycle',
-    'Missing Business Criticality or Business Criticality without Description',
-    'Missing Functional Fit or Functional Fit without a Description',
-    'No Domain',
-    'No Use Cases',
-    "No Persona with Usage Type 'Owner'",
-    "Multiple Persona with Usage Type 'Owner'",
-    'No Data Objects',
-    'No Provided Behaviors',
-    'No Technical Fit',
-    "No IT Component of Type 'Software'",
-    'No Document Links',
-    'Overall Score < 70%'
-  ],
-  'BusinessCapability': [
-    'Lacking Bounded Context',
-    'Lacking Use Cases',
-    'Overall Score < 60%'
-  ],
-  'DataObject': [
-    'No Bounded Context or Behavior',
-    'Overall Score < 50%'
-  ],
-  'ITComponent': [
-    'Missing Provider',
-    'No Document Links',
-    'No Lifecycle',
-    'Missing Technical Fit or Technical Fit Desicription',
-    'Missing Behaviors',
-    "Missing Persona of Type 'Owner' (when provider is EIS)",
-    "Multiple Persona of Type 'Owner'",
-    'Overall Score < 70%'
-  ],
-  'Interface': [
-    'No Provider',
-    'No IT Components',
-    'Overall Score < 60%'
-  ],
-  'Process': [
-    'Lacking Domain',
-    'No Document Links',
-    'No Lifecycle',
-    'Lacking Bounded Context',
-    'Overall Score < 60%'
-  ],
-  'Project': [
-    'No Document Links',
-    'No Lifecycle',
-    'No Business Value & Risk',
-    'No Affected Domains',
-    'No Affected Use Cases',
-    'Overall Score < 50%'
-  ],
-  'Persona': [
-    'Overall Score < 50%'
-  ]
-}
-
 export class Report {
 
   constructor(setup) {
     this.setup = setup;
     this._handleFactSheetTypeSelect = this._handleFactSheetTypeSelect.bind(this);
-    this._handleAuditTypeSelect = this._handleAuditTypeSelect.bind(this);
 
     this._createConfig();
   }
@@ -161,7 +95,7 @@ export class Report {
           value={factSheetTypeOptions[0]} onChange={this._handleFactSheetTypeSelect} />
         </span>
         <span style={SELECT_FIELD_STYLE}>
-          <SelectField id='audittype' label='Audit Type' options={auditTypeOptions} onChange={this._handleAuditTypeSelect} />
+          <SelectField id='audittype' label='Audit Type' options={auditTypeOptions} onChange={this._handleFactSheetTypeSelect} />
         </span>
       </div>
     );
@@ -187,7 +121,7 @@ export class Report {
 	}
 
 	_update(factSheetType) {
-    if (this.currentFactSheetType === factSheetType) {
+		if (this.currentFactSheetType === factSheetType) {
 			// nothing to do
 			return;
     }
@@ -213,7 +147,7 @@ export class Report {
 
   _updateReport() {
     // Get only leaf nodes ie, no parents or children
-    // NOTE: leafNodes will only be of the current fact sheet type due to separation of queries
+    // NOTE: leafNodes will only be of this.currentFactSheetType due to separation of queries
     let leafNodes = this.currentData.filter(fs => FilterTools.leafNodes(fs));
     let reportData = {
       title: '',

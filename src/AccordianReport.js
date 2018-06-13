@@ -52,7 +52,7 @@ class AccordianReport extends Component {
       }
 
       // TODO: Investigate what key and filteredAll do and see if they are actually necessary
-      return <ReportGroup title={obj.title} data={obj.data} overallID={overallID} key={i} typeData={filteredAll}/>;
+      return <ReportGroup title={obj.title} overallID={overallID}  key={i} data={obj.data} typeData={filteredAll}/>;
     });
   }
 }
