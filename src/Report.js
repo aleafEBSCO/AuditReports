@@ -202,15 +202,21 @@ export class Report {
         
         case 'ITComponent':
           // IT Component
-          let itComponentsMissingProvider = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Provider")));
-          let itComponentsNoDocumentLinks = leafNodes.filter(fs => (FilterTools.noDocumentLinks(fs)));
+          //let itComponentsMissingProvider = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Provider")));
+          let itComponentsMissingProvider = GraphFilterTools.relationGraph(leafNodes, "Provider");
+          //let itComponentsNoDocumentLinks = leafNodes.filter(fs => (FilterTools.noDocumentLinks(fs)));
+          let itComponentsNoDocumentLinks = GraphFilterTools.documentsGraph(leafNodes);
           //let itComponentsNoLifecycle = this.currentExtraData.filter(fs => FilterTools.noLifecycle(fs));
           let itComponentsNoLifecycle = GraphFilterTools.lifecycleGraph(leafNodes);
           //let itComponentsNoTechnicalFit = this.currentExtraData.filter(fs => (FilterTools.noTechnicalFit(fs) || FilterTools.noTechnicalFitDesc(fs)));
-          let itComponentsNoTechnicalFit = leafNodes.filter(fs => (FilterTools.noTechnicalFit(fs) || FilterTools.noTechnicalFitDesc(fs)));
-          let itComponentsMissingBehaviors = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Interface")));
-          let itComponentsNoOwnerPersona = leafNodes.filter(fs => (FilterTools.noOwnerPersona(fs) && FilterTools.EISProvider(fs)));
-          let itComponentsMultipleOwnerPersona = leafNodes.filter(fs => (FilterTools.multipleOwnerPersona(fs)));
+          //let itComponentsNoTechnicalFit = leafNodes.filter(fs => (FilterTools.noTechnicalFit(fs) || FilterTools.noTechnicalFitDesc(fs)));
+          let itComponentsNoTechnicalFit = GraphFilterTools.technicalFitGraph(leafNodes);
+          //let itComponentsMissingBehaviors = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Interface")));
+          let itComponentsMissingBehaviors = GraphFilterTools.relationGraph(leafNodes, "Interface");
+          //let itComponentsNoOwnerPersona = leafNodes.filter(fs => (FilterTools.noOwnerPersona(fs) && FilterTools.EISProvider(fs)));
+          let itComponentsNoOwnerPersona = GraphFilterTools.EISownerPersonaGraph(leafNodes);
+          //let itComponentsMultipleOwnerPersona = leafNodes.filter(fs => (FilterTools.multipleOwnerPersona(fs)));
+          let itComponentsMultipleOwnerPersona = GraphFilterTools.ownerPersonaGraph(leafNodes);
           let itComponentsScore = leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .70)));
 
           reportData = {
@@ -221,8 +227,9 @@ export class Report {
               "No Lifecycle": itComponentsNoLifecycle,
               "Missing Technical Fit or Technical Fit Description": itComponentsNoTechnicalFit,
               "Missing Behaviors": itComponentsMissingBehaviors,
-              "Missing Persona of Type Owner (when provider is EIS)": itComponentsNoOwnerPersona,
-              "Multiple Persona of Type Owner": itComponentsMultipleOwnerPersona,
+              "Missing Persona of Type 'Owner' (when provider is EIS)": itComponentsNoOwnerPersona,
+              //"Multiple Persona of Type Owner": itComponentsMultipleOwnerPersona,
+              "No Persona of Type 'Owner'": itComponentsMultipleOwnerPersona,
               "Overall Score < 70%": itComponentsScore
             }
           };

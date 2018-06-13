@@ -27,7 +27,7 @@ function lifecycleGraph(data) {
 
     let graphData = graphFormat(counts);
     let options = pieChartOptions("Lifecycle", graphData, sortedData);
-    return [<ReactHighCharts config={options} />, sortedData["No lifecycle"].length];
+    return [<ReactHighCharts config={options} />, counts["No lifecycle"]];
     
 }
 
@@ -334,6 +334,60 @@ function ownerPersonaGraph(data) {
     return [<ReactHighCharts config={options} />, sortedData['No "Owner" Persona'].length];
 }
 
+function EISownerPersonaGraph(data) {
+    let counts = {
+        'No "Owner" Persona': 0,
+        'One "Owner" Persona': 0,
+        'Multiple "Owner" Persona': 0
+    }
+    let sortedData = {
+        'No "Owner" Persona': [],
+        'One "Owner" Persona': [],
+        'Multiple "Owner" Persona': []
+    }
+
+    var ownerCount = 0;
+    var EISProvider = false;
+    var searchKey = "";
+
+    for (let i = 0; i < data.length; i++){
+        searchKey = "rel" + data[i]["type"] + "ToProvider";
+        ownerCount = 0;
+        EISProvider = false;
+        for (let j = 0; j < data[i]["rel" + data[i]["type"] + "ToUserGroup"]["edges"].length; j++) {
+            if (data[i]["rel" + data[i]["type"] + "ToUserGroup"]["edges"][j]["node"]["usageType"] === "owner"){
+                ownerCount++;
+              }
+        }
+
+        
+        for (let j = 0; j < data[i][searchKey]["edges"].length; j++) {
+            if (data[i][searchKey]["edges"][j]["node"]["factSheet"]["displayName"] === "EIS"){
+                EISProvider = true;
+            }
+        }
+
+        if (EISProvider) {
+            if (ownerCount === 0) {
+                counts['No "Owner" Persona']++;
+                sortedData['No "Owner" Persona'].push(data[i]);
+            }else if (ownerCount === 1) {
+                counts['One "Owner" Persona']++;
+                sortedData['One "Owner" Persona'].push(data[i]);
+            }else{
+                counts['Multiple "Owner" Persona']++;
+                sortedData['Multiple "Owner" Persona'].push(data[i]);
+            }
+        }
+        
+    }
+
+    let graphData = graphFormat(counts);
+    let options = pieChartOptions('"Owner" Persona When Provider is EIS', graphData, sortedData);
+    return [<ReactHighCharts config={options} />, sortedData['No "Owner" Persona'].length];
+
+}
+
 function boundedContextBehaviorGraph(data) {
     let searchKey1 = "";
     let searchKey2 = "";
@@ -460,6 +514,7 @@ export default {
     providedBehaviorsGraph: providedBehaviorsGraph,
     softwareITComponentGraph: softwareITComponentGraph,
     ownerPersonaGraph: ownerPersonaGraph,
+    EISownerPersonaGraph: EISownerPersonaGraph,
     boundedContextBehaviorGraph: boundedContextBehaviorGraph
 
 }
