@@ -6,7 +6,15 @@ import FilterTools from './FilterTools';
 import Queries from './Queries';
 import Utilities from './Utilities';
 
+import SelectField from './SelectField';
 import ReportGroup from './ReportGroup';
+
+const SELECT_FIELD_STYLE = {
+	width: '250px',
+	display: 'inline-block',
+	verticalAlign: 'top',
+	marginRight: '1em'
+};
 
 export class Report {
 
@@ -19,13 +27,13 @@ export class Report {
     this.factSheetTypes = [{type: 'All'}];
     this.factSheetTypes = this.factSheetTypes.concat(Utilities.getFactsheetTypesObjects(this.setup.settings.dataModel.factSheets));
 
-    const dropdownEntries = [];
+    const typeDropdown = [];
 
     this.factSheetTypes.forEach(((value) => {
       const key = value.type;
       // No audit data for Provider and TechnicalStack
       if (key !== 'Provider' && key !== 'TechnicalStack') {
-        dropdownEntries.push({
+        typeDropdown.push({
           id: key,
           name: Utilities.leanIXToEbscoTypes(key),
           callback: ((currentEntry) => {
@@ -40,15 +48,65 @@ export class Report {
       allowEditing: false
     };
 
-    if (dropdownEntries.length !== 0) {
+    if (typeDropdown.length !== 0) {
       this.config.menuActions = {
         customDropdowns: [{
           id: 'FACTSHEET_TYPE_DROPDOWN',
           name: 'Fact Sheet Type',
-          entries: dropdownEntries
+          entries: typeDropdown
         }]
       };
     }
+  }
+
+  _getFactSheetTypeOptions() {
+    let factSheetTypeOptions = [];
+
+    this.factSheetTypes.forEach(((value) => {
+      const key = value.type;
+      // No audit data for Provider and TechnicalStack
+      if (key !== 'Provider' && key !== 'TechnicalStack') {
+        factSheetTypeOptions.push({
+          value: key,
+          label: Utilities.leanIXToEbscoTypes(key)
+        });
+      }
+    }).bind(this));
+
+    return factSheetTypeOptions;
+  }
+
+  _getAuditTypeOptions() {
+    let auditTypeOptions = [];
+    // TODO
+    return auditTypeOptions;
+  }
+
+  _renderSelectFields() {
+    let factSheetTypeOptions = this._getFactSheetTypeOptions();
+    let auditTypeOptions = this._getAuditTypeOptions();
+
+    return (
+      <div>
+        <span style={SELECT_FIELD_STYLE}>
+          <SelectField id='factsheettype' label='Fact Sheet Type' options={factSheetTypeOptions}
+          value={factSheetTypeOptions[0]} onChange={this._handleFactSheetTypeSelect} />
+        </span>
+        <span style={SELECT_FIELD_STYLE}>
+          <SelectField id='audittype' label='Audit Type' options={auditTypeOptions} onChange={this._handleFactSheetTypeSelect} />
+        </span>
+      </div>
+    );
+  }
+
+  _handleFactSheetTypeSelect(selectedOption) {
+    console.log('Currently handling fact sheet');
+    console.log(selectedOption);
+  }
+
+  _handleAuditTypeSelect(selectedOption) {
+    console.log('Currently handling audit');
+    console.log(selectedOption);
   }
 
 	init() {
@@ -57,7 +115,8 @@ export class Report {
 			this._update(this.factSheetTypes[0].type);
 		} else {
 			console.log('No fact sheet types');
-		}
+    }
+    ReactDOM.render(this._renderSelectFields(), document.getElementById('select'));
 	}
 
 	_update(factSheetType) {
