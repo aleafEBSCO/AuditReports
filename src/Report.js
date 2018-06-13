@@ -279,12 +279,16 @@ export class Report {
 
         case 'Project':
           // Epic
-          let epicNoDocumentLinks = leafNodes.filter(fs => (FilterTools.noDocumentLinks(fs)));
+          //let epicNoDocumentLinks = leafNodes.filter(fs => (FilterTools.noDocumentLinks(fs)));
+          let epicNoDocumentLinks = GraphFilterTools.documentsGraph(leafNodes);
           //let epicNoLifecycle = this.currentExtraData.filter(fs => FilterTools.noLifecycle(fs));
           let epicNoLifecycle = GraphFilterTools.lifecycleGraph(leafNodes);
-          let epicNoBusinessValueRisk = leafNodes.filter(fs => (FilterTools.noBusinessValueRisk(fs)));
-          let epicNoAffectedDomains = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
-          let epicNoAffectedUseCases = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
+          //let epicNoBusinessValueRisk = leafNodes.filter(fs => (FilterTools.noBusinessValueRisk(fs)));
+          let epicNoBusinessValueRisk = GraphFilterTools.businessValueRiskGraph(leafNodes);
+          //let epicNoAffectedDomains = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
+          let epicNoAffectedDomains = GraphFilterTools.relationGraph(leafNodes, "BusinessCapability");
+          //let epicNoAffectedUseCases = leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
+          let epicNoAffectedUseCases = GraphFilterTools.relationGraph(leafNodes, "Process");
           let epicScore = leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .50)));
     
           reportData = {

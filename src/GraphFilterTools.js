@@ -432,6 +432,40 @@ function boundedContextBehaviorGraph(data) {
     return [<ReactHighCharts config={options} />, (counts["No Bounded Context and No Behavior"])];
 }
 
+function businessValueRiskGraph(data) {
+    let counts = {
+        "No Value": 0,
+        "No Risk": 0,
+        "No Value and No Risk": 0,
+        "Has Value and Risk": 0
+    }
+    let sortedData = {
+        "No Value": [],
+        "No Risk": [],
+        "No Value and No Risk": [],
+        "Has Value and Risk": []
+    }
+    for (let i = 0; i < data.length; i++){
+        if ((data[i]["businessValue"] === null) && (data[i]["projectRisk"] === null)){
+            counts["No Value and No Risk"]++;
+            sortedData["No Value and No Risk"].push(data[i]);
+          }else if ((data[i]["businessValue"] === null) && !(data[i]["projectRisk"] === null)){
+            counts["No Value"]++;
+            sortedData["No Value"].push(data[i]);
+          }else if (!(data[i]["businessValue"] === null) && (data[i]["projectRisk"] === null)){
+            counts["No Risk"]++;
+            sortedData["No Risk"].push(data[i]);
+          }else{
+            counts["Has Value and Risk"]++;
+            sortedData["Has Value and Risk"].push(data[i]);
+          }
+    }
+
+    let graphData = graphFormat(counts);
+    let options = pieChartOptions("Business Value and Risk", graphData, sortedData);
+    return [<ReactHighCharts config={options} />, (counts["No Value and No Risk"])];
+}
+
 //=====================================================================
 function graphFormat(counts) {
     let countKeys = Object.keys(counts);
@@ -516,6 +550,7 @@ export default {
     softwareITComponentGraph: softwareITComponentGraph,
     ownerPersonaGraph: ownerPersonaGraph,
     EISownerPersonaGraph: EISownerPersonaGraph,
-    boundedContextBehaviorGraph: boundedContextBehaviorGraph
+    boundedContextBehaviorGraph: boundedContextBehaviorGraph,
+    businessValueRiskGraph: businessValueRiskGraph
 
 }
