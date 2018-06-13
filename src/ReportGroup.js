@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import uuid from 'uuid';
 
 import Link from './Link';
-import GraphTools from './GraphTools';
 
 class ReportGroup extends Component {
 
@@ -27,34 +26,8 @@ class ReportGroup extends Component {
   _renderCategory(title, subtitle, categoryData, subID) {
     let innerID = uuid.v1();
 
-    let shouldBeGraphed = false;
-    // add more if statements here to decide when graphs should replace text
-    if (subtitle.indexOf("Overall Score") !== -1 || subtitle.indexOf("Lacking Accountable and Responsible") !== -1 
-    || subtitle.indexOf("Quality Seal") !== -1 || subtitle.indexOf("Model Completion Status") !== -1) {
-      shouldBeGraphed = true;
-    }
-
-    let shownData;
-    let count = 0;
-
-    //special graphs
-    if (shouldBeGraphed){
-      // get the graph
-      shownData = GraphTools.getGraph(title, subtitle, this.props.typeData);
-      count = categoryData.length;
-    }else {
-      //if the data will be displayed as a graph
-      if (categoryData.length === 2 && !(isNaN(categoryData[1]))) {
-        shownData = categoryData[0];
-        count = categoryData[1];
-      //else the data will be displayed as a list of factsheets
-      } else {
-        shownData = categoryData.map((fs, i) => this._renderLink(fs, i));
-        count = categoryData.length;
-      }
-    }
-
-    
+    let shownData = categoryData[0];
+    let count = categoryData[1];
 
     return (
       <div className="panel panel-default" key={innerID}>
