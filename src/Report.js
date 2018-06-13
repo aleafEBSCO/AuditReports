@@ -85,6 +85,9 @@ export class Report {
 
   constructor(setup) {
     this.setup = setup;
+    this.factSheetTypes = [{type: 'All'}].concat(Utilities.getFactsheetTypesObjects(this.setup.settings.dataModel.factSheets));
+
+
     this._handleFactSheetTypeSelect = this._handleFactSheetTypeSelect.bind(this);
     this._handleAuditTypeSelect = this._handleAuditTypeSelect.bind(this);
 
@@ -92,39 +95,10 @@ export class Report {
   }
 
   _createConfig() {
-    this.factSheetTypes = [{type: 'All'}];
-    this.factSheetTypes = this.factSheetTypes.concat(Utilities.getFactsheetTypesObjects(this.setup.settings.dataModel.factSheets));
-
-    const typeDropdown = [];
-
-    this.factSheetTypes.forEach(((value) => {
-      const key = value.type;
-      // No audit data for Provider and TechnicalStack
-      if (key !== 'Provider' && key !== 'TechnicalStack') {
-        typeDropdown.push({
-          id: key,
-          name: Utilities.leanIXToEbscoTypes(key),
-          callback: ((currentEntry) => {
-            this._update(currentEntry.id);
-          }).bind(this)
-        });
-      }
-    }).bind(this));
-
     this.config = {
       allowTableView: false,
       allowEditing: false
     };
-
-    if (typeDropdown.length !== 0) {
-      this.config.menuActions = {
-        customDropdowns: [{
-          id: 'FACTSHEET_TYPE_DROPDOWN',
-          name: 'Fact Sheet Type',
-          entries: typeDropdown
-        }]
-      };
-    }
   }
 
   _getFactSheetTypeOptions() {
