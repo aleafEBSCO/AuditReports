@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import uuid from 'uuid';
 
-import FilterTools from './FilterTools';
 import Queries from './Queries';
 import Utilities from './Utilities';
 import GraphFilterTools from './GraphFilterTools';
@@ -193,23 +192,23 @@ export class Report {
     let factSheetType = this.reportState.selectedFactSheetType;
 
 		lx.executeGraphQL(Queries.getQuery(factSheetType)).then(((data) => {
-      // Check if type has extra data to get
-      /*
-      if (Queries.getExtraQuery(factSheetType)) {
-        lx.executeGraphQL(Queries.getExtraQuery(factSheetType)).then((extraData) => {
-          this.currentExtraData = extraData.allFactSheets.edges.map(fs => fs.node).filter(node => FilterTools.leafNodes(node));
-          this._updateData(factSheetType, data);
-        });
-      } else {
-        */
-        this._updateData(factSheetType, data);
-      //}
+      this._updateData(factSheetType, data);
     }).bind(this));
+  }
+
+  _leafNodeFilter(data) {
+    return data.filter(fs => {
+      if (fs["relToChild"]["totalCount"] === 0 && fs["relToParent"]["totalCount"] === 0){
+        return true;
+      } else {
+        return false;
+      }
+    });
   }
 
   _updateData(factSheetType, data) {
     this.currentData = data.allFactSheets.edges.map(fs => fs.node);
-    this.leafNodes = this.currentData.filter(fs => FilterTools.leafNodes(fs));
+    this.leafNodes = this._leafNodeFilter(this.currentData);
     this._updateAudits();
   }
 

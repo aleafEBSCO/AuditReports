@@ -1001,21 +1001,20 @@ function pieChartOptions(graphTitle, graphData, sortedData) {
 }
 
 export default {
-    accountableResponsibleGraphs: accountableResponsibleGraphs,
-    qualitySealGraphs: qualitySealGraphs,
-    modelCompletionGraphs: modelCompletionGraphs,
-    lifecycleGraph: lifecycleGraph,
-    documentsGraph: documentsGraph,
-    businessCriticalityGraph: businessCriticalityGraph,
-    functionalFitGraph: functionalFitGraph,
-    technicalFitGraph: technicalFitGraph,
-    relationGraph: relationGraph,
-    providedBehaviorsGraph: providedBehaviorsGraph,
-    softwareITComponentGraph: softwareITComponentGraph,
-    ownerPersonaGraph: ownerPersonaGraph,
-    EISownerPersonaGraph: EISownerPersonaGraph,
-    boundedContextBehaviorGraph: boundedContextBehaviorGraph,
-    businessValueRiskGraph: businessValueRiskGraph,
-    createHistogram: createHistogram
-
+  accountableResponsibleGraphs: accountableResponsibleGraphs,
+  qualitySealGraphs: qualitySealGraphs,
+  modelCompletionGraphs: modelCompletionGraphs,
+  lifecycleGraph: lifecycleGraph,
+  documentsGraph: documentsGraph,
+  businessCriticalityGraph: businessCriticalityGraph,
+  functionalFitGraph: functionalFitGraph,
+  technicalFitGraph: technicalFitGraph,
+  relationGraph: relationGraph,
+  providedBehaviorsGraph: providedBehaviorsGraph,
+  softwareITComponentGraph: softwareITComponentGraph,
+  ownerPersonaGraph: ownerPersonaGraph,
+  EISownerPersonaGraph: EISownerPersonaGraph,
+  boundedContextBehaviorGraph: boundedContextBehaviorGraph,
+  businessValueRiskGraph: businessValueRiskGraph,
+  createHistogram: createHistogram
 }
