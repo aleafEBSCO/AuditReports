@@ -49,6 +49,7 @@
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-highcharts": "^16.0.2",
+    "react-select": "^1.2.1",
     "uuid": "^3.2.1"
   }
 }
