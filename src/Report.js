@@ -198,7 +198,7 @@ export class Report {
 
   _leafNodeFilter(data) {
     return data.filter(fs => {
-      if (fs["relToChild"]["totalCount"] === 0 && fs["relToParent"]["totalCount"] === 0){
+      if (fs["relToChild"]["totalCount"] === 0 && fs["relToParent"]["totalCount"] === 0) {
         return true;
       } else {
         return false;

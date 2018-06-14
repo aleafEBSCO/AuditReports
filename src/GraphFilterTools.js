@@ -58,10 +58,10 @@ function accountableResponsibleGraphs(data) {
         for (let j = 0; j < currentData.length; j++) {
             account = false;
             response = false;
-            for (let k = 0; k < currentData[j]["subscriptions"]["edges"].length; k++){
-                if (currentData[j]["subscriptions"]["edges"][k]["node"]["type"] === "ACCOUNTABLE"){
+            for (let k = 0; k < currentData[j]["subscriptions"]["edges"].length; k++) {
+                if (currentData[j]["subscriptions"]["edges"][k]["node"]["type"] === "ACCOUNTABLE") {
                     account = true;
-                } else if (currentData[j]["subscriptions"]["edges"][k]["node"]["type"] === "RESPONSIBLE"){
+                } else if (currentData[j]["subscriptions"]["edges"][k]["node"]["type"] === "RESPONSIBLE") {
                     response = true;
                 }
             }
@@ -274,8 +274,8 @@ function modelCompletionGraphs(data) {
         let anyData = false;
         for (let j = 0; j < currentData.length; j++) {
             anyData = false;
-            for (let k = 0; k < currentData[j]["tags"].length; k++){
-                if (currentData[j]["tags"][k]["tagGroup"]["name"] === "State of Model Completeness"){
+            for (let k = 0; k < currentData[j]["tags"].length; k++) {
+                if (currentData[j]["tags"][k]["tagGroup"]["name"] === "State of Model Completeness") {
                     let key = currentData[j]["tags"][k]["name"];
                     graphsInfo[keys[i]].counts[key]++;
                     graphsInfo[keys[i]].sortedData[key].push(currentData[j]);
@@ -283,7 +283,7 @@ function modelCompletionGraphs(data) {
                 }
             }
             //if model completion status hasn't been found
-            if (anyData === false){
+            if (anyData === false) {
                 graphsInfo[keys[i]].counts["no status"]++;
                 graphsInfo[keys[i]].sortedData["no status"].push(currentData[j]);
             }
@@ -344,8 +344,8 @@ function lifecycleGraph(data) {
         "No lifecycle": [],
         "Has lifecycle": []
     }
-    for (let i = 0; i < data.length; i++){
-        if (data[i]["lifecycle"] === null || data[i]["lifecycle"]["phases"].length === 0){
+    for (let i = 0; i < data.length; i++) {
+        if (data[i]["lifecycle"] === null || data[i]["lifecycle"]["phases"].length === 0) {
             counts["No lifecycle"]++;
             sortedData["No lifecycle"].push(data[i]);
           } else {
@@ -369,8 +369,8 @@ function documentsGraph(data) {
         "No documents": [],
         "Has documents": []
     }
-    for (let i = 0; i < data.length; i++){
-        if (data[i]["documents"]["totalCount"] === 0){
+    for (let i = 0; i < data.length; i++) {
+        if (data[i]["documents"]["totalCount"] === 0) {
             counts["No documents"]++;
             sortedData["No documents"].push(data[i]);
           } else {
@@ -398,14 +398,14 @@ function businessCriticalityGraph(data) {
         "No Business Criticality and No Description": [],
         "Has Business Criticality and Description": []
     }
-    for (let i = 0; i < data.length; i++){
-        if ((data[i]["businessCriticality"] === null) && (data[i]["businessCriticalityDescription"] === null || data[i]["businessCriticalityDescription"] === "")){
+    for (let i = 0; i < data.length; i++) {
+        if ((data[i]["businessCriticality"] === null) && (data[i]["businessCriticalityDescription"] === null || data[i]["businessCriticalityDescription"] === "")) {
             counts["No Business Criticality and No Description"]++;
             sortedData["No Business Criticality and No Description"].push(data[i]);
-          } else if ((data[i]["businessCriticality"] === null) && !(data[i]["businessCriticalityDescription"] === null || data[i]["businessCriticalityDescription"] === "")){
+          } else if ((data[i]["businessCriticality"] === null) && !(data[i]["businessCriticalityDescription"] === null || data[i]["businessCriticalityDescription"] === "")) {
             counts["No Business Criticality"]++;
             sortedData["No Business Criticality"].push(data[i]);
-          } else if (!(data[i]["businessCriticality"] === null) && (data[i]["businessCriticalityDescription"] === null || data[i]["businessCriticalityDescription"] === "")){
+          } else if (!(data[i]["businessCriticality"] === null) && (data[i]["businessCriticalityDescription"] === null || data[i]["businessCriticalityDescription"] === "")) {
             counts["No Business Criticality Description"]++;
             sortedData["No Business Criticality Description"].push(data[i]);
           } else {
@@ -432,14 +432,14 @@ function functionalFitGraph(data) {
         "No Functional Fit and No Description": [],
         "Has Functional Fit and Description": []
     }
-    for (let i = 0; i < data.length; i++){
-        if ((data[i]["functionalSuitability"] === null) && (data[i]["functionalSuitabilityDescription"] === null || data[i]["functionalSuitabilityDescription"] === "")){
+    for (let i = 0; i < data.length; i++) {
+        if ((data[i]["functionalSuitability"] === null) && (data[i]["functionalSuitabilityDescription"] === null || data[i]["functionalSuitabilityDescription"] === "")) {
             counts["No Functional Fit and No Description"]++;
             sortedData["No Functional Fit and No Description"].push(data[i]);
-          } else if ((data[i]["functionalSuitability"] === null) && !(data[i]["functionalSuitabilityDescription"] === null || data[i]["functionalSuitabilityDescription"] === "")){
+          } else if ((data[i]["functionalSuitability"] === null) && !(data[i]["functionalSuitabilityDescription"] === null || data[i]["functionalSuitabilityDescription"] === "")) {
             counts["No Functional Fit"]++;
             sortedData["Functional Fit"].push(data[i]);
-          } else if (!(data[i]["functionalSuitability"] === null) && (data[i]["functionalSuitabilityDescription"] === null || data[i]["functionalSuitabilityDescription"] === "")){
+          } else if (!(data[i]["functionalSuitability"] === null) && (data[i]["functionalSuitabilityDescription"] === null || data[i]["functionalSuitabilityDescription"] === "")) {
             counts["No Functional Fit Description"]++;
             sortedData["No Functional Fit Description"].push(data[i]);
           } else {
@@ -466,14 +466,14 @@ function technicalFitGraph(data) {
         "No Technical Fit and No Description": [],
         "Has Technical Fit and Description": []
     }
-    for (let i = 0; i < data.length; i++){
-        if ((data[i]["technicalSuitability"] === null) && (data[i]["technicalSuitabilityDescription"] === null || data[i]["technicalSuitabilityDescription"] === "")){
+    for (let i = 0; i < data.length; i++) {
+        if ((data[i]["technicalSuitability"] === null) && (data[i]["technicalSuitabilityDescription"] === null || data[i]["technicalSuitabilityDescription"] === "")) {
             counts["No Technical Fit and No Description"]++;
             sortedData["No Technical Fit and No Description"].push(data[i]);
-          } else if ((data[i]["technicalSuitability"] === null) && !(data[i]["technicalSuitabilityDescription"] === null || data[i]["technicalSuitabilityDescription"] === "")){
+          } else if ((data[i]["technicalSuitability"] === null) && !(data[i]["technicalSuitabilityDescription"] === null || data[i]["technicalSuitabilityDescription"] === "")) {
             counts["No Technical Fit"]++;
             sortedData["Technical Fit"].push(data[i]);
-          } else if (!(data[i]["technicalSuitability"] === null) && (data[i]["technicalSuitabilityDescription"] === null || data[i]["technicalSuitabilityDescription"] === "")){
+          } else if (!(data[i]["technicalSuitability"] === null) && (data[i]["technicalSuitabilityDescription"] === null || data[i]["technicalSuitabilityDescription"] === "")) {
             counts["No Technical Fit Description"]++;
             sortedData["No Technical Fit Description"].push(data[i]);
           } else {
@@ -503,7 +503,7 @@ function relationGraph(data, relation) {
     *"ITComponent" to search for IT components
     */
     let searchKey = "";
-    if (data.length > 0){
+    if (data.length > 0) {
         searchKey = "rel" + data[0]["type"] + "To" + relation;
     } else {
         return <h2>No Results</h2>
@@ -520,8 +520,8 @@ function relationGraph(data, relation) {
     sortedData[noConnection] = [];
     sortedData[hasConnection] = [];
 
-    for (let i = 0; i < data.length; i++){
-        if (data[i][searchKey]["totalCount"] === 0){
+    for (let i = 0; i < data.length; i++) {
+        if (data[i][searchKey]["totalCount"] === 0) {
             counts[noConnection]++;
             sortedData[noConnection].push(data[i]);
           } else {
@@ -548,7 +548,7 @@ function providedBehaviorsGraph(data) {
     *"ITComponent" to search for IT components
     */
     let searchKey = "";
-    if (data.length > 0){
+    if (data.length > 0) {
         searchKey = "relProvider" + data[0]["type"] + "ToInterface";
     } else {
         return <h2>No Results</h2>
@@ -565,8 +565,8 @@ function providedBehaviorsGraph(data) {
     sortedData[noConnection] = [];
     sortedData[hasConnection] = [];
 
-    for (let i = 0; i < data.length; i++){
-        if (data[i][searchKey]["totalCount"] === 0){
+    for (let i = 0; i < data.length; i++) {
+        if (data[i][searchKey]["totalCount"] === 0) {
             counts[noConnection]++;
             sortedData[noConnection].push(data[i]);
           } else {
@@ -583,7 +583,7 @@ function providedBehaviorsGraph(data) {
 
 function softwareITComponentGraph(data) {
     let searchKey = "";
-    if (data.length > 0){
+    if (data.length > 0) {
         searchKey = "rel" + data[0]["type"] + "ToITComponent";
     } else {
         return <h2>No Results</h2>
@@ -602,14 +602,14 @@ function softwareITComponentGraph(data) {
 
     let found = false;
 
-    for (let i = 0; i < data.length; i++){
+    for (let i = 0; i < data.length; i++) {
         found = false;
-        for (let j = 0; j < data[i][searchKey]["edges"].length; j++){
+        for (let j = 0; j < data[i][searchKey]["edges"].length; j++) {
             if (data[i][searchKey]["edges"][j]["node"]["factSheet"]["category"] === "software") {
                 found = true;
               }
         }
-        if (found){
+        if (found) {
             counts[hasConnection]++;
             sortedData[hasConnection].push(data[i]);
           } else {
@@ -638,10 +638,10 @@ function ownerPersonaGraph(data) {
 
     var ownerCount = 0;
 
-    for (let i = 0; i < data.length; i++){
+    for (let i = 0; i < data.length; i++) {
         ownerCount = 0;
         for (let j = 0; j < data[i]["rel" + data[i]["type"] + "ToUserGroup"]["edges"].length; j++) {
-            if (data[i]["rel" + data[i]["type"] + "ToUserGroup"]["edges"][j]["node"]["usageType"] === "owner"){
+            if (data[i]["rel" + data[i]["type"] + "ToUserGroup"]["edges"][j]["node"]["usageType"] === "owner") {
                 ownerCount++;
               }
         }
@@ -680,19 +680,19 @@ function EISownerPersonaGraph(data) {
     var EISProvider = false;
     var searchKey = "";
 
-    for (let i = 0; i < data.length; i++){
+    for (let i = 0; i < data.length; i++) {
         searchKey = "rel" + data[i]["type"] + "ToProvider";
         ownerCount = 0;
         EISProvider = false;
         for (let j = 0; j < data[i]["rel" + data[i]["type"] + "ToUserGroup"]["edges"].length; j++) {
-            if (data[i]["rel" + data[i]["type"] + "ToUserGroup"]["edges"][j]["node"]["usageType"] === "owner"){
+            if (data[i]["rel" + data[i]["type"] + "ToUserGroup"]["edges"][j]["node"]["usageType"] === "owner") {
                 ownerCount++;
               }
         }
 
 
         for (let j = 0; j < data[i][searchKey]["edges"].length; j++) {
-            if (data[i][searchKey]["edges"][j]["node"]["factSheet"]["displayName"] === "EIS"){
+            if (data[i][searchKey]["edges"][j]["node"]["factSheet"]["displayName"] === "EIS") {
                 EISProvider = true;
             }
         }
@@ -721,7 +721,7 @@ function EISownerPersonaGraph(data) {
 function boundedContextBehaviorGraph(data) {
     let searchKey1 = "";
     let searchKey2 = "";
-    if (data.length > 0){
+    if (data.length > 0) {
         searchKey1 = "rel" + data[0]["type"] + "ToApplication";
         searchKey2 = "rel" + data[0]["type"] + "ToInterface";
     } else {
@@ -740,14 +740,14 @@ function boundedContextBehaviorGraph(data) {
         "No Bounded Context and No Behavior": [],
         "Has Bounded Context and Behavior": []
     }
-    for (let i = 0; i < data.length; i++){
-        if ((data[i][searchKey1]["totalCount"] === 0) && (data[i][searchKey2]["totalCount"] === 0)){
+    for (let i = 0; i < data.length; i++) {
+        if ((data[i][searchKey1]["totalCount"] === 0) && (data[i][searchKey2]["totalCount"] === 0)) {
             counts["No Bounded Context and No Behavior"]++;
             sortedData["No Bounded Context and No Behavior"].push(data[i]);
-          } else if ((data[i][searchKey1]["totalCount"] === 0) && !(data[i][searchKey2]["totalCount"] === 0)){
+          } else if ((data[i][searchKey1]["totalCount"] === 0) && !(data[i][searchKey2]["totalCount"] === 0)) {
             counts["No Bounded Context"]++;
             sortedData["No Bounded Context"].push(data[i]);
-          } else if (!(data[i][searchKey1]["totalCount"] === 0) && (data[i][searchKey2]["totalCount"] === 0)){
+          } else if (!(data[i][searchKey1]["totalCount"] === 0) && (data[i][searchKey2]["totalCount"] === 0)) {
             counts["No Behavior"]++;
             sortedData["No Behavior"].push(data[i]);
           } else {
@@ -774,14 +774,14 @@ function businessValueRiskGraph(data) {
         "No Value and No Risk": [],
         "Has Value and Risk": []
     }
-    for (let i = 0; i < data.length; i++){
-        if ((data[i]["businessValue"] === null) && (data[i]["projectRisk"] === null)){
+    for (let i = 0; i < data.length; i++) {
+        if ((data[i]["businessValue"] === null) && (data[i]["projectRisk"] === null)) {
             counts["No Value and No Risk"]++;
             sortedData["No Value and No Risk"].push(data[i]);
-          } else if ((data[i]["businessValue"] === null) && !(data[i]["projectRisk"] === null)){
+          } else if ((data[i]["businessValue"] === null) && !(data[i]["projectRisk"] === null)) {
             counts["No Value"]++;
             sortedData["No Value"].push(data[i]);
-          } else if (!(data[i]["businessValue"] === null) && (data[i]["projectRisk"] === null)){
+          } else if (!(data[i]["businessValue"] === null) && (data[i]["projectRisk"] === null)) {
             counts["No Risk"]++;
             sortedData["No Risk"].push(data[i]);
           } else {
