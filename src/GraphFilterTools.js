@@ -6,7 +6,7 @@ import uuid from 'uuid';
 
 import Utilities from './Utilities';
 
-import InfoTable from './InfoTable';
+import InfoTable from './components/InfoTable';
 
 function accountableResponsibleGraphs(data) {
     let filteredData = {

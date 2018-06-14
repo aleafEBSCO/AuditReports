@@ -6,8 +6,7 @@ import Queries from './Queries';
 import Utilities from './Utilities';
 import GraphFilterTools from './GraphFilterTools';
 
-import SelectField from './SelectField';
-import ReportView from './ReportView';
+import SelectField from './components/SelectField';
 
 const SELECT_FIELD_STYLE = {
 	width: '250px',
@@ -371,7 +370,6 @@ export class Report {
   }
 
   _renderReport() {
-    ReactDOM.render(<ReportView title={this.reportState.selectedFactSheetType} subtitle={this.reportState.selectedAuditType}
-      categoryData={this.audits[this.reportState.selectedAuditType]} typeData={this.leafNodes} />, document.getElementById('report'));
+    ReactDOM.render(this.audits[this.reportState.selectedAuditType], document.getElementById('report'));
   }
 }

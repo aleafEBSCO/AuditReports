@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Utilities from './Utilities';
+import Utilities from '../Utilities';
 import Link from './Link';
 
 class InfoTable extends Component {
