@@ -370,6 +370,7 @@ export class Report {
   }
 
   _renderReport() {
-    ReactDOM.render(this.audits[this.reportState.selectedAuditType], document.getElementById('report'));
+    // TODO: Show count somewhere
+    ReactDOM.render(this.audits[this.reportState.selectedAuditType][0], document.getElementById('report'));
   }
 }
