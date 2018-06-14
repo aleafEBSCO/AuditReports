@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import Highcharts from 'highcharts';
 import ReactHighCharts from 'react-highcharts';
@@ -21,7 +21,6 @@ function accountableResponsibleGraphs(data) {
         Provider: data.filter(fs => {return (fs.type === "Provider")}),
         "Technical Stack": data.filter(fs => {return (fs.type === "TechnicalStack")})
     }
-
 
     let graphsInfo = {
         Domain: {},
@@ -62,7 +61,7 @@ function accountableResponsibleGraphs(data) {
             for (let k = 0; k < currentData[j]["subscriptions"]["edges"].length; k++){
                 if (currentData[j]["subscriptions"]["edges"][k]["node"]["type"] === "ACCOUNTABLE"){
                     account = true;
-                }else if (currentData[j]["subscriptions"]["edges"][k]["node"]["type"] === "RESPONSIBLE"){
+                } else if (currentData[j]["subscriptions"]["edges"][k]["node"]["type"] === "RESPONSIBLE"){
                     response = true;
                 }
             } 
@@ -70,13 +69,13 @@ function accountableResponsibleGraphs(data) {
             if (!(response) && !(account)) {
                 graphsInfo[keys[i]].counts["No responsible, no accountable"]++;
                 graphsInfo[keys[i]].sortedData["No responsible, no accountable"].push(currentData[j]);
-            }else if ((response) && !(account)) {
+            } else if ((response) && !(account)) {
                 graphsInfo[keys[i]].counts["Responsible, no accountable"]++;
                 graphsInfo[keys[i]].sortedData["Responsible, no accountable"].push(currentData[j]);
-            }else if (!(response) && (account)) {
+            } else if (!(response) && (account)) {
                 graphsInfo[keys[i]].counts["Accountable, no responsible"]++;
                 graphsInfo[keys[i]].sortedData["Accountable, no responsible"].push(currentData[j]);
-            }else{
+            } else {
                 graphsInfo[keys[i]].counts["Responsible and accountable"]++;
                 graphsInfo[keys[i]].sortedData["Responsible and accountable"].push(currentData[j]);
             }
@@ -100,7 +99,7 @@ function accountableResponsibleGraphs(data) {
         for (let j = 0; j < 2; j++) {
             if (filteredData[keys[i+j]].length === 0) {
                 graphs[j] = <div style={centered}><h2>{keys[i+j]}</h2><p>No Factsheets</p></div>;
-            }else{
+            } else {
                 let graphData = graphFormat(graphsInfo[keys[i+j]].counts);
                 //let options = buildPieChartOptions(title, types[i+j], filteredData[types[i+j]]);
                 let options = pieChartOptions(keys[i+j], graphData, graphsInfo[keys[i+j]].sortedData)
@@ -194,7 +193,7 @@ function qualitySealGraphs(data) {
         for (let j = 0; j < 2; j++) {
             if (filteredData[keys[i+j]].length === 0) {
                 graphs[j] = <div style={centered}><h2>{keys[i+j]}</h2><p>No Factsheets</p></div>;
-            }else{
+            } else {
                 let graphData = graphFormat(graphsInfo[keys[i+j]].counts);
                 //let options = buildPieChartOptions(title, types[i+j], filteredData[types[i+j]]);
                 let options = pieChartOptions(keys[i+j], graphData, graphsInfo[keys[i+j]].sortedData)
@@ -306,7 +305,7 @@ function modelCompletionGraphs(data) {
         for (let j = 0; j < 2; j++) {
             if (filteredData[keys[i+j]].length === 0) {
                 graphs[j] = <div style={centered}><h2>{keys[i+j]}</h2><p>No Factsheets</p></div>;
-            }else{
+            } else {
                 let graphData = graphFormat(graphsInfo[keys[i+j]].counts);
                 //let options = buildPieChartOptions(title, types[i+j], filteredData[types[i+j]]);
                 let options = pieChartOptions(keys[i+j], graphData, graphsInfo[keys[i+j]].sortedData)
@@ -349,7 +348,7 @@ function lifecycleGraph(data) {
         if (data[i]["lifecycle"] === null || data[i]["lifecycle"]["phases"].length === 0){
             counts["No lifecycle"]++;
             sortedData["No lifecycle"].push(data[i]);
-          }else{
+          } else {
             counts["Has lifecycle"]++;
             sortedData["Has lifecycle"].push(data[i]);
           }
@@ -374,7 +373,7 @@ function documentsGraph(data) {
         if (data[i]["documents"]["totalCount"] === 0){
             counts["No documents"]++;
             sortedData["No documents"].push(data[i]);
-          }else{
+          } else {
             counts["Has documents"]++;
             sortedData["Has documents"].push(data[i]);
           }
@@ -403,13 +402,13 @@ function businessCriticalityGraph(data) {
         if ((data[i]["businessCriticality"] === null) && (data[i]["businessCriticalityDescription"] === null || data[i]["businessCriticalityDescription"] === "")){
             counts["No Business Criticality and No Description"]++;
             sortedData["No Business Criticality and No Description"].push(data[i]);
-          }else if ((data[i]["businessCriticality"] === null) && !(data[i]["businessCriticalityDescription"] === null || data[i]["businessCriticalityDescription"] === "")){
+          } else if ((data[i]["businessCriticality"] === null) && !(data[i]["businessCriticalityDescription"] === null || data[i]["businessCriticalityDescription"] === "")){
             counts["No Business Criticality"]++;
             sortedData["No Business Criticality"].push(data[i]);
-          }else if (!(data[i]["businessCriticality"] === null) && (data[i]["businessCriticalityDescription"] === null || data[i]["businessCriticalityDescription"] === "")){
+          } else if (!(data[i]["businessCriticality"] === null) && (data[i]["businessCriticalityDescription"] === null || data[i]["businessCriticalityDescription"] === "")){
             counts["No Business Criticality Description"]++;
             sortedData["No Business Criticality Description"].push(data[i]);
-          }else{
+          } else {
             counts["Has Business Criticality and Description"]++;
             sortedData["Has Business Criticality and Description"].push(data[i]);
           }
@@ -437,13 +436,13 @@ function functionalFitGraph(data) {
         if ((data[i]["functionalSuitability"] === null) && (data[i]["functionalSuitabilityDescription"] === null || data[i]["functionalSuitabilityDescription"] === "")){
             counts["No Functional Fit and No Description"]++;
             sortedData["No Functional Fit and No Description"].push(data[i]);
-          }else if ((data[i]["functionalSuitability"] === null) && !(data[i]["functionalSuitabilityDescription"] === null || data[i]["functionalSuitabilityDescription"] === "")){
+          } else if ((data[i]["functionalSuitability"] === null) && !(data[i]["functionalSuitabilityDescription"] === null || data[i]["functionalSuitabilityDescription"] === "")){
             counts["No Functional Fit"]++;
             sortedData["Functional Fit"].push(data[i]);
-          }else if (!(data[i]["functionalSuitability"] === null) && (data[i]["functionalSuitabilityDescription"] === null || data[i]["functionalSuitabilityDescription"] === "")){
+          } else if (!(data[i]["functionalSuitability"] === null) && (data[i]["functionalSuitabilityDescription"] === null || data[i]["functionalSuitabilityDescription"] === "")){
             counts["No Functional Fit Description"]++;
             sortedData["No Functional Fit Description"].push(data[i]);
-          }else{
+          } else {
             counts["Has Functional Fit and Description"]++;
             sortedData["Has Functional Fit and Description"].push(data[i]);
           }
@@ -471,13 +470,13 @@ function technicalFitGraph(data) {
         if ((data[i]["technicalSuitability"] === null) && (data[i]["technicalSuitabilityDescription"] === null || data[i]["technicalSuitabilityDescription"] === "")){
             counts["No Technical Fit and No Description"]++;
             sortedData["No Technical Fit and No Description"].push(data[i]);
-          }else if ((data[i]["technicalSuitability"] === null) && !(data[i]["technicalSuitabilityDescription"] === null || data[i]["technicalSuitabilityDescription"] === "")){
+          } else if ((data[i]["technicalSuitability"] === null) && !(data[i]["technicalSuitabilityDescription"] === null || data[i]["technicalSuitabilityDescription"] === "")){
             counts["No Technical Fit"]++;
             sortedData["Technical Fit"].push(data[i]);
-          }else if (!(data[i]["technicalSuitability"] === null) && (data[i]["technicalSuitabilityDescription"] === null || data[i]["technicalSuitabilityDescription"] === "")){
+          } else if (!(data[i]["technicalSuitability"] === null) && (data[i]["technicalSuitabilityDescription"] === null || data[i]["technicalSuitabilityDescription"] === "")){
             counts["No Technical Fit Description"]++;
             sortedData["No Technical Fit Description"].push(data[i]);
-          }else{
+          } else {
             counts["Has Technical Fit and Description"]++;
             sortedData["Has Technical Fit and Description"].push(data[i]);
           }
@@ -506,7 +505,7 @@ function relationGraph(data, relation) {
     let searchKey = "";
     if (data.length > 0){
         searchKey = "rel" + data[0]["type"] + "To" + relation;
-    }else{
+    } else {
         return <h2>No Results</h2>
     }
 
@@ -525,7 +524,7 @@ function relationGraph(data, relation) {
         if (data[i][searchKey]["totalCount"] === 0){
             counts[noConnection]++;
             sortedData[noConnection].push(data[i]);
-          }else{
+          } else {
             counts[hasConnection]++;
             sortedData[hasConnection].push(data[i]);
           }
@@ -551,7 +550,7 @@ function providedBehaviorsGraph(data) {
     let searchKey = "";
     if (data.length > 0){
         searchKey = "relProvider" + data[0]["type"] + "ToInterface";
-    }else{
+    } else {
         return <h2>No Results</h2>
     }
 
@@ -570,7 +569,7 @@ function providedBehaviorsGraph(data) {
         if (data[i][searchKey]["totalCount"] === 0){
             counts[noConnection]++;
             sortedData[noConnection].push(data[i]);
-          }else{
+          } else {
             counts[hasConnection]++;
             sortedData[hasConnection].push(data[i]);
           }
@@ -586,7 +585,7 @@ function softwareITComponentGraph(data) {
     let searchKey = "";
     if (data.length > 0){
         searchKey = "rel" + data[0]["type"] + "ToITComponent";
-    }else{
+    } else {
         return <h2>No Results</h2>
     }
 
@@ -613,7 +612,7 @@ function softwareITComponentGraph(data) {
         if (found){
             counts[hasConnection]++;
             sortedData[hasConnection].push(data[i]);
-          }else{
+          } else {
             counts[noConnection]++;
             sortedData[noConnection].push(data[i]);
           }
@@ -650,10 +649,10 @@ function ownerPersonaGraph(data) {
         if (ownerCount === 0) {
             counts['No "Owner" Persona']++;
             sortedData['No "Owner" Persona'].push(data[i]);
-        }else if (ownerCount === 1) {
+        } else if (ownerCount === 1) {
             counts['One "Owner" Persona']++;
             sortedData['One "Owner" Persona'].push(data[i]);
-        }else{
+        } else {
             counts['Multiple "Owner" Persona']++;
             sortedData['Multiple "Owner" Persona'].push(data[i]);
         }
@@ -702,10 +701,10 @@ function EISownerPersonaGraph(data) {
             if (ownerCount === 0) {
                 counts['No "Owner" Persona']++;
                 sortedData['No "Owner" Persona'].push(data[i]);
-            }else if (ownerCount === 1) {
+            } else if (ownerCount === 1) {
                 counts['One "Owner" Persona']++;
                 sortedData['One "Owner" Persona'].push(data[i]);
-            }else{
+            } else {
                 counts['Multiple "Owner" Persona']++;
                 sortedData['Multiple "Owner" Persona'].push(data[i]);
             }
@@ -725,7 +724,7 @@ function boundedContextBehaviorGraph(data) {
     if (data.length > 0){
         searchKey1 = "rel" + data[0]["type"] + "ToApplication";
         searchKey2 = "rel" + data[0]["type"] + "ToInterface";
-    }else{
+    } else {
         return <h2>No Results</h2>
     }
 
@@ -745,13 +744,13 @@ function boundedContextBehaviorGraph(data) {
         if ((data[i][searchKey1]["totalCount"] === 0) && (data[i][searchKey2]["totalCount"] === 0)){
             counts["No Bounded Context and No Behavior"]++;
             sortedData["No Bounded Context and No Behavior"].push(data[i]);
-          }else if ((data[i][searchKey1]["totalCount"] === 0) && !(data[i][searchKey2]["totalCount"] === 0)){
+          } else if ((data[i][searchKey1]["totalCount"] === 0) && !(data[i][searchKey2]["totalCount"] === 0)){
             counts["No Bounded Context"]++;
             sortedData["No Bounded Context"].push(data[i]);
-          }else if (!(data[i][searchKey1]["totalCount"] === 0) && (data[i][searchKey2]["totalCount"] === 0)){
+          } else if (!(data[i][searchKey1]["totalCount"] === 0) && (data[i][searchKey2]["totalCount"] === 0)){
             counts["No Behavior"]++;
             sortedData["No Behavior"].push(data[i]);
-          }else{
+          } else {
             counts["Has Bounded Context and Behavior"]++;
             sortedData["Has Bounded Context and Behavior"].push(data[i]);
           }
@@ -779,13 +778,13 @@ function businessValueRiskGraph(data) {
         if ((data[i]["businessValue"] === null) && (data[i]["projectRisk"] === null)){
             counts["No Value and No Risk"]++;
             sortedData["No Value and No Risk"].push(data[i]);
-          }else if ((data[i]["businessValue"] === null) && !(data[i]["projectRisk"] === null)){
+          } else if ((data[i]["businessValue"] === null) && !(data[i]["projectRisk"] === null)){
             counts["No Value"]++;
             sortedData["No Value"].push(data[i]);
-          }else if (!(data[i]["businessValue"] === null) && (data[i]["projectRisk"] === null)){
+          } else if (!(data[i]["businessValue"] === null) && (data[i]["projectRisk"] === null)){
             counts["No Risk"]++;
             sortedData["No Risk"].push(data[i]);
-          }else{
+          } else {
             counts["Has Value and Risk"]++;
             sortedData["Has Value and Risk"].push(data[i]);
           }

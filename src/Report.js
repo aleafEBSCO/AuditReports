@@ -30,7 +30,6 @@ const AUDIT_TYPES = {
     'No Domain',
     'No Use Cases',
     "No Persona with Usage Type 'Owner'",
-    "Multiple Persona with Usage Type 'Owner'",
     'No Data Objects',
     'No Provided Behaviors',
     'No Technical Fit',
@@ -54,7 +53,7 @@ const AUDIT_TYPES = {
     'Missing Technical Fit or Technical Fit Description',
     'Missing Behaviors',
     "Missing Persona of Type 'Owner' (when provider is EIS)",
-    "Multiple Persona of Type 'Owner'",
+    "No Persona of Type 'Owner'",
     'Overall Score < 70%'
   ],
   'Interface': [
@@ -221,10 +220,9 @@ export class Report {
       switch (this.reportState.selectedFactSheetType) {
         case 'All':
           // All Fact Sheets
-          let noAccountableAndResponsible = this.leafNodes.filter(fs => (FilterTools.noResponsible(fs)
-          && FilterTools.noAccountable(fs)));
-          let brokenSeal = this.leafNodes.filter(fs => (FilterTools.brokenSeal(fs)));
-          let notReady = this.leafNodes.filter(fs => (FilterTools.notReady(fs)));
+          let noAccountableAndResponsible = GraphFilterTools.accountableResponsibleGraphs(this.leafNodes);
+          let brokenSeal = GraphFilterTools.qualitySealGraphs(this.leafNodes);
+          let notReady = GraphFilterTools.modelCompletionGraphs(this.leafNodes);
 
           this.audits = {
             "Lacking Accountable and Responsible": noAccountableAndResponsible,
@@ -236,20 +234,17 @@ export class Report {
         case 'Application':
           // Bounded Context
           let boundedContextsNoLifecycle = GraphFilterTools.lifecycleGraph(this.leafNodes);
-          let boundedContextsNoBusinessCritic = this.leafNodes.filter(fs => (FilterTools.noBusinessCritic(fs)
-          || FilterTools.noBusinessCriticDesc(fs)));
-          let boundedContextsNoFunctionFit = this.leafNodes.filter(fs => (FilterTools.noFunctionFit(fs)
-          || FilterTools.noFunctionFitDesc(fs)));
-          let boundedContextsLackingDomain = this.leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
-          let boundedContextsLackingUseCases = this.leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
-          let boundedContextsNoOwnerPersona = this.leafNodes.filter(fs => (FilterTools.noOwnerPersona(fs)));
-          let boundedContextsMultipleOwnerPersona = this.leafNodes.filter(fs => (FilterTools.multipleOwnerPersona(fs)));
-          let boundedContextsLackingDataObjects = this.leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "DataObject")));
-          let boundedContextsLackingProvidedBehaviors = this.leafNodes.filter(fs => (FilterTools.lackingProvidedBehaviors(fs)));
-          let boundedContextsNoTechnicalFit = this.leafNodes.filter(fs => FilterTools.noTechnicalFit(fs));
-          let boundedContextsNoSoftwareITComponent = this.leafNodes.filter(fs => (FilterTools.lackingSoftwareITComponent(fs)));
-          let boundedContextsNoDocumentLinks = this.leafNodes.filter(fs => (FilterTools.noDocumentLinks(fs)));
-          let boundedContextsScore = this.leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .70)))
+          let boundedContextsNoBusinessCritic = GraphFilterTools.businessCriticalityGraph(this.leafNodes);
+          let boundedContextsNoFunctionFit = GraphFilterTools.functionalFitGraph(this.leafNodes);
+          let boundedContextsLackingDomain = GraphFilterTools.relationGraph(this.leafNodes, "BusinessCapability");
+          let boundedContextsLackingUseCases = GraphFilterTools.relationGraph(this.leafNodes, "Process");
+          let boundedContextsNoOwnerPersona = GraphFilterTools.ownerPersonaGraph(this.leafNodes);
+          let boundedContextsLackingDataObjects = GraphFilterTools.relationGraph(this.leafNodes, "DataObject");
+          let boundedContextsLackingProvidedBehaviors = GraphFilterTools.providedBehaviorsGraph(this.leafNodes);
+          let boundedContextsNoTechnicalFit = GraphFilterTools.technicalFitGraph(this.leafNodes);
+          let boundedContextsNoSoftwareITComponent = GraphFilterTools.softwareITComponentGraph(this.leafNodes);
+          let boundedContextsNoDocumentLinks = GraphFilterTools.documentsGraph(this.leafNodes);
+          let boundedContextsScore = GraphFilterTools.createHistogram(this.leafNodes, "Bounded Context", 70);
 
           this.audits = {
             "No Lifecycle": boundedContextsNoLifecycle,
@@ -258,7 +253,6 @@ export class Report {
             "No Domain": boundedContextsLackingDomain,
             "No Use Cases": boundedContextsLackingUseCases,
             "No Persona with Usage Type 'Owner'": boundedContextsNoOwnerPersona,
-            "Multiple Persona with Usage Type 'Owner'": boundedContextsMultipleOwnerPersona,
             "No Data Objects": boundedContextsLackingDataObjects,
             "No Provided Behaviors": boundedContextsLackingProvidedBehaviors,
             "No Technical Fit": boundedContextsNoTechnicalFit,
@@ -270,9 +264,9 @@ export class Report {
         
         case 'BusinessCapability':
           // Domain
-          let domainLackingBoundedContext = this.leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Application")));
-          let domainLackingUseCases = this.leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
-          let domainScore = this.leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
+          let domainLackingBoundedContext = GraphFilterTools.relationGraph(this.leafNodes, "Application");
+          let domainLackingUseCases = GraphFilterTools.relationGraph(this.leafNodes, "Process");
+          let domainScore = GraphFilterTools.createHistogram(this.leafNodes, "Domain", 60);
 
           this.audits = {
             "Lacking Bounded Context": domainLackingBoundedContext,
@@ -283,9 +277,8 @@ export class Report {
 
         case 'DataObject':
           // Data Object
-          let dataObjectsNoBoundedContextOrBehavor = this.leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Interface")
-          && FilterTools.lackingRelation(fs, "Application")));
-          let dataObjectsScore = this.leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .50)));
+          let dataObjectsNoBoundedContextOrBehavor = GraphFilterTools.boundedContextBehaviorGraph(this.leafNodes);
+          let dataObjectsScore = GraphFilterTools.createHistogram(this.leafNodes, "Data Object", 50);
 
           this.audits = {
             "No Bounded Context or Behavior": dataObjectsNoBoundedContextOrBehavor,
@@ -295,14 +288,14 @@ export class Report {
         
         case 'ITComponent':
           // IT Component
-          let itComponentsMissingProvider = this.leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Provider")));
-          let itComponentsNoDocumentLinks = this.leafNodes.filter(fs => (FilterTools.noDocumentLinks(fs)));
-          let itComponentsNoLifecycle = this.leafNodes.filter(fs => FilterTools.noLifecycle(fs));
-          let itComponentsNoTechnicalFit = this.leafNodes.filter(fs => (FilterTools.noTechnicalFit(fs) || FilterTools.noTechnicalFitDesc(fs)));
-          let itComponentsMissingBehaviors = this.leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Interface")));
-          let itComponentsNoOwnerPersona = this.leafNodes.filter(fs => (FilterTools.noOwnerPersona(fs) && FilterTools.EISProvider(fs)));
-          let itComponentsMultipleOwnerPersona = this.leafNodes.filter(fs => (FilterTools.multipleOwnerPersona(fs)));
-          let itComponentsScore = this.leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .70)));
+          let itComponentsMissingProvider = GraphFilterTools.relationGraph(this.leafNodes, "Provider");
+          let itComponentsNoDocumentLinks = GraphFilterTools.documentsGraph(this.leafNodes);
+          let itComponentsNoLifecycle = GraphFilterTools.lifecycleGraph(this.leafNodes);
+          let itComponentsNoTechnicalFit = GraphFilterTools.technicalFitGraph(this.leafNodes);
+          let itComponentsMissingBehaviors = GraphFilterTools.relationGraph(this.leafNodes, "Interface");
+          let itComponentsNoOwnerPersonaEIS = GraphFilterTools.EISownerPersonaGraph(this.leafNodes);
+          let itComponentsNoOwnerPersona = GraphFilterTools.ownerPersonaGraph(this.leafNodes);
+          let itComponentsScore = GraphFilterTools.createHistogram(this.leafNodes, "IT Component", 70);
 
           this.audits = {
             "Missing Provider": itComponentsMissingProvider,
@@ -310,17 +303,17 @@ export class Report {
             "No Lifecycle": itComponentsNoLifecycle,
             "Missing Technical Fit or Technical Fit Description": itComponentsNoTechnicalFit,
             "Missing Behaviors": itComponentsMissingBehaviors,
-            "Missing Persona of Type Owner (when provider is EIS)": itComponentsNoOwnerPersona,
-            "Multiple Persona of Type Owner": itComponentsMultipleOwnerPersona,
+            "Missing Persona of Type 'Owner' (when provider is EIS)": itComponentsNoOwnerPersonaEIS,
+            "No Persona of Type 'Owner'": itComponentsNoOwnerPersona,
             "Overall Score < 70%": itComponentsScore
           };
           break;
 
         case 'Interface':
           // Behavior
-          let behaviorsLackingProvider = this.leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "ProviderApplication")));
-          let behaviorsLackingITComponent = this.leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "ITComponent")));
-          let behaviorsScore = this.leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
+          let behaviorsLackingProvider = GraphFilterTools.relationGraph(this.leafNodes, "ProviderApplication");
+          let behaviorsLackingITComponent = GraphFilterTools.relationGraph(this.leafNodes, "ITComponent");
+          let behaviorsScore = GraphFilterTools.createHistogram(this.leafNodes, "Behavior", 60);
     
           this.audits = {
             "No Provider": behaviorsLackingProvider,
@@ -331,11 +324,11 @@ export class Report {
 
         case 'Process':
           // Use Case
-          let useCaseLackingDomain = this.leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
-          let useCaseNoDocumentLinks = this.leafNodes.filter(fs => (FilterTools.noDocumentLinks(fs)));
-          let useCaseNoLifecycle = this.leafNodes.filter(fs => FilterTools.noLifecycle(fs));
-          let useCaseLackingBoundedContext = this.leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Application")));
-          let useCaseScore = this.leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .60)));
+          let useCaseLackingDomain = GraphFilterTools.relationGraph(this.leafNodes, "BusinessCapability");
+          let useCaseNoDocumentLinks = GraphFilterTools.documentsGraph(this.leafNodes)
+          let useCaseNoLifecycle = GraphFilterTools.lifecycleGraph(this.leafNodes);
+          let useCaseLackingBoundedContext = GraphFilterTools.relationGraph(this.leafNodes, "Application");
+          let useCaseScore = GraphFilterTools.createHistogram(this.leafNodes, "Use Case", 60);
     
           this.audits = {
             "Lacking Domain": useCaseLackingDomain,
@@ -348,12 +341,12 @@ export class Report {
 
         case 'Project':
           // Epic
-          let epicNoDocumentLinks = this.leafNodes.filter(fs => (FilterTools.noDocumentLinks(fs)));
-          let epicNoLifecycle = this.leafNodes.filter(fs => FilterTools.noLifecycle(fs));
-          let epicNoBusinessValueRisk = this.leafNodes.filter(fs => (FilterTools.noBusinessValueRisk(fs)));
-          let epicNoAffectedDomains = this.leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "BusinessCapability")));
-          let epicNoAffectedUseCases = this.leafNodes.filter(fs => (FilterTools.lackingRelation(fs, "Process")));
-          let epicScore = this.leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .50)));
+          let epicNoDocumentLinks = GraphFilterTools.documentsGraph(this.leafNodes);
+          let epicNoLifecycle = GraphFilterTools.lifecycleGraph(this.leafNodes);
+          let epicNoBusinessValueRisk = GraphFilterTools.businessValueRiskGraph(this.leafNodes);
+          let epicNoAffectedDomains = GraphFilterTools.relationGraph(this.leafNodes, "BusinessCapability");
+          let epicNoAffectedUseCases = GraphFilterTools.relationGraph(this.leafNodes, "Process");
+          let epicScore = GraphFilterTools.createHistogram(this.leafNodes, "Epic", 50);
     
           this.audits = {
             "No Document Links": epicNoDocumentLinks,
@@ -367,7 +360,7 @@ export class Report {
 
         case 'UserGroup':
           // Persona
-          let personaScore = this.leafNodes.filter(fs => (FilterTools.getScoreLessThan(fs, .50)));
+          let personaScore = GraphFilterTools.createHistogram(this.leafNodes, "Persona", 50);
     
           this.audits = {
             "Overall Score < 50%": personaScore
