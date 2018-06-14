@@ -18,9 +18,8 @@ class SelectField extends Component {
 	}
 
 	render() {
-		// This is kind of a weird hack but not sure how else to make it work if the constructor
-		// isn't called every time a <SelectField ... /> element is created (???)
-		if (this.props.forceValueUpdate) {
+		// Update the selected option if the current one is not in the list of options
+		if (this.props.options.indexOf(this.state.selectedOption) === -1) {
 			this.state.selectedOption = this.props.value;
 		}
 		const { selectedOption } = this.state;
@@ -60,7 +59,6 @@ SelectField.propTypes = {
 		label: PropTypes.string.isRequired
 	}),
 	useSmallerFontSize: PropTypes.bool,
-	forceValueUpdate: PropTypes.bool
 };
 
 export default SelectField;

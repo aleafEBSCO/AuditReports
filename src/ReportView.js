@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import GraphTools from './GraphTools';
 import Link from './Link';
 
-class ReportData extends Component {
+class ReportView extends Component {
 
   constructor(props) {
     super(props);
@@ -40,10 +40,10 @@ class ReportData extends Component {
   }
 }
 
-ReportData.propTypes = {
+ReportView.propTypes = {
   title: PropTypes.string.isRequired,
   subtitle: PropTypes.string.isRequired,
   categoryData: PropTypes.array.isRequired
 }
 
-export default ReportData;
+export default ReportView;

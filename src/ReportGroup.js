@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import uuid from 'uuid';
 
-import ReportData from './ReportData';
+import ReportData from './ReportView';
 import Link from './Link';
 import GraphTools from './GraphTools';
 
