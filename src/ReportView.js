@@ -23,6 +23,8 @@ class ReportView extends Component {
     if (shouldBeGraphed) {
       // get the graph
       shownData = GraphTools.getGraph(this.props.title, this.props.subtitle, this.props.typeData);
+    } else if (this.props.categoryData.length === 2 && !(isNaN(this.props.categoryData[1]))) {
+      shownData = this.props.categoryData[0];
     } else {
       shownData = this.props.categoryData.map((fs, i) => this._renderLink(fs, i));
     }

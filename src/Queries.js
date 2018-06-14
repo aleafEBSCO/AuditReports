@@ -103,6 +103,11 @@ function getQuery(factSheetType) {
           node {
             ${all}
             ... on Process {
+              lifecycle {
+                phases {
+                  phase
+                }
+              }
               relProcessToBusinessCapability {
                 totalCount
               }
@@ -140,6 +145,11 @@ function getQuery(factSheetType) {
           node {
             ${all}
             ... on Project {
+              lifecycle {
+                phases {
+                  phase
+                }
+              }
               documents {
                 totalCount
               }
@@ -165,6 +175,13 @@ function getQuery(factSheetType) {
           node {
             ${all}
             ... on Application {
+              lifecycle {
+                phases {
+                  phase
+                }
+              }
+              technicalSuitability
+              technicalSuitabilityDescription
               businessCriticality
               businessCriticalityDescription
               functionalSuitability
@@ -256,6 +273,13 @@ function getQuery(factSheetType) {
           node {
             ${all}
             ... on ITComponent {
+              lifecycle {
+                phases {
+                  phase
+                }
+              }
+              technicalSuitability
+              technicalSuitabilityDescription
               relITComponentToProvider {
                 totalCount
                 edges {
@@ -318,6 +342,7 @@ function getQuery(factSheetType) {
   return queries[factSheetType];
 }
 
+/*
 function getExtraQuery(factSheetType) {
   let extraQueries = {
     // Use Case
@@ -431,8 +456,9 @@ function getExtraQuery(factSheetType) {
   }
   return extraQueries[factSheetType]
 }
+*/
 
 export default {
   getQuery: getQuery,
-  getExtraQuery: getExtraQuery
+  //getExtraQuery: getExtraQuery
 }
