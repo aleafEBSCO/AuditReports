@@ -106,7 +106,7 @@ class InfoTable extends Component {
           <Link link={`https://us.leanix.net/SBEIS/factsheet/${fs.type}/${fs.id}`} target='_blank' text={fs.displayName} />
         </td>
         <td key={fs.id + '-C'} width='10%' align='center'>
-          {Math.round(fs.completion.completion * 1000) / 10 + '%'}
+          {fs.completion.percentage + '%'}
         </td>
         <td key={fs.id + '-R'} width='25%' align='center'>
           {Utilities.getSubscriptionNamesOfType(fs, 'RESPONSIBLE')}

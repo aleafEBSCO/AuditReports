@@ -98,6 +98,7 @@ export class Report {
   }
 
   _createConfig() {
+    // TODO: Add search bar using facets
     this.config = {
       allowTableView: false,
       allowEditing: false

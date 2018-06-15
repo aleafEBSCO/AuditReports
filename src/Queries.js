@@ -14,6 +14,7 @@ function getQuery(factSheetType) {
   displayName
   completion {
     completion
+    percentage
   }
   subscriptions {
     edges {
