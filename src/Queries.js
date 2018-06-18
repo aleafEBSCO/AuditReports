@@ -6,7 +6,7 @@ function getQuery(factSheetType) {
   relToParent {
     totalCount
   }`;
-
+    
   // TODO: Get rid of horrendous relToChildParent hack
   let all = `
   type
@@ -344,5 +344,5 @@ function getQuery(factSheetType) {
 }
 
 export default {
-  getQuery: getQuery,
+  getQuery: getQuery
 }

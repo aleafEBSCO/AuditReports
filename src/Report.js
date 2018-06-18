@@ -192,21 +192,15 @@ export class Report {
     let factSheetType = this.reportState.selectedFactSheetType;
 
 		lx.executeGraphQL(Queries.getQuery(factSheetType)).then(((data) => {
-      this._updateData(factSheetType, data);
+      this._updateData(data);
     }).bind(this));
   }
 
   _leafNodeFilter(data) {
-    return data.filter(fs => {
-      if (fs["relToChild"]["totalCount"] === 0 && fs["relToParent"]["totalCount"] === 0) {
-        return true;
-      } else {
-        return false;
-      }
-    });
+    return data.filter(fs => fs.relToChild.totalCount === 0 && fs.relToParent.totalCount === 0);
   }
 
-  _updateData(factSheetType, data) {
+  _updateData(data) {
     this.currentData = data.allFactSheets.edges.map(fs => fs.node);
     this.leafNodes = this._leafNodeFilter(this.currentData);
     this._updateAudits();
