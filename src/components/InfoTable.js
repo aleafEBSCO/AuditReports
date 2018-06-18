@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ReactTable from 'react-table';
+import "react-table/react-table.css";
 import Utilities from '../Utilities';
 import Link from './Link';
 
@@ -10,91 +12,115 @@ class InfoTable extends Component {
   }
 
   render() {
-    let sortedData = this.props.data;
-    sortedData.sort(function(a, b){
-      if (a.completion.completion < b.completion.completion){
-        return -1;
-      } else if (a.completion.completion > b.completion.completion) {
-        return 1
-      }
-
-      let aResponsible = [];
-      let bResponsible = [];
-
-      let aAccountable = [];
-      let bAccountable = [];
-
-      for (let i = 0; i < a.subscriptions.edges.length; i++){
-        if (a.subscriptions.edges[i].node.type === "RESPONSIBLE") {
-          aResponsible.push(a.subscriptions.edges[i].node.user.displayName);
-        } else if (a.subscriptions.edges[i].node.type === "ACCOUNTABLE") {
-          aAccountable.push(a.subscriptions.edges[i].node.user.displayName);
-        }
-      }
-
-      for (let i = 0; i < b.subscriptions.edges.length; i++){
-        if (b.subscriptions.edges[i].node.type === "RESPONSIBLE") {
-          bResponsible.push(b.subscriptions.edges[i].node.type.displayName);
-        } else if (b.subscriptions.edges[i].node.type === "ACCOUNTABLE") {
-          bAccountable.push(b.subscriptions.edges[i].node.type.displayName);
-        }
-      }
-
-      aResponsible.sort();
-      bResponsible.sort();
-
-      aAccountable.sort();
-      bAccountable.sort();
-
-      if (aResponsible.length === 0 && bResponsible.length !== 0) {
-        return 1
-      } else if (aResponsible.length !== 0 && bResponsible.length === 0) {
-        return -1
-      }
-
-      if (aResponsible < bResponsible) {
-        return -1;
-      } else if (aResponsible > bResponsible) {
-        return 1;
-      }
-
-      if (aAccountable.length === 0 && bAccountable.length !== 0) {
-        return 1
-      } else if (aAccountable.length !== 0 && bAccountable.length === 0) {
-        return -1
-      }
-
-      if (aAccountable < bAccountable) {
-        return -1;
-      } else if (aAccountable > bAccountable) {
-        return 1;
-      }
-
-      if (a.displayName < b.displayName) {
-        return -1;
-      } else if (a.displayName > b.displayName) {
-        return 1;
-      }
-
-      return 0;
+    let formattedData = this.props.data.map(fs => {
+      return [<Link link={`https://us.leanix.net/SBEIS/factsheet/${fs.type}/${fs.id}`} target='_blank' text={fs.displayName} />,
+        fs.completion.percentage + '%',
+        Utilities.getSubscriptionNamesOfType(fs, 'RESPONSIBLE'),
+        Utilities.getSubscriptionNamesOfType(fs, 'ACCOUNTABLE')
+      ];
     });
 
     return (
-      <table border='1'>
-        <thead>
-          <tr>
-            <th>Fact Sheet</th>
-            <th>Completion</th>
-            <th>Responsible</th>
-            <th>Accountable</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortedData.map((fs, i) => {
-            return this._renderRow(fs, i);
-          })}
-        </tbody>
-      </table>
+     <ReactTable
+        data={formattedData}
+        //the width of the infobox is 900px so I'm making width of table 857
+        columns={[
+          {
+            Header: "Fact Sheet",
+            accessor: "0",
+            width: 340,//"40%"
+            sortMethod: (a, b) => {
+              if (a.props.text < b.props.text) {
+                return -1;
+              }else if (b.props.text < a.props.text) {
+                return 1;
+              }
+
+              return 0;
+            }
+          },
+          {
+            Header: "Completion",
+            accessor: "1",
+            width: 87,//"10%"
+            sortMethod: (a, b) => {
+              let tempA = parseInt(a.slice(0, -1));
+              let tempB = parseInt(b.slice(0, -1));
+
+              if (tempA < tempB) {
+                return -1;
+              }else if (tempB < tempA) {
+                return 1;
+              }
+
+              return 0;
+            }
+          },
+          {
+            Header: "Responsible",
+            accessor: "2",
+            width: 215,//"25%"
+            sortMethod: (a, b) => {
+              if (a.length === 0 && b.length !== 0) {
+                return 1
+              } else if (a.length !== 0 && b.length === 0) {
+                return -1
+              }
+        
+              if (a < b) {
+                return -1;
+              } else if (a > b) {
+                return 1;
+              }
+            }
+          },
+          {
+            Header: "Accountable",
+            accessor: "3",
+            width: 215,//"25%"
+            sortMethod: (a, b) => {
+              if (a.length === 0 && b.length !== 0) {
+                return 1
+              } else if (a.length !== 0 && b.length === 0) {
+                return -1
+              }
+        
+              if (a < b) {
+                return -1;
+              } else if (a > b) {
+                return 1;
+              }
+            }
+          }
+        ]}
+        defaultSorted={[
+          {
+            id: "1",
+            desc: false
+          },
+          {
+            id: "2",
+            desc: false
+          },
+          {
+            id: "3",
+            desc: false
+          },
+          {
+            id: "0",
+            desc: false
+          }
+        ]}
+        pageSize={formattedData.length}
+        showPagination={false}
+        style={
+          {
+            height: "375px"
+          }
+        }
+        className="-striped -highlight"
+        minRows = {0}
+      />
     );
   }
 
