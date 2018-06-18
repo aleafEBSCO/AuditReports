@@ -102,19 +102,6 @@ export class Report {
       allowTableView: false,
       allowEditing: false
     };
-    if (this.factSheetType === 'All') {
-      this.config.facets = [{
-        // TODO: Don't allow fact sheet type changes here
-        attributes: [Queries.all],
-        callback: this._renderReport.bind(this)
-      }]
-    } else {
-      this.config.facets = [{
-        fixedFactSheetType: this.factSheetType,
-        attributes: [Queries.getQuery(this.factSheetType)],
-        callback: this._renderReport.bind(this)
-      }]
-    }
   }
 
   _getFactSheetTypeOptions() {
@@ -213,8 +200,8 @@ export class Report {
   }
 
   _updateData(data) {
-    this.currentData = data.allFactSheets.edges.map(fs => fs.node);
-    this.leafNodes = this._leafNodeFilter(this.currentData);
+    let currentData = data.allFactSheets.edges.map(fs => fs.node);
+    this.leafNodes = this._leafNodeFilter(currentData);
     this._updateAudits();
   }
 
