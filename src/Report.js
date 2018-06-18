@@ -98,11 +98,23 @@ export class Report {
   }
 
   _createConfig() {
-    // TODO: Add search bar using facets
     this.config = {
       allowTableView: false,
       allowEditing: false
     };
+    if (this.factSheetType === 'All') {
+      this.config.facets = [{
+        // TODO: Don't allow fact sheet type changes here
+        attributes: [Queries.all],
+        callback: this._renderReport.bind(this)
+      }]
+    } else {
+      this.config.facets = [{
+        fixedFactSheetType: this.factSheetType,
+        attributes: [Queries.getQuery(this.factSheetType)],
+        callback: this._renderReport.bind(this)
+      }]
+    }
   }
 
   _getFactSheetTypeOptions() {
