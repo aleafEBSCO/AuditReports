@@ -97,11 +97,17 @@ export class Report {
     this._createConfig();
   }
 
+  /*
+  CURRENT STATE: Everything is being updated the way it should, however fixedFactSheetType
+  is not being read even though it is changed when the user selects a new type. Fact sheets
+  of the old type ('All') as still being queried for unless the page is reloaded.
+  
+  A support ticket has been sent to LeanIX.
+  */ 
   _createConfig() {
     // TODO: return config object instead of using this.config
     this.config = {
       allowTableView: false,
-      allowEditing: false,
       facets: [{
         fixedFactSheetType: this.reportState.selectedFactSheetType,
         attributes: ['id', 'type'], //[Queries.getQuery(this.reportState.selectedFactSheetType)],
@@ -120,7 +126,9 @@ export class Report {
 
   // TODO: Delete when not needed
   _renderTest() {
-    const html = this.leafNodes.map(fs => `<p>${fs.id}: ${fs.type}</p>`).join('');
+    console.log(this.config);
+    const html = `<h1>${this.reportState.selectedFactSheetType}</h1>`
+    + this.leafNodes.map(fs => `<p>${fs.id}: ${fs.type}</p>`).join('');
     $('#report').html(html);
   }
 
@@ -208,7 +216,6 @@ export class Report {
 
   _updateConfig() {
     this._createConfig();
-    console.log(this.config);
     lx.updateConfiguration(this.config);
   }
 
