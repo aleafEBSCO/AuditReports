@@ -98,10 +98,30 @@ export class Report {
   }
 
   _createConfig() {
+    // TODO: return config object instead of using this.config
     this.config = {
       allowTableView: false,
-      allowEditing: false
+      allowEditing: false,
+      facets: [{
+        fixedFactSheetType: this.reportState.selectedFactSheetType,
+        attributes: ['id', 'type'], //[Queries.getQuery(this.reportState.selectedFactSheetType)],
+        callback: (facetData) => {
+          this.leafNodes = facetData; //this._leafNodeFilter(facetData);
+          //this._updateAudits();
+          this._renderTest();
+        }
+      }]
     };
+
+    if (this.reportState.selectedFactSheetType === 'All') {
+      this.config.facets[0].fixedFactSheetType = null;
+    }
+  }
+
+  // TODO: Delete when not needed
+  _renderTest() {
+    const html = this.leafNodes.map(fs => `<p>${fs.id}: ${fs.type}</p>`).join('');
+    $('#report').html(html);
   }
 
   _getFactSheetTypeOptions() {
@@ -183,7 +203,13 @@ export class Report {
     // Audit type will be the first option right after rendering
     this.reportState.selectedAuditType = this._getAuditTypeOptions(factSheetType)[0].value;
 
-    this._executeQueries();
+    this._updateConfig();
+  }
+
+  _updateConfig() {
+    this._createConfig();
+    console.log(this.config);
+    lx.updateConfiguration(this.config);
   }
 
   _executeQueries() {
