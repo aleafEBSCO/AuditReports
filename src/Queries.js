@@ -90,7 +90,6 @@ function getQuery(factSheetType) {
               relBusinessCapabilityToProcess {
                 totalCount
               }
-              ${relToChildParent}
             }
           }
         }
@@ -118,7 +117,6 @@ function getQuery(factSheetType) {
               relProcessToApplication {
                 totalCount
               }
-              ${relToChildParent}
             }
           }
         }
@@ -131,9 +129,6 @@ function getQuery(factSheetType) {
         edges {
           node {
             ${all}
-            ... on UserGroup {
-              ${relToChildParent}
-            }
           }
         }
       }
@@ -162,7 +157,6 @@ function getQuery(factSheetType) {
               relProjectToProcess {
                 totalCount
               }
-              ${relToChildParent}
             }
           }
         }
@@ -220,7 +214,6 @@ function getQuery(factSheetType) {
               documents {
                 totalCount
               }
-              ${relToChildParent}
             }
           }
         }
@@ -240,7 +233,6 @@ function getQuery(factSheetType) {
               relInterfaceToITComponent {
                 totalCount
               }
-              ${relToChildParent}
             }
           }
         }
@@ -260,7 +252,6 @@ function getQuery(factSheetType) {
               relDataObjectToInterface {
                 totalCount
               }
-              ${relToChildParent}
             }
           }
         }
@@ -305,7 +296,6 @@ function getQuery(factSheetType) {
                   }
                 }
               }
-              ${relToChildParent}
             }
           }
         }
@@ -318,9 +308,6 @@ function getQuery(factSheetType) {
         edges {
           node {
             ${all}
-            ... on Provider {
-              ${relToChildParent}
-            }
           }
         }
       }
@@ -332,9 +319,6 @@ function getQuery(factSheetType) {
         edges {
           node {
             ${all}
-            ... on TechnicalStack {
-              ${relToChildParent}
-            }
           }
         }
       }
