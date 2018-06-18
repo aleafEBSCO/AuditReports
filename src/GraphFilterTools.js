@@ -91,20 +91,32 @@ function accountableResponsibleGraphs(data) {
     let rightGraphCSS = {marginLeft: "620px"};
 
     var ret = [];
+
+    //filter out empty graphs
+    for (let i = 0; i < keys.length; i++) {
+        if (filteredData[keys[i]].length === 0) {
+            delete filteredData[keys[i]];
+            keys.splice(i, 1);
+            i--;
+        }
+    }
+
+
     for (let i = 0; i < keys.length; i+=2) {
         //ret.push(<div style={bothGraphsCSS}>)
 
-        let graphs = [];
+        let graphs = [<div></div>, <div></div>];
         //graphs[0] is the left graph, graphs[1] is the right graph
         for (let j = 0; j < 2; j++) {
-            if (filteredData[keys[i+j]].length === 0) {
-                graphs[j] = <div style={centered}><h2>{keys[i+j]}</h2><p>No Factsheets</p></div>;
-            } else {
-                let graphData = graphFormat(graphsInfo[keys[i+j]].counts);
-                //let options = buildPieChartOptions(title, types[i+j], filteredData[types[i+j]]);
-                let options = pieChartOptions(keys[i+j], graphData, graphsInfo[keys[i+j]].sortedData)
-                graphs[j] = <ReactHighCharts config={options} />;
+
+            if (i + j >= keys.length) {
+                break;
             }
+
+            let graphData = graphFormat(graphsInfo[keys[i+j]].counts);
+            //let options = buildPieChartOptions(title, types[i+j], filteredData[types[i+j]]);
+            let options = pieChartOptions(keys[i+j], graphData, graphsInfo[keys[i+j]].sortedData)
+            graphs[j] = <ReactHighCharts config={options} />;
         }
 
         ret.push(
@@ -178,7 +190,15 @@ function qualitySealGraphs(data) {
         }
     }
 
-    let centered = {textAlign: "center"};
+    //filter out empty graphs
+    for (let i = 0; i < keys.length; i++) {
+        if (filteredData[keys[i]].length === 0) {
+            delete filteredData[keys[i]];
+            keys.splice(i, 1);
+            i--;
+        }
+    }
+
 
     let bothGraphsCSS = {width: "100%", overflow: "hidden"};
     let leftGraphCSS = {width: "600px", float: "left"};
@@ -188,17 +208,19 @@ function qualitySealGraphs(data) {
     for (let i = 0; i < keys.length; i+=2) {
         //ret.push(<div style={bothGraphsCSS}>)
 
-        let graphs = [];
+        let graphs = [<div></div>, <div></div>];
         //graphs[0] is the left graph, graphs[1] is the right graph
         for (let j = 0; j < 2; j++) {
-            if (filteredData[keys[i+j]].length === 0) {
-                graphs[j] = <div style={centered}><h2>{keys[i+j]}</h2><p>No Factsheets</p></div>;
-            } else {
-                let graphData = graphFormat(graphsInfo[keys[i+j]].counts);
-                //let options = buildPieChartOptions(title, types[i+j], filteredData[types[i+j]]);
-                let options = pieChartOptions(keys[i+j], graphData, graphsInfo[keys[i+j]].sortedData)
-                graphs[j] = <ReactHighCharts config={options} />;
+            
+            if (i + j >= keys.length) {
+                break;
             }
+
+            let graphData = graphFormat(graphsInfo[keys[i+j]].counts);
+            //let options = buildPieChartOptions(title, types[i+j], filteredData[types[i+j]]);
+            let options = pieChartOptions(keys[i+j], graphData, graphsInfo[keys[i+j]].sortedData)
+            graphs[j] = <ReactHighCharts config={options} />;
+            
         }
 
         ret.push(
@@ -290,7 +312,14 @@ function modelCompletionGraphs(data) {
         }
     }
 
-    let centered = {textAlign: "center"};
+    //filter out empty graphs
+    for (let i = 0; i < keys.length; i++) {
+        if (filteredData[keys[i]].length === 0) {
+            delete filteredData[keys[i]];
+            keys.splice(i, 1);
+            i--;
+        }
+    }
 
     let bothGraphsCSS = {width: "100%", overflow: "hidden"};
     let leftGraphCSS = {width: "600px", float: "left"};
@@ -300,17 +329,19 @@ function modelCompletionGraphs(data) {
     for (let i = 0; i < keys.length; i+=2) {
         //ret.push(<div style={bothGraphsCSS}>)
 
-        let graphs = [];
+        let graphs = [<div></div>, <div></div>];
         //graphs[0] is the left graph, graphs[1] is the right graph
         for (let j = 0; j < 2; j++) {
-            if (filteredData[keys[i+j]].length === 0) {
-                graphs[j] = <div style={centered}><h2>{keys[i+j]}</h2><p>No Factsheets</p></div>;
-            } else {
-                let graphData = graphFormat(graphsInfo[keys[i+j]].counts);
-                //let options = buildPieChartOptions(title, types[i+j], filteredData[types[i+j]]);
-                let options = pieChartOptions(keys[i+j], graphData, graphsInfo[keys[i+j]].sortedData)
-                graphs[j] = <ReactHighCharts config={options} />;
+
+            if (i + j >= keys.length) {
+                break;
             }
+            
+            let graphData = graphFormat(graphsInfo[keys[i+j]].counts);
+            //let options = buildPieChartOptions(title, types[i+j], filteredData[types[i+j]]);
+            let options = pieChartOptions(keys[i+j], graphData, graphsInfo[keys[i+j]].sortedData)
+            graphs[j] = <ReactHighCharts config={options} />;
+            
         }
 
         ret.push(
