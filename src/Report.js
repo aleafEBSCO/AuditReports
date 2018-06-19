@@ -112,6 +112,18 @@ export class Report {
         fixedFactSheetType: this.reportState.selectedFactSheetType,
         attributes: [Queries.getQuery(this.reportState.selectedFactSheetType)],
         callback: (facetData) => {
+          /*
+          if (this.reportState.selectedFactSheetType === 'All') {
+            lx.executeGraphQL(all).then((result) => {
+              let allData = result.allFactSheets.edges.map(e => e.node);
+              this.leafNodes = this._leafNodeFilter(allData);
+              this._updateAudits();
+            });
+          } else {
+            this.leafNodes = this._leafNodeFilter(facetData);
+            this._updateAudits();
+          }
+          */
           this.leafNodes = this._leafNodeFilter(facetData);
           this._updateAudits();
         }

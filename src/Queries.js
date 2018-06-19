@@ -5,63 +5,6 @@ relToChild {
 relToParent {
   totalCount
 }`;
-  
-// TODO: Get rid of horrendous relToChildParent hack
-let all = `
-type
-id
-displayName
-completion {
-  completion
-  percentage
-}
-subscriptions {
-  edges {
-    node {
-      type
-      user {
-        displayName
-      }
-    }
-  }
-}
-qualitySeal
-tags {
-  tagGroup {
-    name
-  }
-  name
-}
-... on BusinessCapability {
-  ${relToChildParent}
-}
-... on Process {
-  ${relToChildParent}
-}
-... on UserGroup {
-  ${relToChildParent}
-}
-... on Project {
-  ${relToChildParent}
-}
-... on Application {
-  ${relToChildParent}
-}
-... on Interface {
-  ${relToChildParent}
-}
-... on DataObject {
-  ${relToChildParent}
-}
-... on ITComponent {
-  ${relToChildParent}
-}
-... on Provider {
-  ${relToChildParent}
-}
-... on TechnicalStack {
-  ${relToChildParent}
-}`;
 
 let main = `
 type
@@ -92,7 +35,38 @@ tags {
 function getQuery(factSheetType) {
   let queries = {
     // All fact sheets
-    'All': all,
+    'All': `
+    ${main}
+    ... on BusinessCapability {
+      ${relToChildParent}
+    }
+    ... on Process {
+      ${relToChildParent}
+    }
+    ... on UserGroup {
+      ${relToChildParent}
+    }
+    ... on Project {
+      ${relToChildParent}
+    }
+    ... on Application {
+      ${relToChildParent}
+    }
+    ... on Interface {
+      ${relToChildParent}
+    }
+    ... on DataObject {
+      ${relToChildParent}
+    }
+    ... on ITComponent {
+      ${relToChildParent}
+    }
+    ... on Provider {
+      ${relToChildParent}
+    }
+    ... on TechnicalStack {
+      ${relToChildParent}
+    }`,
     // Domain
     'BusinessCapability': `
     ${main}
@@ -280,6 +254,5 @@ function getQuery(factSheetType) {
 }
 
 export default {
-  getQuery: getQuery,
-  all
+  getQuery: getQuery
 }
