@@ -112,9 +112,8 @@ export class Report {
         fixedFactSheetType: this.reportState.selectedFactSheetType,
         attributes: [Queries.getQuery(this.reportState.selectedFactSheetType)],
         callback: (facetData) => {
-          this.leafNodes = facetData; //this._leafNodeFilter(facetData);
-          //this._updateAudits();
-          this._renderTest();
+          this.leafNodes = this._leafNodeFilter(facetData);
+          this._updateAudits();
         }
       }]
     };
