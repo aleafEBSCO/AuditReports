@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import uuid from 'uuid';
 
 import Queries from './Queries';
 import Utilities from './Utilities';
@@ -109,8 +108,9 @@ export class Report {
     this.config = {
       allowTableView: false,
       facets: [{
+        key: this.reportState.selectedFactSheetType,
         fixedFactSheetType: this.reportState.selectedFactSheetType,
-        attributes: ['id', 'type'], //[Queries.getQuery(this.reportState.selectedFactSheetType)],
+        attributes: [Queries.getQuery(this.reportState.selectedFactSheetType)],
         callback: (facetData) => {
           this.leafNodes = facetData; //this._leafNodeFilter(facetData);
           //this._updateAudits();
@@ -126,7 +126,6 @@ export class Report {
 
   // TODO: Delete when not needed
   _renderTest() {
-    console.log(this.config);
     const html = `<h1>${this.reportState.selectedFactSheetType}</h1>`
     + this.leafNodes.map(fs => `<p>${fs.id}: ${fs.type}</p>`).join('');
     $('#report').html(html);
