@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import uuid from 'uuid';
 
 import Queries from './Queries';
 import Utilities from './Utilities';
@@ -195,13 +194,9 @@ export class Report {
     }).bind(this));
   }
 
-  _leafNodeFilter(data) {
-    return data.filter(fs => fs.relToChild.totalCount === 0 && fs.relToParent.totalCount === 0);
-  }
-
   _updateData(data) {
     let currentData = data.allFactSheets.edges.map(fs => fs.node);
-    this.leafNodes = this._leafNodeFilter(currentData);
+    this.leafNodes = Utilities.leafNodeFilter(currentData);
     this._updateAudits();
   }
 

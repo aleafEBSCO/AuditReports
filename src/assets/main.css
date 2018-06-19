@@ -23,4 +23,10 @@ tr td:nth-child(1) {
   overflow-y: scroll;
 }
 
+/*
 @import "bar.css";
+*/
+.bar {
+  height: 30px;
+  margin-bottom: 5px;
+}

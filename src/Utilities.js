@@ -126,6 +126,11 @@ function completionWithinRange(data, min, max) {
   return data.filter(fs => fs.completion.completion >= min).filter(fs => fs.completion.completion < max);
 }
 
+//filter for fact sheets with no parents or children
+function leafNodeFilter(data) {
+  return data.filter(fs => fs.relToChild.totalCount === 0 && fs.relToParent.totalCount === 0);
+}
+
 // Convert EBSCO fact sheet type to LeanIX fact sheet type
 function ebscoToLeanIXTypes(ebscoType) {
   var lookup = {
@@ -187,6 +192,7 @@ export default {
   getRelevantFactSheets: getRelevantFactSheets,
   subscriptionStringToSubType: subscriptionStringToSubType,
   completionWithinRange: completionWithinRange,
+  leafNodeFilter: leafNodeFilter,
   ebscoToLeanIXTypes: ebscoToLeanIXTypes,
   leanIXToEbscoTypes: leanIXToEbscoTypes,
   getFactsheetTypesObjects: getFactsheetTypesObjects
