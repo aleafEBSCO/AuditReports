@@ -218,15 +218,6 @@ export class Report {
     lx.updateConfiguration(this.config);
   }
 
-  _executeQueries() {
-    // Shorter, more readable name
-    let factSheetType = this.reportState.selectedFactSheetType;
-
-		lx.executeGraphQL(Queries.getQuery(factSheetType)).then(((data) => {
-      this._updateData(data);
-    }).bind(this));
-  }
-
   _updateData(data) {
     let currentData = data.allFactSheets.edges.map(fs => fs.node);
     this.leafNodes = Utilities.leafNodeFilter(currentData);
