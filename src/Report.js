@@ -15,11 +15,6 @@ const SELECT_FIELD_STYLE = {
 };
 
 const AUDIT_TYPES = {
-  'All': [
-    'Lacking Accountable and Responsible',
-    'Quality Seal is Broken',
-    "Model Completion Status is not 'Ready'"
-  ],
   'Application': [
     'No Lifecycle',
     'Missing Business Criticality or Business Criticality without Description',
@@ -32,15 +27,24 @@ const AUDIT_TYPES = {
     'No Technical Fit',
     "No IT Component of Type 'Software'",
     'No Document Links',
+    'Lacking Accountable and Responsible',
+    'Quality Seal is Broken',
+    "Model Completion Status is not 'Ready'",
     'Overall Score < 70%'
   ],
   'BusinessCapability': [
     'Lacking Bounded Context',
     'Lacking Use Cases',
+    'Lacking Accountable and Responsible',
+    'Quality Seal is Broken',
+    "Model Completion Status is not 'Ready'",
     'Overall Score < 60%'
   ],
   'DataObject': [
     'No Bounded Context or Behavior',
+    'Lacking Accountable and Responsible',
+    'Quality Seal is Broken',
+    "Model Completion Status is not 'Ready'",
     'Overall Score < 50%'
   ],
   'ITComponent': [
@@ -51,11 +55,17 @@ const AUDIT_TYPES = {
     'Missing Behaviors',
     "Missing Persona of Type 'Owner' (when provider is EIS)",
     "No Persona of Type 'Owner'",
+    'Lacking Accountable and Responsible',
+    'Quality Seal is Broken',
+    "Model Completion Status is not 'Ready'",
     'Overall Score < 70%'
   ],
   'Interface': [
     'No Provider',
     'No IT Components',
+    'Lacking Accountable and Responsible',
+    'Quality Seal is Broken',
+    "Model Completion Status is not 'Ready'",
     'Overall Score < 60%'
   ],
   'Process': [
@@ -63,6 +73,9 @@ const AUDIT_TYPES = {
     'No Document Links',
     'No Lifecycle',
     'Lacking Bounded Context',
+    'Lacking Accountable and Responsible',
+    'Quality Seal is Broken',
+    "Model Completion Status is not 'Ready'",
     'Overall Score < 60%'
   ],
   'Project': [
@@ -71,9 +84,15 @@ const AUDIT_TYPES = {
     'No Business Value & Risk',
     'No Affected Domains',
     'No Affected Use Cases',
+    'Lacking Accountable and Responsible',
+    'Quality Seal is Broken',
+    "Model Completion Status is not 'Ready'",
     'Overall Score < 50%'
   ],
   'UserGroup': [
+    'Lacking Accountable and Responsible',
+    'Quality Seal is Broken',
+    "Model Completion Status is not 'Ready'",
     'Overall Score < 50%'
   ]
 }
@@ -82,7 +101,7 @@ export class Report {
 
   constructor(setup) {
     this.setup = setup;
-    this.factSheetTypes = [{type: 'All'}].concat(Utilities.getFactsheetTypesObjects(this.setup.settings.dataModel.factSheets));
+    this.factSheetTypes = Utilities.getFactsheetTypesObjects(this.setup.settings.dataModel.factSheets);
     this.reportState = {
       selectedFactSheetType: null,
       selectedAuditType: null
@@ -97,9 +116,18 @@ export class Report {
   }
 
   _createConfig() {
+    // TODO: return config object instead of using this.config
     this.config = {
       allowTableView: false,
-      allowEditing: false
+      facets: [{
+        key: this.reportState.selectedFactSheetType,
+        fixedFactSheetType: this.reportState.selectedFactSheetType,
+        attributes: [Queries.getQuery(this.reportState.selectedFactSheetType)],
+        callback: (facetData) => {
+          this.leafNodes = Utilities.leafNodeFilter(facetData);
+          this._updateAudits();
+        }
+      }]
     };
   }
 
@@ -175,10 +203,7 @@ export class Report {
 
     // Update to new fact sheet type
     this.reportState.selectedFactSheetType = factSheetType;
-
-    this.counts = {};
-
-    //need to wait for promise here
+    
     var factSheetType = this.reportState.selectedFactSheetType;
 
 		lx.executeGraphQL(Queries.getQuery(factSheetType)).then(((data) => {
@@ -188,10 +213,17 @@ export class Report {
 
       // Audit type will be the first option right after rendering
       this.reportState.selectedAuditType = this._getAuditTypeOptions(factSheetType)[0].value;
+      
+      this._updateConfig();
 
       this._renderReport();
     }).bind(this));
 
+  }
+  
+  _updateConfig() {
+    this._createConfig();
+    lx.updateConfiguration(this.config);
   }
 
   _updateData(data) {
@@ -205,19 +237,6 @@ export class Report {
     // NOTE: leafNodes will only be of the current fact sheet type due to separation of queries
     if (this.leafNodes) {
       switch (this.reportState.selectedFactSheetType) {
-        case 'All':
-          // All Fact Sheets
-          let noAccountableAndResponsible = GraphFilterTools.accountableResponsibleGraphs(this.leafNodes);
-          let brokenSeal = GraphFilterTools.qualitySealGraphs(this.leafNodes);
-          let notReady = GraphFilterTools.modelCompletionGraphs(this.leafNodes);
-
-          this.audits = {
-            "Lacking Accountable and Responsible": noAccountableAndResponsible,
-            "Quality Seal is Broken": brokenSeal,
-            "Model Completion Status is not 'Ready'": notReady
-          };
-          break;
-
         case 'Application':
           // Bounded Context
           let boundedContextsNoLifecycle = GraphFilterTools.lifecycleGraph(this.leafNodes);
@@ -231,6 +250,9 @@ export class Report {
           let boundedContextsNoTechnicalFit = GraphFilterTools.technicalFitGraph(this.leafNodes);
           let boundedContextsNoSoftwareITComponent = GraphFilterTools.softwareITComponentGraph(this.leafNodes);
           let boundedContextsNoDocumentLinks = GraphFilterTools.documentsGraph(this.leafNodes);
+          let boundedContextsNoAR = GraphFilterTools.accountableResponsibleGraph(this.leafNodes);
+          let boundedContextsBrokenSeal = GraphFilterTools.qualitySealGraph(this.leafNodes);
+          let boundedContextsNotReady = GraphFilterTools.modelCompletionGraph(this.leafNodes);
           let boundedContextsScore = GraphFilterTools.createHistogram(this.leafNodes, "Bounded Context", 70);
 
           this.audits = {
@@ -245,30 +267,45 @@ export class Report {
             "No Technical Fit": boundedContextsNoTechnicalFit,
             "No IT Component of Type 'Software'": boundedContextsNoSoftwareITComponent,
             "No Document Links": boundedContextsNoDocumentLinks,
+            'Lacking Accountable and Responsible': boundedContextsNoAR,
+            'Quality Seal is Broken': boundedContextsBrokenSeal,
+            "Model Completion Status is not 'Ready'": boundedContextsNotReady,
             "Overall Score < 70%": boundedContextsScore
           };
           break;
 
         case 'BusinessCapability':
           // Domain
-          let domainLackingBoundedContext = GraphFilterTools.relationGraph(this.leafNodes, "Application");
-          let domainLackingUseCases = GraphFilterTools.relationGraph(this.leafNodes, "Process");
-          let domainScore = GraphFilterTools.createHistogram(this.leafNodes, "Domain", 60);
+          let domainsLackingBoundedContext = GraphFilterTools.relationGraph(this.leafNodes, "Application");
+          let domainsLackingUseCases = GraphFilterTools.relationGraph(this.leafNodes, "Process");
+          let domainsNoAR = GraphFilterTools.accountableResponsibleGraph(this.leafNodes);
+          let domainsBrokenSeal = GraphFilterTools.qualitySealGraph(this.leafNodes);
+          let domainsNotReady = GraphFilterTools.modelCompletionGraph(this.leafNodes);
+          let domainsScore = GraphFilterTools.createHistogram(this.leafNodes, "Domain", 60);
 
           this.audits = {
-            "Lacking Bounded Context": domainLackingBoundedContext,
-            "Lacking Use Cases": domainLackingUseCases,
-            "Overall Score < 60%": domainScore
+            "Lacking Bounded Context": domainsLackingBoundedContext,
+            "Lacking Use Cases": domainsLackingUseCases,
+            'Lacking Accountable and Responsible': domainsNoAR,
+            'Quality Seal is Broken': domainsBrokenSeal,
+            "Model Completion Status is not 'Ready'": domainsNotReady,
+            "Overall Score < 60%": domainsScore
           };
           break;
 
         case 'DataObject':
           // Data Object
           let dataObjectsNoBoundedContextOrBehavor = GraphFilterTools.boundedContextBehaviorGraph(this.leafNodes);
+          let dataObjectsNoAR = GraphFilterTools.accountableResponsibleGraph(this.leafNodes);
+          let dataObjectsBrokenSeal = GraphFilterTools.qualitySealGraph(this.leafNodes);
+          let dataObjectsNotReady = GraphFilterTools.modelCompletionGraph(this.leafNodes);
           let dataObjectsScore = GraphFilterTools.createHistogram(this.leafNodes, "Data Object", 50);
 
           this.audits = {
             "No Bounded Context or Behavior": dataObjectsNoBoundedContextOrBehavor,
+            'Lacking Accountable and Responsible': dataObjectsNoAR,
+            'Quality Seal is Broken': dataObjectsBrokenSeal,
+            "Model Completion Status is not 'Ready'": dataObjectsNotReady,
             "Overall Score < 50%": dataObjectsScore
           };
           break;
@@ -282,6 +319,9 @@ export class Report {
           let itComponentsMissingBehaviors = GraphFilterTools.relationGraph(this.leafNodes, "Interface");
           let itComponentsNoOwnerPersonaEIS = GraphFilterTools.EISownerPersonaGraph(this.leafNodes);
           let itComponentsNoOwnerPersona = GraphFilterTools.ownerPersonaGraph(this.leafNodes);
+          let itComponentsNoAR = GraphFilterTools.accountableResponsibleGraph(this.leafNodes);
+          let itComponentsBrokenSeal = GraphFilterTools.qualitySealGraph(this.leafNodes);
+          let itComponentsNotReady = GraphFilterTools.modelCompletionGraph(this.leafNodes);
           let itComponentsScore = GraphFilterTools.createHistogram(this.leafNodes, "IT Component", 70);
 
           this.audits = {
@@ -292,6 +332,9 @@ export class Report {
             "Missing Behaviors": itComponentsMissingBehaviors,
             "Missing Persona of Type 'Owner' (when provider is EIS)": itComponentsNoOwnerPersonaEIS,
             "No Persona of Type 'Owner'": itComponentsNoOwnerPersona,
+            'Lacking Accountable and Responsible': itComponentsNoAR,
+            'Quality Seal is Broken': itComponentsBrokenSeal,
+            "Model Completion Status is not 'Ready'": itComponentsNotReady,
             "Overall Score < 70%": itComponentsScore
           };
           break;
@@ -300,11 +343,17 @@ export class Report {
           // Behavior
           let behaviorsLackingProvider = GraphFilterTools.relationGraph(this.leafNodes, "ProviderApplication");
           let behaviorsLackingITComponent = GraphFilterTools.relationGraph(this.leafNodes, "ITComponent");
+          let behaviorsNoAR = GraphFilterTools.accountableResponsibleGraph(this.leafNodes);
+          let behaviorsBrokenSeal = GraphFilterTools.qualitySealGraph(this.leafNodes);
+          let behaviorsNotReady = GraphFilterTools.modelCompletionGraph(this.leafNodes);
           let behaviorsScore = GraphFilterTools.createHistogram(this.leafNodes, "Behavior", 60);
 
           this.audits = {
             "No Provider": behaviorsLackingProvider,
             "No IT Components": behaviorsLackingITComponent,
+            'Lacking Accountable and Responsible': behaviorsNoAR,
+            'Quality Seal is Broken': behaviorsBrokenSeal,
+            "Model Completion Status is not 'Ready'": behaviorsNotReady,
             "Overall Score < 60%": behaviorsScore
           };
           break;
@@ -315,6 +364,9 @@ export class Report {
           let useCaseNoDocumentLinks = GraphFilterTools.documentsGraph(this.leafNodes)
           let useCaseNoLifecycle = GraphFilterTools.lifecycleGraph(this.leafNodes);
           let useCaseLackingBoundedContext = GraphFilterTools.relationGraph(this.leafNodes, "Application");
+          let useCaseNoAR = GraphFilterTools.accountableResponsibleGraph(this.leafNodes);
+          let useCaseBrokenSeal = GraphFilterTools.qualitySealGraph(this.leafNodes);
+          let useCaseNotReady = GraphFilterTools.modelCompletionGraph(this.leafNodes);
           let useCaseScore = GraphFilterTools.createHistogram(this.leafNodes, "Use Case", 60);
 
           this.audits = {
@@ -322,6 +374,9 @@ export class Report {
             "No Document Links": useCaseNoDocumentLinks,
             "No Lifecycle": useCaseNoLifecycle,
             "Lacking Bounded Context": useCaseLackingBoundedContext,
+            'Lacking Accountable and Responsible': useCaseNoAR,
+            'Quality Seal is Broken': useCaseBrokenSeal,
+            "Model Completion Status is not 'Ready'": useCaseNotReady,
             "Overall Score < 60%": useCaseScore
           };
           break;
@@ -333,6 +388,9 @@ export class Report {
           let epicNoBusinessValueRisk = GraphFilterTools.businessValueRiskGraph(this.leafNodes);
           let epicNoAffectedDomains = GraphFilterTools.relationGraph(this.leafNodes, "BusinessCapability");
           let epicNoAffectedUseCases = GraphFilterTools.relationGraph(this.leafNodes, "Process");
+          let epicNoAR = GraphFilterTools.accountableResponsibleGraph(this.leafNodes);
+          let epicBrokenSeal = GraphFilterTools.qualitySealGraph(this.leafNodes);
+          let epicNotReady = GraphFilterTools.modelCompletionGraph(this.leafNodes);
           let epicScore = GraphFilterTools.createHistogram(this.leafNodes, "Epic", 50);
 
           this.audits = {
@@ -341,16 +399,25 @@ export class Report {
             "No Business Value & Risk": epicNoBusinessValueRisk,
             "No Affected Domains": epicNoAffectedDomains,
             "No Affected Use Cases": epicNoAffectedUseCases,
+            'Lacking Accountable and Responsible': epicNoAR,
+            'Quality Seal is Broken': epicBrokenSeal,
+            "Model Completion Status is not 'Ready'": epicNotReady,
             "Overall Score < 50%": epicScore
           };
           break;
 
         case 'UserGroup':
           // Persona
-          let personaScore = GraphFilterTools.createHistogram(this.leafNodes, "Persona", 50);
+          let personasNoAR = GraphFilterTools.accountableResponsibleGraph(this.leafNodes);
+          let personasBrokenSeal = GraphFilterTools.qualitySealGraph(this.leafNodes);
+          let personasNotReady = GraphFilterTools.modelCompletionGraph(this.leafNodes);
+          let personasScore = GraphFilterTools.createHistogram(this.leafNodes, "Persona", 50);
 
           this.audits = {
-            "Overall Score < 50%": personaScore
+            'Lacking Accountable and Responsible': personasNoAR,
+            'Quality Seal is Broken': personasBrokenSeal,
+            "Model Completion Status is not 'Ready'": personasNotReady,
+            "Overall Score < 50%": personasScore
           };
           break;
       }
