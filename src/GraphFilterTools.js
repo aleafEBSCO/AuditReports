@@ -8,6 +8,62 @@ import Utilities from './Utilities';
 
 import InfoTable from './components/InfoTable';
 
+function accountableResponsibleGraph(data) {
+    let graphInfo = {
+        counts: {
+            "No responsible, no accountable": 0,
+            "Responsible, no accountable": 0,
+            "Accountable, no responsible": 0,
+            "Responsible and accountable": 0
+        },
+        sortedData: {
+            "No responsible, no accountable": [],
+            "Responsible, no accountable": [],
+            "Accountable, no responsible": [],
+            "Responsible and accountable": []
+        }
+    }
+
+    for (let i = 0; i < data.length; i++) {
+        let account = false;
+        let response = false;
+        for (let j = 0; j < data[i].subscriptions.edges.length; j++) {
+            if (data[i].subscriptions.edges[j].node.type === "ACCOUNTABLE") {
+                account = true;
+            } else if (data[i].subscriptions.edges[j].node.type === "RESPONSIBLE") {
+                response = true;
+            }
+        }
+
+        if (!(response) && !(account)) {
+            graphInfo.counts["No responsible, no accountable"]++;
+            graphInfo.sortedData["No responsible, no accountable"].push(data[i]);
+        } else if ((response) && !(account)) {
+            graphInfo.counts["Responsible, no accountable"]++;
+            graphInfo.sortedData["Responsible, no accountable"].push(data[i]);
+        } else if (!(response) && (account)) {
+            graphInfo.counts["Accountable, no responsible"]++;
+            graphInfo.sortedData["Accountable, no responsible"].push(data[i]);
+        } else {
+            graphInfo.counts["Responsible and accountable"]++;
+            graphInfo.sortedData["Responsible and accountable"].push(data[i]);
+        }
+    }
+
+    let title = "Subscriptions";
+    let graph = undefined;
+
+    if (data.length === 0) {
+        graph = <div style={centered}><h2>{title}</h2><p>No Factsheets</p></div>;
+    } else {
+        let graphData = graphFormat(graphInfo.counts);
+        let options = pieChartOptions(title, graphData, graphInfo.sortedData)
+        graph = <ReactHighCharts config={options} />;
+    }
+
+    return [graph, graphInfo.counts["No responsible, no accountable"]];
+}
+
 function accountableResponsibleGraphs(data) {
     let filteredData = {
         Domain: data.filter(fs => {return (fs.type === "BusinessCapability")}),
@@ -1001,6 +1057,7 @@ function pieChartOptions(graphTitle, graphData, sortedData) {
 }
 
 export default {
+  accountableResponsibleGraph: accountableResponsibleGraph,
   accountableResponsibleGraphs: accountableResponsibleGraphs,
   qualitySealGraphs: qualitySealGraphs,
   modelCompletionGraphs: modelCompletionGraphs,

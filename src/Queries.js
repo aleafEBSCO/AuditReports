@@ -32,41 +32,54 @@ tags {
   name
 }`;
 
+let all = `
+${main}
+... on BusinessCapability {
+  ${relToChildParent}
+}
+... on Process {
+  ${relToChildParent}
+}
+... on UserGroup {
+  ${relToChildParent}
+}
+... on Project {
+  ${relToChildParent}
+}
+... on Application {
+  ${relToChildParent}
+}
+... on Interface {
+  ${relToChildParent}
+}
+... on DataObject {
+  ${relToChildParent}
+}
+... on ITComponent {
+  ${relToChildParent}
+}
+... on Provider {
+  ${relToChildParent}
+}
+... on TechnicalStack {
+  ${relToChildParent}
+}`;
+
+let allQuery = `
+{
+  allFactSheets {
+    edges {
+      node {
+        ${all}
+      }
+    }
+  }
+}`
+
 function getQuery(factSheetType) {
   let queries = {
     // All fact sheets
-    'All': `
-    ${main}
-    ... on BusinessCapability {
-      ${relToChildParent}
-    }
-    ... on Process {
-      ${relToChildParent}
-    }
-    ... on UserGroup {
-      ${relToChildParent}
-    }
-    ... on Project {
-      ${relToChildParent}
-    }
-    ... on Application {
-      ${relToChildParent}
-    }
-    ... on Interface {
-      ${relToChildParent}
-    }
-    ... on DataObject {
-      ${relToChildParent}
-    }
-    ... on ITComponent {
-      ${relToChildParent}
-    }
-    ... on Provider {
-      ${relToChildParent}
-    }
-    ... on TechnicalStack {
-      ${relToChildParent}
-    }`,
+    'All': all,
     // Domain
     'BusinessCapability': `
     ${main}
@@ -254,5 +267,6 @@ function getQuery(factSheetType) {
 }
 
 export default {
-  getQuery: getQuery
+  getQuery: getQuery,
+  allQuery
 }
