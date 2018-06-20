@@ -150,7 +150,7 @@ export class Report {
 
   _getAuditTypeOptions(factSheetType) {
     return AUDIT_TYPES[factSheetType].map(type => {
-      return { value: type, label: type };
+      return { value: type, label: type + ' (' + this.audits[type][1] + ')' };
     });
   }
 
@@ -204,33 +204,12 @@ export class Report {
     // Update to new fact sheet type
     this.reportState.selectedFactSheetType = factSheetType;
 
-    // Render audit select
-    ReactDOM.render(this._renderAuditSelect(factSheetType), document.getElementById('audit-select'));
-
-    // Audit type will be the first option right after rendering
-    this.reportState.selectedAuditType = this._getAuditTypeOptions(factSheetType)[0].value;
-
     this._updateConfig();
   }
 
   _updateConfig() {
     this._createConfig();
     lx.updateConfiguration(this.config);
-  }
-
-  _executeQueries() {
-    // Shorter, more readable name
-    let factSheetType = this.reportState.selectedFactSheetType;
-
-		lx.executeGraphQL(Queries.getQuery(factSheetType)).then(((data) => {
-      this._updateData(data);
-    }).bind(this));
-  }
-
-  _updateData(data) {
-    let currentData = data.allFactSheets.edges.map(fs => fs.node);
-    this.leafNodes = Utilities.leafNodeFilter(currentData);
-    this._updateAudits();
   }
 
   _updateAudits() {
@@ -423,6 +402,13 @@ export class Report {
           break;
       }
     }
+
+    // Render audit select
+    ReactDOM.render(this._renderAuditSelect(this.reportState.selectedFactSheetType), document.getElementById('audit-select'));
+
+    // Audit type will be the first option right after rendering
+    this.reportState.selectedAuditType = this._getAuditTypeOptions(this.reportState.selectedFactSheetType)[0].value;
+
     this._renderReport();
   }
 
