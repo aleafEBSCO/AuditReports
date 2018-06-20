@@ -8,7 +8,7 @@
   max-width: none !important;
   width: 900px !important;
   max-height: 400px;
-  overflow: scroll;
+  overflow: hidden;
   overflow-x: hidden;
   top: 50% !important;
   left: 50% !important;

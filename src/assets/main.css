@@ -19,4 +19,14 @@ tr td:nth-child(1) {
   margin-bottom: 5px;
 }
 
+.ReactTable .rt-thead {
+  overflow-y: scroll;
+}
+
+/*
 @import "bar.css";
+*/
+.bar {
+  height: 30px;
+  margin-bottom: 5px;
+}
