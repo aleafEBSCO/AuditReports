@@ -145,7 +145,6 @@ function ebscoToLeanIXTypes(ebscoType) {
 
 function leanIXToEbscoTypes(leanIXType) {
   var lookup = {
-    "All": "All Fact Sheets", // For dropdown menu
     "BusinessCapability": "Domain",
     "Process": "Use Case",
     "UserGroup": "Persona",

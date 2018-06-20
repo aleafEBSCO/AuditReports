@@ -15,11 +15,6 @@ const SELECT_FIELD_STYLE = {
 };
 
 const AUDIT_TYPES = {
-  'All': [
-    'Lacking Accountable and Responsible',
-    'Quality Seal is Broken',
-    "Model Completion Status is not 'Ready'"
-  ],
   'Application': [
     'No Lifecycle',
     'Missing Business Criticality or Business Criticality without Description',
@@ -106,7 +101,7 @@ export class Report {
 
   constructor(setup) {
     this.setup = setup;
-    this.factSheetTypes = [{type: 'All'}].concat(Utilities.getFactsheetTypesObjects(this.setup.settings.dataModel.factSheets));
+    this.factSheetTypes = Utilities.getFactsheetTypesObjects(this.setup.settings.dataModel.factSheets);
     this.reportState = {
       selectedFactSheetType: null,
       selectedAuditType: null
@@ -120,13 +115,6 @@ export class Report {
     this._createConfig();
   }
 
-  /*
-  CURRENT STATE: Everything is being updated the way it should, however fixedFactSheetType
-  is not being read even though it is changed when the user selects a new type. Fact sheets
-  of the old type ('All') as still being queried for unless the page is reloaded.
-  
-  A support ticket has been sent to LeanIX.
-  */ 
   _createConfig() {
     // TODO: return config object instead of using this.config
     this.config = {
@@ -136,36 +124,11 @@ export class Report {
         fixedFactSheetType: this.reportState.selectedFactSheetType,
         attributes: [Queries.getQuery(this.reportState.selectedFactSheetType)],
         callback: (facetData) => {
-          /*
-          if (this.reportState.selectedFactSheetType === 'All') {
-            console.log('Executing GraphQL...');
-            lx.executeGraphQL(Queries.allQuery).then((result) => {
-              console.log(result);
-              let allData = result.allFactSheets.edges.map(e => e.node);
-              this.leafNodes = this._leafNodeFilter(allData);
-              this._updateAudits();
-            });
-          } else {
-            this.leafNodes = this._leafNodeFilter(facetData);
-            this._updateAudits();
-          }
-          */
           this.leafNodes = this._leafNodeFilter(facetData);
           this._updateAudits();
         }
       }]
     };
-
-    if (this.reportState.selectedFactSheetType === 'All') {
-      this.config.facets[0].fixedFactSheetType = null;
-    }
-  }
-
-  // TODO: Delete when not needed
-  _renderTest() {
-    const html = `<h1>${this.reportState.selectedFactSheetType}</h1>`
-    + this.leafNodes.map(fs => `<p>${fs.id}: ${fs.type}</p>`).join('');
-    $('#report').html(html);
   }
 
   _getFactSheetTypeOptions() {
@@ -279,19 +242,6 @@ export class Report {
     // NOTE: leafNodes will only be of the current fact sheet type due to separation of queries
     if (this.leafNodes) {
       switch (this.reportState.selectedFactSheetType) {
-        case 'All':
-          // All Fact Sheets
-          let noAccountableAndResponsible = GraphFilterTools.accountableResponsibleGraphs(this.leafNodes);
-          let brokenSeal = GraphFilterTools.qualitySealGraphs(this.leafNodes);
-          let notReady = GraphFilterTools.modelCompletionGraphs(this.leafNodes);
-
-          this.audits = {
-            "Lacking Accountable and Responsible": noAccountableAndResponsible,
-            "Quality Seal is Broken": brokenSeal,
-            "Model Completion Status is not 'Ready'": notReady
-          };
-          break;
-
         case 'Application':
           // Bounded Context
           let boundedContextsNoLifecycle = GraphFilterTools.lifecycleGraph(this.leafNodes);
