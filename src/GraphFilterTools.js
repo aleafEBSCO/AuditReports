@@ -50,6 +50,7 @@ function accountableResponsibleGraph(data) {
         }
     }
 
+    let centered = {textAlign: "center"};
     let title = "Subscriptions";
     let graph = undefined;
 
@@ -62,6 +63,40 @@ function accountableResponsibleGraph(data) {
     }
 
     return [graph, graphInfo.counts["No responsible, no accountable"]];
+}
+
+function qualitySealGraph(data) {
+    let graphInfo = {
+        counts: {
+            BROKEN: 0,
+            DISABLED: 0,
+            APPROVED: 0
+        },
+        sortedData: {
+            BROKEN: [],
+            DISABLED: [],
+            APPROVED: []
+        }
+    }
+
+    for (let j = 0; j < data.length; j++) {
+        graphInfo.counts[data[j].qualitySeal]++;
+        graphInfo.sortedData[data[j].qualitySeal].push(data[j]);
+    }
+
+    let centered = {textAlign: "center"};
+    let title = "Quality Seal";
+    let graph = [];
+
+    if (data.length === 0) {
+        graph = <div style={centered}><h2>{title}</h2><p>No Factsheets</p></div>;
+    } else {
+        let graphData = graphFormat(graphInfo.counts);
+        let options = pieChartOptions(title, graphData, graphInfo.sortedData)
+        graph = <ReactHighCharts config={options} />;
+    }
+
+    return [graph, graphInfo.counts["BROKEN"]];
 }
 
 function accountableResponsibleGraphs(data) {
@@ -1058,6 +1093,7 @@ function pieChartOptions(graphTitle, graphData, sortedData) {
 
 export default {
   accountableResponsibleGraph: accountableResponsibleGraph,
+  qualitySealGraph: qualitySealGraph,
   accountableResponsibleGraphs: accountableResponsibleGraphs,
   qualitySealGraphs: qualitySealGraphs,
   modelCompletionGraphs: modelCompletionGraphs,
