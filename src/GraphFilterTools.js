@@ -62,7 +62,9 @@ function accountableResponsibleGraph(data) {
         graph = <ReactHighCharts config={options} />;
     }
 
-    return [graph, graphInfo.counts["No responsible, no accountable"]];
+    let totalCount = graphInfo.counts["No responsible, no accountable"];
+
+    return [graph, totalCount];
 }
 
 function qualitySealGraph(data) {
@@ -79,9 +81,9 @@ function qualitySealGraph(data) {
         }
     }
 
-    for (let j = 0; j < data.length; j++) {
-        graphInfo.counts[data[j].qualitySeal]++;
-        graphInfo.sortedData[data[j].qualitySeal].push(data[j]);
+    for (let i = 0; i < data.length; i++) {
+        graphInfo.counts[data[i].qualitySeal]++;
+        graphInfo.sortedData[data[i].qualitySeal].push(data[i]);
     }
 
     let centered = {textAlign: "center"};
@@ -96,7 +98,62 @@ function qualitySealGraph(data) {
         graph = <ReactHighCharts config={options} />;
     }
 
-    return [graph, graphInfo.counts["BROKEN"]];
+    let totalCount = graphInfo.counts["BROKEN"];
+
+    return [graph, totalCount];
+}
+
+function modelCompletionGraph(data) {
+    let graphInfo = {
+        counts: {
+            backlog: 0,
+            analysis: 0,
+            review: 0,
+            ready: 0,
+            "no status": 0
+        },
+        sortedData: {
+            backlog: [],
+            analysis: [],
+            review: [],
+            ready: [],
+            "no status": []
+        }
+    }
+
+    for (let i = 0; i < data.length; i++) {
+        let anyData = false;
+        for (let j = 0; j < data[i].tags.length; j++) {
+            if (data[i].tags[j].tagGroup.name === "State of Model Completeness") {
+                let key = data[i].tags[j].name;
+                graphInfo.counts[key]++;
+                graphInfo.sortedData[key].push(data[i]);
+                anyData = true;
+            }
+        }
+        // If model completion status hasn't been found
+        if (anyData === false) {
+            graphInfo.counts["no status"]++;
+            graphInfo.sortedData["no status"].push(data[i]);
+        }
+    }
+
+    let centered = {textAlign: "center"};
+    let title = "Model Completion Status";
+    let graph = undefined;
+
+    if (data.length === 0) {
+        graph = <div style={centered}><h2>{title}</h2><p>No Factsheets</p></div>;
+    } else {
+        let graphData = graphFormat(graphInfo.counts);
+        let options = pieChartOptions(title, graphData, graphInfo.sortedData)
+        graph = <ReactHighCharts config={options} />;
+    }
+
+    let totalCount = graphInfo.counts["backlog"] + graphInfo.counts["review"]
+    + graphInfo.counts["analysis"] + graphInfo.counts["no status"];
+
+    return [graph, totalCount];
 }
 
 function accountableResponsibleGraphs(data) {
@@ -1094,6 +1151,7 @@ function pieChartOptions(graphTitle, graphData, sortedData) {
 export default {
   accountableResponsibleGraph: accountableResponsibleGraph,
   qualitySealGraph: qualitySealGraph,
+  modelCompletionGraph: modelCompletionGraph,
   accountableResponsibleGraphs: accountableResponsibleGraphs,
   qualitySealGraphs: qualitySealGraphs,
   modelCompletionGraphs: modelCompletionGraphs,

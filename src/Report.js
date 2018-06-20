@@ -307,7 +307,7 @@ export class Report {
           let boundedContextsNoDocumentLinks = GraphFilterTools.documentsGraph(this.leafNodes);
           let boundedContextsNoAR = GraphFilterTools.accountableResponsibleGraph(this.leafNodes);
           let boundedContextsBrokenSeal = GraphFilterTools.qualitySealGraph(this.leafNodes);
-          let boundedContextsNotReady = [<p>TODO</p>, 0];
+          let boundedContextsNotReady = GraphFilterTools.modelCompletionGraph(this.leafNodes);
           let boundedContextsScore = GraphFilterTools.createHistogram(this.leafNodes, "Bounded Context", 70);
 
           this.audits = {
@@ -335,7 +335,7 @@ export class Report {
           let domainsLackingUseCases = GraphFilterTools.relationGraph(this.leafNodes, "Process");
           let domainsNoAR = GraphFilterTools.accountableResponsibleGraph(this.leafNodes);
           let domainsBrokenSeal = GraphFilterTools.qualitySealGraph(this.leafNodes);
-          let domainsNotReady = [<p>TODO</p>, 0];
+          let domainsNotReady = GraphFilterTools.modelCompletionGraph(this.leafNodes);
           let domainsScore = GraphFilterTools.createHistogram(this.leafNodes, "Domain", 60);
 
           this.audits = {
@@ -353,7 +353,7 @@ export class Report {
           let dataObjectsNoBoundedContextOrBehavor = GraphFilterTools.boundedContextBehaviorGraph(this.leafNodes);
           let dataObjectsNoAR = GraphFilterTools.accountableResponsibleGraph(this.leafNodes);
           let dataObjectsBrokenSeal = GraphFilterTools.qualitySealGraph(this.leafNodes);
-          let dataObjectsNotReady = [<p>TODO</p>, 0];
+          let dataObjectsNotReady = GraphFilterTools.modelCompletionGraph(this.leafNodes);
           let dataObjectsScore = GraphFilterTools.createHistogram(this.leafNodes, "Data Object", 50);
 
           this.audits = {
@@ -376,7 +376,7 @@ export class Report {
           let itComponentsNoOwnerPersona = GraphFilterTools.ownerPersonaGraph(this.leafNodes);
           let itComponentsNoAR = GraphFilterTools.accountableResponsibleGraph(this.leafNodes);
           let itComponentsBrokenSeal = GraphFilterTools.qualitySealGraph(this.leafNodes);
-          let itComponentsNotReady = [<p>TODO</p>, 0];
+          let itComponentsNotReady = GraphFilterTools.modelCompletionGraph(this.leafNodes);
           let itComponentsScore = GraphFilterTools.createHistogram(this.leafNodes, "IT Component", 70);
 
           this.audits = {
@@ -400,7 +400,7 @@ export class Report {
           let behaviorsLackingITComponent = GraphFilterTools.relationGraph(this.leafNodes, "ITComponent");
           let behaviorsNoAR = GraphFilterTools.accountableResponsibleGraph(this.leafNodes);
           let behaviorsBrokenSeal = GraphFilterTools.qualitySealGraph(this.leafNodes);
-          let behaviorsNotReady = [<p>TODO</p>, 0];
+          let behaviorsNotReady = GraphFilterTools.modelCompletionGraph(this.leafNodes);
           let behaviorsScore = GraphFilterTools.createHistogram(this.leafNodes, "Behavior", 60);
 
           this.audits = {
@@ -421,7 +421,7 @@ export class Report {
           let useCaseLackingBoundedContext = GraphFilterTools.relationGraph(this.leafNodes, "Application");
           let useCaseNoAR = GraphFilterTools.accountableResponsibleGraph(this.leafNodes);
           let useCaseBrokenSeal = GraphFilterTools.qualitySealGraph(this.leafNodes);
-          let useCaseNotReady = [<p>TODO</p>, 0];
+          let useCaseNotReady = GraphFilterTools.modelCompletionGraph(this.leafNodes);
           let useCaseScore = GraphFilterTools.createHistogram(this.leafNodes, "Use Case", 60);
 
           this.audits = {
@@ -445,7 +445,7 @@ export class Report {
           let epicNoAffectedUseCases = GraphFilterTools.relationGraph(this.leafNodes, "Process");
           let epicNoAR = GraphFilterTools.accountableResponsibleGraph(this.leafNodes);
           let epicBrokenSeal = GraphFilterTools.qualitySealGraph(this.leafNodes);
-          let epicNotReady = [<p>TODO</p>, 0];
+          let epicNotReady = GraphFilterTools.modelCompletionGraph(this.leafNodes);
           let epicScore = GraphFilterTools.createHistogram(this.leafNodes, "Epic", 50);
 
           this.audits = {
@@ -465,7 +465,7 @@ export class Report {
           // Persona
           let personasNoAR = GraphFilterTools.accountableResponsibleGraph(this.leafNodes);
           let personasBrokenSeal = GraphFilterTools.qualitySealGraph(this.leafNodes);
-          let personasNotReady = [<p>TODO</p>, 0];
+          let personasNotReady = GraphFilterTools.modelCompletionGraph(this.leafNodes);
           let personasScore = GraphFilterTools.createHistogram(this.leafNodes, "Persona", 50);
 
           this.audits = {
