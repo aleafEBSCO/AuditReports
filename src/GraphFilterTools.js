@@ -8,20 +8,18 @@ import Utilities from './Utilities';
 import InfoTable from './components/InfoTable';
 
 function accountableResponsibleGraph(data) {
-  let graphInfo = {
-    counts: {
-      "No responsible, no accountable": 0,
-      "Responsible, no accountable": 0,
-      "Accountable, no responsible": 0,
-      "Responsible and accountable": 0
-    },
-    sortedData: {
-      "No responsible, no accountable": [],
-      "Responsible, no accountable": [],
-      "Accountable, no responsible": [],
-      "Responsible and accountable": []
-    }
-  }
+  let counts = {
+    "No responsible, no accountable": 0,
+    "Responsible, no accountable": 0,
+    "Accountable, no responsible": 0,
+    "Responsible and accountable": 0
+  };
+  let sortedData = {
+    "No responsible, no accountable": [],
+    "Responsible, no accountable": [],
+    "Accountable, no responsible": [],
+    "Responsible and accountable": []
+  };
 
   for (let i = 0; i < data.length; i++) {
     let account = false;
@@ -35,17 +33,17 @@ function accountableResponsibleGraph(data) {
     }
 
     if (!(response) && !(account)) {
-      graphInfo.counts["No responsible, no accountable"]++;
-      graphInfo.sortedData["No responsible, no accountable"].push(data[i]);
+      counts["No responsible, no accountable"]++;
+      sortedData["No responsible, no accountable"].push(data[i]);
     } else if ((response) && !(account)) {
-      graphInfo.counts["Responsible, no accountable"]++;
-      graphInfo.sortedData["Responsible, no accountable"].push(data[i]);
+      counts["Responsible, no accountable"]++;
+      sortedData["Responsible, no accountable"].push(data[i]);
     } else if (!(response) && (account)) {
-      graphInfo.counts["Accountable, no responsible"]++;
-      graphInfo.sortedData["Accountable, no responsible"].push(data[i]);
+      counts["Accountable, no responsible"]++;
+      sortedData["Accountable, no responsible"].push(data[i]);
     } else {
-      graphInfo.counts["Responsible and accountable"]++;
-      graphInfo.sortedData["Responsible and accountable"].push(data[i]);
+      counts["Responsible and accountable"]++;
+      sortedData["Responsible and accountable"].push(data[i]);
     }
   }
 
@@ -56,31 +54,29 @@ function accountableResponsibleGraph(data) {
   if (data.length === 0) {
     graph = <div style={centered}><h2>{title}</h2><p>No Factsheets</p></div>;
   } else {
-    let graphData = graphFormat(graphInfo.counts);
-    let options = pieChartOptions(title, graphData, graphInfo.sortedData)
+    let graphData = graphFormat(counts);
+    let options = pieChartOptions(title, graphData, sortedData)
     graph = <ReactHighCharts config={options} />;
   }
 
-  return [graph, graphInfo.counts["No responsible, no accountable"]];
+  return [graph, counts["No responsible, no accountable"]];
 }
 
 function qualitySealGraph(data) {
-  let graphInfo = {
-    counts: {
-      BROKEN: 0,
-      DISABLED: 0,
-      APPROVED: 0
-    },
-    sortedData: {
-      BROKEN: [],
-      DISABLED: [],
-      APPROVED: []
-    }
-  }
+  let counts = {
+    BROKEN: 0,
+    DISABLED: 0,
+    APPROVED: 0
+  };
+  let sortedData = {
+    BROKEN: [],
+    DISABLED: [],
+    APPROVED: []
+  };
 
   for (let i = 0; i < data.length; i++) {
-    graphInfo.counts[data[i].qualitySeal]++;
-    graphInfo.sortedData[data[i].qualitySeal].push(data[i]);
+    counts[data[i].qualitySeal]++;
+    sortedData[data[i].qualitySeal].push(data[i]);
   }
 
   let centered = {textAlign: "center"};
@@ -90,46 +86,44 @@ function qualitySealGraph(data) {
   if (data.length === 0) {
     graph = <div style={centered}><h2>{title}</h2><p>No Factsheets</p></div>;
   } else {
-    let graphData = graphFormat(graphInfo.counts);
-    let options = pieChartOptions(title, graphData, graphInfo.sortedData)
+    let graphData = graphFormat(counts);
+    let options = pieChartOptions(title, graphData, sortedData)
     graph = <ReactHighCharts config={options} />;
   }
 
-  return [graph, graphInfo.counts["BROKEN"]];
+  return [graph, counts["BROKEN"]];
 }
 
 function modelCompletionGraph(data) {
-  let graphInfo = {
-    counts: {
-      backlog: 0,
-      analysis: 0,
-      review: 0,
-      ready: 0,
-      "no status": 0
-    },
-    sortedData: {
-      backlog: [],
-      analysis: [],
-      review: [],
-      ready: [],
-      "no status": []
-    }
-  }
+  let counts = {
+    backlog: 0,
+    analysis: 0,
+    review: 0,
+    ready: 0,
+    "no status": 0
+  };
+  let sortedData = {
+    backlog: [],
+    analysis: [],
+    review: [],
+    ready: [],
+    "no status": []
+  };
 
   for (let i = 0; i < data.length; i++) {
     let anyData = false;
     for (let j = 0; j < data[i].tags.length; j++) {
       if (data[i].tags[j].tagGroup.name === "State of Model Completeness") {
         let key = data[i].tags[j].name;
-        graphInfo.counts[key]++;
-        graphInfo.sortedData[key].push(data[i]);
+        counts[key]++;
+        sortedData[key].push(data[i]);
         anyData = true;
       }
     }
     // If model completion status hasn't been found
     if (anyData === false) {
-      graphInfo.counts["no status"]++;
-      graphInfo.sortedData["no status"].push(data[i]);
+      counts["no status"]++;
+      sortedData["no status"].push(data[i]);
     }
   }
 
@@ -140,13 +134,13 @@ function modelCompletionGraph(data) {
   if (data.length === 0) {
     graph = <div style={centered}><h2>{title}</h2><p>No Factsheets</p></div>;
   } else {
-    let graphData = graphFormat(graphInfo.counts);
-    let options = pieChartOptions(title, graphData, graphInfo.sortedData)
+    let graphData = graphFormat(counts);
+    let options = pieChartOptions(title, graphData, sortedData)
     graph = <ReactHighCharts config={options} />;
   }
 
-  let totalCount = graphInfo.counts["backlog"] + graphInfo.counts["review"]
-  + graphInfo.counts["analysis"] + graphInfo.counts["no status"];
+  let totalCount = counts["backlog"] + counts["review"]
+  + counts["analysis"] + counts["no status"];
 
   return [graph, totalCount];
 }
