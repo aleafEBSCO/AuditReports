@@ -1,6 +1,7 @@
 import './assets/main.css';
 import './assets/popover.css';
 import 'react-select/dist/react-select.css';
+import "react-table/react-table.css";
 
 import '@leanix/reporting';
 
