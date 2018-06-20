@@ -124,7 +124,7 @@ export class Report {
         fixedFactSheetType: this.reportState.selectedFactSheetType,
         attributes: [Queries.getQuery(this.reportState.selectedFactSheetType)],
         callback: (facetData) => {
-          this.leafNodes = this._leafNodeFilter(facetData);
+          this.leafNodes = Utilities.leafNodeFilter(facetData);
           this._updateAudits();
         }
       }]
