@@ -97,7 +97,7 @@ function subscriptionStringToSubType(subscriptionString) {
 function countSubTypes(subTypes) {
   let subCounts = {};
 
-  for (var i = 0; i < subTypes.length; i += 1) {
+  for (let i = 0; i < subTypes.length; i += 1) {
     let current = subTypes[i];
 
     // Initialize fact sheet type field if doesn't exist
@@ -133,7 +133,7 @@ function leafNodeFilter(data) {
 
 // Convert EBSCO fact sheet type to LeanIX fact sheet type
 function ebscoToLeanIXTypes(ebscoType) {
-  var lookup = {
+  let lookup = {
     "Domain": "BusinessCapability",
     "Use Case": "Process",
     "Persona": "UserGroup",
@@ -149,7 +149,7 @@ function ebscoToLeanIXTypes(ebscoType) {
 }
 
 function leanIXToEbscoTypes(leanIXType) {
-  var lookup = {
+  let lookup = {
     "BusinessCapability": "Domain",
     "Process": "Use Case",
     "UserGroup": "Persona",

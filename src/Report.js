@@ -112,12 +112,11 @@ export class Report {
     this._handleFactSheetTypeSelect = this._handleFactSheetTypeSelect.bind(this);
     this._handleAuditTypeSelect = this._handleAuditTypeSelect.bind(this);
 
-    this._createConfig();
+    this.createConfig();
   }
 
-  _createConfig() {
-    // TODO: return config object instead of using this.config
-    this.config = {
+  createConfig() {
+    return {
       allowTableView: false,
       facets: [{
         key: this.reportState.selectedFactSheetType,
@@ -208,8 +207,8 @@ export class Report {
   }
 
   _updateConfig() {
-    this._createConfig();
-    lx.updateConfiguration(this.config);
+    let config = this.createConfig();
+    lx.updateConfiguration(config);
   }
 
   _updateAudits() {
@@ -413,7 +412,6 @@ export class Report {
   }
 
   _renderReport() {
-    // TODO: Show count somewhere
     ReactDOM.render(this.audits[this.reportState.selectedAuditType][0], document.getElementById('report'));
   }
 }

@@ -716,7 +716,6 @@ function buildHistogramOptions(fsType, colorsChoice, x, y, data) {
                 range[0] / 100, range[1] / 100);
               }
 
-              // TODO: Make InfoTable dynamic so completion percentage can be shown here
               ReactDOM.render(<InfoTable data={clickedFsSet} />, document.getElementById('info'));
 
               let top = event.pageY;

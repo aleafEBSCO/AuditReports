@@ -19,7 +19,8 @@ $('#backdrop').on('click', function() {
 
 lx.init()
 .then(function (setup) {
-  var report = new Report(setup);
-  lx.ready(report.config);
+  let report = new Report(setup);
+  let config = report.createConfig();
+  lx.ready(config);
   report.init()
 });
