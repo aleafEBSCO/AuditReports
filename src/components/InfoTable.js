@@ -123,26 +123,6 @@ class InfoTable extends Component {
       />
     );
   }
-
-  _renderRow(fs, rowIndex) {
-    // TODO: Don't hard code base URL
-    return (
-      <tr key={rowIndex}>
-        <td key={fs.id} width='40%' align='center'>
-          <Link link={`https://us.leanix.net/SBEIS/factsheet/${fs.type}/${fs.id}`} target='_blank' text={fs.displayName} />
-        </td>
-        <td key={fs.id + '-C'} width='10%' align='center'>
-          {fs.completion.percentage + '%'}
-        </td>
-        <td key={fs.id + '-R'} width='25%' align='center'>
-          {Utilities.getSubscriptionNamesOfType(fs, 'RESPONSIBLE')}
-        </td>
-        <td key={fs.id + '-A'} width='25%' align='center'>
-          {Utilities.getSubscriptionNamesOfType(fs, 'ACCOUNTABLE')}
-        </td>
-      </tr>
-    );
-  }
 }
 
 InfoTable.propTypes = {
