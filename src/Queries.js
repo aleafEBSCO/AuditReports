@@ -154,6 +154,7 @@ function getQuery(factSheetType) {
       relInterfaceToITComponent {
         totalCount
       }
+      ${relToChildParent}
     }`,
     // Data Object
     'DataObject': `
