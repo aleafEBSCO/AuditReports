@@ -212,7 +212,7 @@ export class Report {
   }
 
   _updateAudits() {
-    // Get only leaf nodes ie, no parents or children
+    // Get only leaf nodes ie, no children
     // NOTE: leafNodes will only be of the current fact sheet type due to separation of queries
     if (this.leafNodes) {
       switch (this.reportState.selectedFactSheetType) {

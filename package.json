@@ -1,6 +1,6 @@
 {
   "name": "auditreports",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Reports on fact sheets",
   "engines": {
     "node": ">=8.11.2"
@@ -20,7 +20,10 @@
     "leanix",
     "custom-report"
   ],
-  "author": "Andrew Leaf (aleaf@ebsco.com)",
+  "contributors": [
+    "Andrew Leaf (aleaf@ebsco.com)",
+    "Graham Preston (gpreston@ebsco.com)"
+  ],
   "private": true,
   "license": "UNLICENSED",
   "devDependencies": {

@@ -692,6 +692,11 @@ function buildHistogramOptions(fsType, colorsChoice, x, y, data) {
         colors: colorsChoice
       },
       series: {
+        events: {
+          legendItemClick: function () {
+            return false;
+          }
+        },
         colorByPoint: true,
         point: {
           events: {

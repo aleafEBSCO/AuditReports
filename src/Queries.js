@@ -1,8 +1,5 @@
-let relToChildParent = `
+let relToChild = `
 relToChild {
-  totalCount
-}
-relToParent {
   totalCount
 }`;
 
@@ -44,7 +41,7 @@ function getQuery(factSheetType) {
       relBusinessCapabilityToProcess {
         totalCount
       }
-      ${relToChildParent}
+      ${relToChild}
     }`,
     // Use Case
     'Process': `
@@ -64,13 +61,13 @@ function getQuery(factSheetType) {
       relProcessToApplication {
         totalCount
       }
-      ${relToChildParent}
+      ${relToChild}
     }`,
     // Persona
     'UserGroup': `
     ${main}
     ... on UserGroup {
-      ${relToChildParent}
+      ${relToChild}
     }`,
     // Epic
     'Project': `
@@ -92,7 +89,7 @@ function getQuery(factSheetType) {
       relProjectToProcess {
         totalCount
       }
-      ${relToChildParent}
+      ${relToChild}
     }`,
     // Bounded Context
     'Application': `
@@ -142,7 +139,7 @@ function getQuery(factSheetType) {
       documents {
         totalCount
       }
-      ${relToChildParent}
+      ${relToChild}
     }`,
     // Behavior
     'Interface': `
@@ -154,7 +151,7 @@ function getQuery(factSheetType) {
       relInterfaceToITComponent {
         totalCount
       }
-      ${relToChildParent}
+      ${relToChild}
     }`,
     // Data Object
     'DataObject': `
@@ -166,7 +163,7 @@ function getQuery(factSheetType) {
       relDataObjectToInterface {
         totalCount
       }
-      ${relToChildParent}
+      ${relToChild}
     }`,
     // IT Component
     'ITComponent': `
@@ -203,19 +200,19 @@ function getQuery(factSheetType) {
           }
         }
       }
-      ${relToChildParent}
+      ${relToChild}
     }`,
     // Provider
     'Provider': `
     ${main}
     ... on Provider {
-      ${relToChildParent}
+      ${relToChild}
     }`,
     // Technical Stack
     'TechnicalStack': `
     ${main}
     ... on TechnicalStack {
-      ${relToChildParent}
+      ${relToChild}
     }`
   };
   return queries[factSheetType];

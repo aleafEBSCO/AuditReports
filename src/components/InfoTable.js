@@ -12,7 +12,7 @@ class InfoTable extends Component {
 
   render() {
     let formattedData = this.props.data.map(fs => {
-      return [<Link link={`https://us.leanix.net/SBEIS/factsheet/${fs.type}/${fs.id}`} target='_blank' text={fs.displayName} />,
+      return [<Link link={lx["currentSetup"]["settings"]["baseUrl"] + `/factsheet/${fs.type}/${fs.id}`} target='_blank' text={fs.displayName} />,
         fs.completion.percentage + '%',
         Utilities.getSubscriptionNamesOfType(fs, 'RESPONSIBLE'),
         Utilities.getSubscriptionNamesOfType(fs, 'ACCOUNTABLE')];
