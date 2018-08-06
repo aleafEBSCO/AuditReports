@@ -774,24 +774,23 @@ function pieChartOptions(graphTitle, graphData, sortedData) {
       series: {
         point: {
           events: {
-          click: function(event) {
+            click: function(event) {
+              let clickedFsSet = sortedData[this.name];
+              //console.log(data);
+              if (clickedFsSet.length !== 0) {
+                ReactDOM.render(<InfoTable data={clickedFsSet} />, document.getElementById('info'));
 
-            let clickedFsSet = sortedData[this.name];
-            //console.log(data);
-            if (clickedFsSet.length !== 0) {
-            ReactDOM.render(<InfoTable data={clickedFsSet} />, document.getElementById('info'));
+                let top = event.pageY;
+                $('#info').css('top', `${top + 25}px`);
 
-            let top = event.pageY;
-            $('#info').css('top', `${top + 25}px`);
-
-            // Scroll lock
-            document.body.style.overflow = 'hidden';
-            // Toggle backdrop
-            $('#backdrop').toggleClass('modal-backdrop in');
-            // Show info
-            $('#info').show();
+                // Scroll lock
+                document.body.style.overflow = 'hidden';
+                // Toggle backdrop
+                $('#backdrop').toggleClass('modal-backdrop in');
+                // Show info
+                $('#info').show();
+              }
             }
-          }
           }
         }
       },
