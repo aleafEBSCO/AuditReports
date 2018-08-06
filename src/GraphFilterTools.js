@@ -776,7 +776,6 @@ function pieChartOptions(graphTitle, graphData, sortedData) {
           events: {
             click: function(event) {
               let clickedFsSet = sortedData[this.name];
-              //console.log(data);
               if (clickedFsSet.length !== 0) {
                 ReactDOM.render(<InfoTable data={clickedFsSet} />, document.getElementById('info'));
 
