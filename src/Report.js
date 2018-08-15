@@ -111,8 +111,6 @@ export class Report {
 
     this._handleFactSheetTypeSelect = this._handleFactSheetTypeSelect.bind(this);
     this._handleAuditTypeSelect = this._handleAuditTypeSelect.bind(this);
-
-    this.createConfig();
   }
 
   createConfig() {
